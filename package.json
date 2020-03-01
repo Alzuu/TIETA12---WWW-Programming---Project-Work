@@ -1,0 +1,35 @@
+{
+  "name": "i-want-all-the-3-points",
+  "version": "1.0.0",
+  "description": "**_Welcome to the home of your group's TIETA12, part 2 coursework code and documentation!_**",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "cd client && npm install && npm run build",
+    "dev": "env NODE_ENV=dev concurrently \"node server/app.js\" \"cd client && npm start\"",
+    "start": "npm run client && node server/app.js",
+    "lint": "eslint server && cd client && eslint src",
+    "postinstall": "cd client && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://course-gitlab.tuni.fi/tieta12-2019-2020/i-want-all-the-3-points.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^5.1.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-flowtype": "^4.6.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
+}
