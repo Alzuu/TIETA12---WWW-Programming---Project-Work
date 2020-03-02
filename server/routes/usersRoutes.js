@@ -31,10 +31,16 @@ router.delete('/:id', (req, res, next) => {
     next();
 }, userController.deleteOne);
 
+router.post('/login', (req, res, next) => {
+    next();
+}, userController.login);
+
+router.post('/logout', (req, res, next) => {
+    next();
+}, userController.logout);
+
 /*
 router.get('/:id/items');
-router.post('/login');
-router.post('/logout');
 */
 
 module.exports = router;

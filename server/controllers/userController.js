@@ -1,5 +1,9 @@
-var bcrypt = require('bcryptjs');
-var xssFilters = require('xss-filters');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const xssFilters = require('xss-filters');
+
+const config = require('../config.js');
+
 var User = require('../models/User');
 const saltRounds = 12;
 
@@ -88,4 +92,29 @@ exports.deleteOne = (req, res, next) => {
           res.json();
       }
   });
+}
+
+exports.login = (req, res, next) => {
+  User.findOne({ name: req.body.name }, function (err, user) {
+    if (err) return res.status(500).send('Error on the server.');
+    if (!user) return res.status(404).send('No user found.');
+
+    var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+    if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+
+    var token = jwt.sign({ id: user._id }, config.secret, {
+      expiresIn: 86400 // expires in 24 hours
+    });
+
+    res.writeHead(200, {"Content-Type": "application/json"});
+    var json = JSON.stringify({ 
+      auth: true,
+      token,
+    });
+    res.end(json);
+  });
+}
+
+exports.logout = (req, res, next) => {
+  res.status(200).send({ auth: false, token: null });
 }
