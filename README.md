@@ -164,32 +164,32 @@ Connections
 
 Here are all API routes. Payload still to be designed.
 
-| Http Method | Route                   | Payload |                             Description |
-| ----------- | ----------------------- | ------- | --------------------------------------: |
-| GET         | /users                  | -       |                           Get all users |
-| POST        | /users                  | payload |                       Register new user |
-| GET         | /users/:id              | -       |                       Get user with :id |
-| PUT         | /users/:id              | payload |                    Update user with :id |
-| DELETE      | /users/:id              | -       |                    Delete user with :id |
-| GET         | /users/:id/items        | -       |         Get users listed items with :id |
-| POST        | /users/login            | payload |                                   Login |
-| POST        | /users/logout           | -       |                                  Logout |
-| GET         | /items                  | -       |                           Get all items |
-| POST        | /items                  | payload |                            Add new item |
-| GET         | /items/:id              | -       |                       Get item with :id |
-| PUT         | /items/:id              | payload |                    Update item with :id |
-| DELETE      | /items/:id              | -       |                    Delete item with :id |
-| PUT         | /items/:id/sell/:userid | -       | Sell item with :id to user with :userid |
-| GET         | /bankaccounts           | -       |                   Get all bank accounts |
-| POST        | /bankaccounts           | payload |                    Add new bank account |
-| GET         | /bankaccounts/:id       | -       |               Get bank account with :id |
-| PUT         | /bankaccounts/:id       | payload |            Update bank account with :id |
-| DELETE      | /bankaccounts/:id       | -       |            Delete bank account with :id |
-| GET         | /creditcards            | -       |                    Get all credit cards |
-| POST        | /creditcards            | payload |                     Add new credit card |
-| GET         | /creditcards/:id        | -       |                Get credit card with :id |
-| PUT         | /creditcards/:id        | payload |             Update credit card with :id |
-| DELETE      | /creditcards/:id        | -       |             Delete credit card with :id |
+| Http Method | Route                       | Payload |                             Description |
+| ----------- | --------------------------- | ------- | --------------------------------------: |
+| GET         | /api/users                  | -       |                           Get all users |
+| POST        | /api/users                  | payload |                       Register new user |
+| GET         | /api/users/:id              | -       |                       Get user with :id |
+| PUT         | /api/users/:id              | payload |                    Update user with :id |
+| DELETE      | /api/users/:id              | -       |                    Delete user with :id |
+| GET         | /api/users/:id/items        | -       |         Get users listed items with :id |
+| POST        | /api/users/login            | payload |                                   Login |
+| POST        | /api/users/logout           | -       |                                  Logout |
+| GET         | /api/items                  | -       |                           Get all items |
+| POST        | /api/items                  | payload |                            Add new item |
+| GET         | /api/items/:id              | -       |                       Get item with :id |
+| PUT         | /api/items/:id              | payload |                    Update item with :id |
+| DELETE      | /api/items/:id              | -       |                    Delete item with :id |
+| PUT         | /api/items/:id/sell/:userid | -       | Sell item with :id to user with :userid |
+| GET         | /api/bankaccounts           | -       |                   Get all bank accounts |
+| POST        | /api/bankaccounts           | payload |                    Add new bank account |
+| GET         | /api/bankaccounts/:id       | -       |               Get bank account with :id |
+| PUT         | /api/bankaccounts/:id       | payload |            Update bank account with :id |
+| DELETE      | /api/bankaccounts/:id       | -       |            Delete bank account with :id |
+| GET         | /api/creditcards            | -       |                    Get all credit cards |
+| POST        | /api/creditcards            | payload |                     Add new credit card |
+| GET         | /api/creditcards/:id        | -       |                Get credit card with :id |
+| PUT         | /api/creditcards/:id        | payload |             Update credit card with :id |
+| DELETE      | /api/creditcards/:id        | -       |             Delete credit card with :id |
 
 ## React and Redux
 
