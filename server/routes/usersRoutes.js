@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../authentication/verifyToken');
 
 const userController = require('../controllers/userController');
 
 router.get('/test', function(req, res, next) {
-    res.send('users test 4 8 15 16 23 42');
+    next();
+}, verifyToken, () => {
+    console.log('users token test 4 8 15 16 23 42');
 });
 
 router.get('/', (req, res, next) => {
