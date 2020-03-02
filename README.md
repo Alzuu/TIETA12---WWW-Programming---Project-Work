@@ -47,6 +47,10 @@ Group members:
 
 ## Pages and navigation
 
+![Pages and navigation - Anonymous](/plan/pages_and_navigation/TIETA12 - Pages and navigation-Anonymous.jpg)
+![Pages and navigation - Anonymous](/plan/pages_and_navigation/TIETA12 - Pages and navigation-Customer.jpg)
+![Pages and navigation - Anonymous](/plan/pages_and_navigation/TIETA12 - Pages and navigation-Shopkeeper.jpg)
+
 - Homepage
 - User login
 - User registration
