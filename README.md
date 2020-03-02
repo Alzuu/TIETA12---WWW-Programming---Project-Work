@@ -67,23 +67,23 @@ Group members:
 
 ```
 .
-├── app.js                              --> express app
-├── db.js                               --> database connection setup
 ├── package.json                        --> app info and dependencies
 ├── client                              --> React application
 ├── plan                                --> design document images
 ├── server                              --> Backend application
-│   ├── controllers                     --> controllers
-│   │   ├── itemController.js           --> controller for items
-│   │   ├── userController.js           --> controller for users
-│   │   ├── creditCardController.js     --> controller for users' credit cards
-│   │   └── bankAccountController.js    --> controller for users' bank accounts
-│   ├── models                          --> models (Mongoose schemas etc.)
-│   │   ├── itemModel.js                --> model for items
-│   │   ├── userModel.js                --> model for users
-│   │   ├── creditCardModel.js          --> model for users' credit cards
-│   │   └── bankAccountModel.js         --> model for users' bank accounts
-│   └── routes                          --> API routes
+    ├── app.js                          --> express app
+    ├── db.js                           --> database connection setup
+    ├── controllers                     --> controllers
+    │   ├── itemController.js           --> controller for items
+    │   ├── userController.js           --> controller for users
+    │   ├── creditCardController.js     --> controller for users' credit cards
+    │   └── bankAccountController.js    --> controller for users' bank accounts
+    ├── models                          --> models (Mongoose schemas etc.)
+    │   ├── itemModel.js                --> model for items
+    │   ├── userModel.js                --> model for users
+    │   ├── creditCardModel.js          --> model for users' credit cards
+    │   └── bankAccountModel.js         --> model for users' bank accounts
+    └── routes                          --> API routes
         ├── itemsRoute.js               --> route for items
         ├── usersRoute.js               --> route for users
         ├── creditCardsRoute.js         --> route for users' credit cards
@@ -217,3 +217,5 @@ Kari
 
 - [ ] Documentation 20.3
 - [x] Project template 3.3
+- [ ] Express application
+- [ ] API Routes
