@@ -1,45 +1,45 @@
 /* eslint-disable no-underscore-dangle */
-const CreditCard = require('../models/CreditCard');
+const BankAccount = require('../models/BankAccount');
 
 module.exports = {
   /**
-   * Returns list of credit cards
+   * Returns list of bank accounts
    * @param {Object} req is express request object
    * @param {Object} res is express response object
    */
-  async listCreditCards(req, res) {
+  async listBankAccounts(req, res) {
     try {
-      const cards = await CreditCard.find();
+      const accounts = await BankAccount.find();
       const currentURL = `${req.protocol}://${req.get('host')}${
         req.originalUrl
       }`;
-      const cardsWithLinks = [];
-      cards.forEach((card) => {
-        const currentCard = JSON.parse(JSON.stringify(card));
-        // Add HATEOAS links to credit card
-        currentCard.links = [
+      const accountsWithLinks = [];
+      accounts.forEach((account) => {
+        const currentAccount = JSON.parse(JSON.stringify(account));
+        // Add HATEOAS links to bank account
+        currentAccount.links = [
           {
             rel: 'self',
             method: 'GET',
-            href: `${currentURL}/${currentCard._id}`,
+            href: `${currentURL}/${currentAccount._id}`,
             types: ['application/json'],
           },
           {
             rel: 'self',
             method: 'DELETE',
-            href: `${currentURL}/${currentCard._id}`,
+            href: `${currentURL}/${currentAccount._id}`,
             types: [],
           },
           {
             rel: 'self',
             method: 'PUT',
-            href: `${currentURL}/${currentCard._id}`,
+            href: `${currentURL}/${currentAccount._id}`,
             types: ['application/json'],
           },
         ];
-        cardsWithLinks.push(currentCard);
+        accountsWithLinks.push(currentAccount);
       });
-      res.status(200).json(cardsWithLinks);
+      res.status(200).json(accountsWithLinks);
     } catch (err) {
       res.status(404).json({ message: err });
       console.log('Caught an error: ', err);
@@ -47,21 +47,21 @@ module.exports = {
   },
 
   /**
-   * Returns a specific credit card
+   * Returns a specific bank account
    * @param {Object} req is express request object
    * @param {Object} res is express response object
    */
 
-  async showCreditCard(req, res) {
+  async showBankAccount(req, res) {
     try {
       const currentURL = `${req.protocol}://${req.get('host')}${
         req.originalUrl
       }`;
-      let card = await CreditCard.findById(req.params.cardId).exec();
-      card = JSON.parse(JSON.stringify(card));
+      let account = await BankAccount.findById(req.params.bankAccountId).exec();
+      account = JSON.parse(JSON.stringify(account));
 
-      // Add HATEOAS links to credit card
-      card.links = [
+      // Add HATEOAS links to bank account
+      account.links = [
         {
           rel: 'self',
           method: 'GET',
@@ -81,7 +81,7 @@ module.exports = {
           types: ['application/json'],
         },
       ];
-      res.status(200).json(card);
+      res.status(200).json(account);
     } catch (err) {
       res.status(404).json({ message: err });
       console.log('Caught an error: ', err);
@@ -89,32 +89,31 @@ module.exports = {
   },
 
   /**
-   * Adds a new credit card
+   * Adds a new bank account
    * @param {Object} req is express request object
    * @param {Object} res is express response object
    */
-  async addCreditCard(req, res) {
+  async addBankAccount(req, res) {
     try {
-      const { number, CVC, ownerName } = req.body;
-      let card = await CreditCard.findOne({ number }).exec();
+      const { number, balance } = req.body;
+      let account = await BankAccount.findOne({ number }).exec();
 
-      if (card) {
-        const errorMessage = 'Card already registered in DB!';
+      if (account) {
+        const errorMessage = 'Bank account already registered in DB!';
 
         if (!req.is('json')) {
           res.status(400).json({ message: errorMessage });
         }
       }
 
-      card = new CreditCard({
+      account = new BankAccount({
         number,
-        CVC,
-        ownerName,
+        balance,
       });
 
-      const newCard = await card.save();
-      await res.status(201).json(newCard);
-      console.log('New credit card added.');
+      const newAccount = await account.save();
+      await res.status(201).json(newAccount);
+      console.log('New bank account added.');
     } catch (err) {
       res.json({ message: err });
       console.log('Caught an error: ', err);
@@ -122,16 +121,16 @@ module.exports = {
   },
 
   /**
-   * Removes a specific credit card
+   * Removes a specific bank account
    * @param {Object} req is express request object
    * @param {Object} res is express response object
    */
-  async removeCreditCard(req, res) {
+  async removeBankAccount(req, res) {
     try {
-      const ID = req.params.cardId;
-      const deletedCard = await CreditCard.deleteOne({ _id: `${ID}` });
-      res.status(200).json(deletedCard);
-      console.log('Successfully removed credit card.');
+      const ID = req.params.bankAccountId;
+      const deletedAccount = await BankAccount.deleteOne({ _id: `${ID}` });
+      res.status(200).json(deletedAccount);
+      console.log('Successfully removed bank account.');
     } catch (err) {
       res.status(400).json({ message: err });
       console.log('Caught an error: ', err);
@@ -139,20 +138,19 @@ module.exports = {
   },
 
   /**
-   * Updates a specific credit card
+   * Updates a specific bank account
    * @param {Object} req is express request object
    * @param {Object} res is express response object
    */
-  async updateCreditCard(req, res) {
+  async updateBankAccount(req, res) {
     try {
-      const ID = req.params.cardId;
-      const { number, CVC, ownerName } = req.body;
-      const updatedCard = await CreditCard.findOne({ _id: `${ID}` });
-      updatedCard.number = number;
-      updatedCard.CVC = CVC;
-      updatedCard.ownerName = ownerName;
-      await updatedCard.save();
-      res.status(200).json(updatedCard);
+      const ID = req.params.bankAccountId;
+      const { number, balance } = req.body;
+      const updatedAccount = await BankAccount.findOne({ _id: `${ID}` });
+      updatedAccount.number = number;
+      updatedAccount.balance = balance;
+      await updatedAccount.save();
+      res.status(200).json(updatedAccount);
     } catch (err) {
       res.status(400).json({ message: err });
     }
