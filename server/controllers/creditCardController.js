@@ -21,19 +21,19 @@ module.exports = {
           {
             rel: 'self',
             method: 'GET',
-            href: `${currentURL}${currentCard._id}`,
+            href: `${currentURL}/${currentCard._id}`,
             types: ['application/json'],
           },
           {
             rel: 'self',
             method: 'DELETE',
-            href: `${currentURL}${currentCard._id}`,
+            href: `${currentURL}/${currentCard._id}`,
             types: [],
           },
           {
             rel: 'self',
             method: 'PUT',
-            href: `${currentURL}${currentCard._id}`,
+            href: `${currentURL}/${currentCard._id}`,
             types: ['application/json'],
           },
         ];
