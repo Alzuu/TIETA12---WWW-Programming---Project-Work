@@ -6,12 +6,12 @@ const creditCardsRoutes = require('./creditCardsRoutes');
 
 const router = express.Router();
 
-router.use('/', (req, res) => {
-  res.json('API routes');
-});
 router.use('/users', usersRoutes);
 router.use('/items', itemsRoutes);
 router.use('/bankaccounts', bankAccountsRoutes);
 router.use('/creditcards', creditCardsRoutes);
+router.use('/', (req, res) => {
+  res.json('API routes');
+});
 
 module.exports = router;
