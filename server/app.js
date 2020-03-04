@@ -2,6 +2,8 @@ const express = require('express');
 const helmet = require('helmet');
 const db = require('./db');
 const apiRoutes = require('./routes/apiRoutes');
+const path = require('path');
+
 const app = express();
 
 const dbConfig = {
@@ -26,6 +28,10 @@ app.use('/api', apiRoutes);
 
 // Serve static React app
 app.use(express.static('client/build'));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('client', 'build', 'index.html'));
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

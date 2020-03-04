@@ -25,6 +25,7 @@
     "helmet": "^3.21.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.2",
+    "react-router-dom": "^5.1.2",
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
