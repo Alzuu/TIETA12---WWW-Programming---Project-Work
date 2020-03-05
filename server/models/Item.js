@@ -5,6 +5,7 @@ const itemSchema = mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    minlength: 1,
   },
   price: {
     type: Number,
@@ -14,6 +15,8 @@ const itemSchema = mongoose.Schema({
   ownerId: {
     type: String,
     required: true,
+    trim: true,
+    minlength: 1,
   },
   ownerIsCustomer: {
     type: Boolean,

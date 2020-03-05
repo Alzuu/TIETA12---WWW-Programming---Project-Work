@@ -1,8 +1,8 @@
 const express = require('express');
 const helmet = require('helmet');
+const path = require('path');
 const db = require('./db');
 const apiRoutes = require('./routes/apiRoutes');
-const path = require('path');
 
 const app = express();
 
@@ -35,3 +35,6 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+// Export for testing
+module.exports = app;
