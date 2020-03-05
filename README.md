@@ -104,6 +104,7 @@ Attributes (type)
 - price (Number)
 - ownerId (String)
 - ownerIsCustomer (Boolean)
+- onSale (Boolean)
 - pictureId (String)
 
 Purpose
@@ -137,8 +138,8 @@ Connections
 
 Attributes (type)
 
-- number (Number)
-- CVC (Number)
+- number (String)
+- CVC (String)
 - ownerName (String)
 
 Purpose
@@ -153,7 +154,7 @@ Connections
 
 Attributes (type)
 
-- number (Number)
+- number (String)
 - balance (Number)
 
 Purpose
@@ -168,32 +169,34 @@ Connections
 
 Here are all API routes. Payload still to be designed.
 
-| Http Method | Route                       | Payload |                             Description |
-| ----------- | --------------------------- | ------- | --------------------------------------: |
-| GET         | /api/users                  | -       |                           Get all users |
-| POST        | /api/users                  | payload |                       Register new user |
-| GET         | /api/users/:id              | -       |                       Get user with :id |
-| PUT         | /api/users/:id              | payload |                    Update user with :id |
-| DELETE      | /api/users/:id              | -       |                    Delete user with :id |
-| GET         | /api/users/:id/items        | -       |         Get users listed items with :id |
-| POST        | /api/users/login            | payload |                                   Login |
-| POST        | /api/users/logout           | -       |                                  Logout |
-| GET         | /api/items                  | -       |                           Get all items |
-| POST        | /api/items                  | payload |                            Add new item |
-| GET         | /api/items/:id              | -       |                       Get item with :id |
-| PUT         | /api/items/:id              | payload |                    Update item with :id |
-| DELETE      | /api/items/:id              | -       |                    Delete item with :id |
-| PUT         | /api/items/:id/sell/:userid | -       | Sell item with :id to user with :userid |
-| GET         | /api/bankaccounts           | -       |                   Get all bank accounts |
-| POST        | /api/bankaccounts           | payload |                    Add new bank account |
-| GET         | /api/bankaccounts/:id       | -       |               Get bank account with :id |
-| PUT         | /api/bankaccounts/:id       | payload |            Update bank account with :id |
-| DELETE      | /api/bankaccounts/:id       | -       |            Delete bank account with :id |
-| GET         | /api/creditcards            | -       |                    Get all credit cards |
-| POST        | /api/creditcards            | payload |                     Add new credit card |
-| GET         | /api/creditcards/:id        | -       |                Get credit card with :id |
-| PUT         | /api/creditcards/:id        | payload |             Update credit card with :id |
-| DELETE      | /api/creditcards/:id        | -       |             Delete credit card with :id |
+| Http Method | Route                       | Payload                                                                              |                             Description |
+| ----------- | --------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------: |
+| GET         | /api/users                  | -                                                                                    |                           Get all users |
+| POST        | /api/users                  | payload                                                                              |                       Register new user |
+| GET         | /api/users/:id              | -                                                                                    |                       Get user with :id |
+| PUT         | /api/users/:id              | payload                                                                              |                    Update user with :id |
+| DELETE      | /api/users/:id              | -                                                                                    |                    Delete user with :id |
+| GET         | /api/users/:id/items        | -                                                                                    |         Get users listed items with :id |
+| POST        | /api/users/login            | payload                                                                              |                                   Login |
+| POST        | /api/users/logout           | -                                                                                    |                                  Logout |
+| GET         | /api/items                  | -                                                                                    |                           Get all items |
+| GET         | /api/items/shopkeepers      | -                                                                                    |               Get all shopkeepers items |
+| GET         | /api/items/customers        | -                                                                                    |                     Get customers items |
+| POST        | /api/items                  | formdata: name, price, ownerId, ownerIsCustomer, onSale, image(.png or .jpeg)        |                            Add new item |
+| GET         | /api/items/:id              | -                                                                                    |                       Get item with :id |
+| PUT         | /api/items/:id              | json: { name, price, ownerId, ownerIsCustomer, onSale }<br>Any of these can be empty |                    Update item with :id |
+| DELETE      | /api/items/:id              | -                                                                                    |                    Delete item with :id |
+| PUT         | /api/items/:id/sell/:userid | -                                                                                    | Sell item with :id to user with :userid |
+| GET         | /api/bankaccounts           | -                                                                                    |                   Get all bank accounts |
+| POST        | /api/bankaccounts           | payload                                                                              |                    Add new bank account |
+| GET         | /api/bankaccounts/:id       | -                                                                                    |               Get bank account with :id |
+| PUT         | /api/bankaccounts/:id       | payload                                                                              |            Update bank account with :id |
+| DELETE      | /api/bankaccounts/:id       | -                                                                                    |            Delete bank account with :id |
+| GET         | /api/creditcards            | -                                                                                    |                    Get all credit cards |
+| POST        | /api/creditcards            | payload                                                                              |                     Add new credit card |
+| GET         | /api/creditcards/:id        | -                                                                                    |                Get credit card with :id |
+| PUT         | /api/creditcards/:id        | payload                                                                              |             Update credit card with :id |
+| DELETE      | /api/creditcards/:id        | -                                                                                    |             Delete credit card with :id |
 
 ## React and Redux
 
@@ -211,7 +214,9 @@ Division of work with deadlines (initial, will update):
 
 Allan
 
-- [ ] Pages and navigation (pictures) 3.3
+- [x] Pages and navigation (pictures) 3.3
+- [x] BankAccount
+- [x] CreditCard
 
 Peter
 
@@ -221,5 +226,7 @@ Kari
 
 - [ ] Documentation 20.3
 - [x] Project template 3.3
-- [ ] Express application
-- [ ] API Routes
+- [x] Express application
+- [x] API Routes
+- [ ] Items
+- [ ] Items testing
