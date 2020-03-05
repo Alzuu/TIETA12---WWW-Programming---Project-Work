@@ -20,8 +20,9 @@ module.exports = {
         }
         return res.json(items);
       });
+    } else {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    return res.status(401).json({ message: 'Unauthorized' });
   },
   /* List all customers' items on sale
    */
@@ -41,8 +42,9 @@ module.exports = {
         }
         return res.json(items);
       });
+    } else {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    return res.status(401).json({ message: 'Unauthorized' });
   },
   /* List all shopkeepers' items on sale
    */
@@ -66,9 +68,7 @@ module.exports = {
       ownerId: xssFilters.inHTMLData(req.body.ownerId),
       ownerIsCustomer: xssFilters.inHTMLData(req.body.ownerIsCustomer),
       onSale: xssFilters.inHTMLData(req.body.onSale),
-      pictureId: xssFilters.inHTMLData(
-        req.body.pictureId ? req.body.pictureId : ''
-      ),
+      pictureId: xssFilters.inHTMLData(req.file ? req.file.filename : ''),
     });
     newItem.save((err, item) => {
       if (err) {
