@@ -4,12 +4,53 @@ const UserRole = require('../models/UserRole');
 const BankAccount = require('../models/BankAccount');
 const User = require('../models/User');
 
+function itemToLinks(item, currentURL) {
+  const result = [
+    {
+      rel: 'self',
+      method: 'GET',
+      href: `${currentURL}/${item._id}`,
+      types: ['application/json'],
+    },
+    {
+      rel: 'self',
+      method: 'DELETE',
+      href: `${currentURL}/${item._id}`,
+      types: ['application/json'],
+    },
+    {
+      rel: 'self',
+      method: 'PUT',
+      href: `${currentURL}/${item._id}`,
+      types: ['application/json'],
+    },
+    {
+      rel: 'self',
+      method: 'PUT',
+      href: `${currentURL}/${item._id}/sell/:userid`,
+      types: ['application/json'],
+    },
+  ];
+  return result;
+}
+function itemsToLinks(items, currentURL) {
+  const result = [];
+  items.forEach((item) => {
+    const arrayItem = JSON.parse(JSON.stringify(item));
+    arrayItem.links = itemToLinks(item, currentURL);
+    result.push(arrayItem);
+  });
+  return result;
+}
 module.exports = {
   /* List all items
    */
   listAll(req, res) {
     // Check for admin role
     if (req.userRole === UserRole.ADMIN) {
+      const currentURL = `${req.protocol}://${req.get('host')}${
+        req.originalUrl
+      }`;
       // Find all items
       Item.find((err, items) => {
         if (err) {
@@ -18,7 +59,8 @@ module.exports = {
         if (items.length === 0) {
           return res.status(404).json({ message: 'No item found!' });
         }
-        return res.json(items);
+        const result = itemsToLinks(items, currentURL);
+        return res.json(result);
       });
     } else {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -32,6 +74,9 @@ module.exports = {
       req.userRole === UserRole.ADMIN ||
       req.userRole === UserRole.SHOPKEEPER
     ) {
+      const currentURL = `${req.protocol}://${req.get('host')}${
+        req.originalUrl
+      }`;
       // Find all items where owner is customer and item is for sale
       Item.find({ ownerIsCustomer: true, onSale: true }, (err, items) => {
         if (err) {
@@ -40,7 +85,8 @@ module.exports = {
         if (items.length === 0) {
           return res.status(404).json({ message: 'No item found!' });
         }
-        return res.json(items);
+        const result = itemsToLinks(items, currentURL);
+        return res.json(result);
       });
     } else {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -49,6 +95,7 @@ module.exports = {
   /* List all shopkeepers' items on sale
    */
   listShopkeepersItems(req, res) {
+    const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     Item.find({ ownerIsCustomer: false, onSale: true }, (err, items) => {
       if (err) {
         return res.status(400).json({ message: err });
@@ -56,33 +103,46 @@ module.exports = {
       if (items.length === 0) {
         return res.status(404).json({ message: 'No item found!' });
       }
-      return res.json(items);
+      const result = itemsToLinks(items, currentURL);
+      return res.json(result);
     });
   },
   /* Add new item
    */
   add(req, res) {
-    const newItem = new Item({
-      name: xssFilters.inHTMLData(req.body.name),
-      price: parseFloat(xssFilters.inHTMLData(req.body.price)),
-      ownerId: xssFilters.inHTMLData(req.body.ownerId),
-      ownerIsCustomer: xssFilters.inHTMLData(req.body.ownerIsCustomer),
-      onSale: xssFilters.inHTMLData(req.body.onSale),
-      pictureId: xssFilters.inHTMLData(req.file ? req.file.filename : ''),
-    });
-    newItem.save((err, item) => {
-      if (err) {
-        return res.status(400).json({ message: err });
-      }
-      if (!item) {
-        return res.status(404).json({ message: 'No item found!' });
-      }
-      return res.json(item);
-    });
+    if (req.userId === req.body.ownerId || req.userRole === UserRole.ADMIN) {
+      const currentURL = `${req.protocol}://${req.get('host')}${
+        req.originalUrl
+      }`;
+      const newItem = new Item({
+        name: xssFilters.inHTMLData(req.body.name ? req.body.name : ''),
+        price: parseFloat(xssFilters.inHTMLData(req.body.price)),
+        ownerId: xssFilters.inHTMLData(
+          req.body.ownerId ? req.body.ownerId : ''
+        ),
+        ownerIsCustomer: xssFilters.inHTMLData(req.body.ownerIsCustomer),
+        onSale: xssFilters.inHTMLData(req.body.onSale),
+        pictureId: xssFilters.inHTMLData(req.file ? req.file.filename : ''),
+      });
+      newItem.save((err, item) => {
+        if (err) {
+          return res.status(400).json({ message: err });
+        }
+        if (!item) {
+          return res.status(404).json({ message: 'No item found!' });
+        }
+        const result = JSON.parse(JSON.stringify(item));
+        result.links = itemToLinks(item, currentURL);
+        return res.json(result);
+      });
+    } else {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
   },
   /* Get one item
    */
   getOne(req, res) {
+    const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     Item.findById(req.params.id, (err, item) => {
       if (err) {
         return res.status(400).json({ message: err });
@@ -96,22 +156,29 @@ module.exports = {
           req.userRole === UserRole.ADMIN ||
           req.userRole === UserRole.SHOPKEEPER
         ) {
-          return res.json(item);
+          const result = JSON.parse(JSON.stringify(item));
+          result.links = itemToLinks(item, currentURL);
+          return res.json(result);
         }
         return res.status(401).json({ message: 'Unauthorized' });
       }
       if (item.onSale && !item.ownerIsCustomer) {
-        return res.json(item);
+        const result = JSON.parse(JSON.stringify(item));
+        result.links = itemToLinks(item, currentURL);
+        return res.json(result);
       }
       if (!item.onSale) {
         if (req.userRole === UserRole.ADMIN || req.userId === item.ownerId) {
-          return res.json(item);
+          const result = JSON.parse(JSON.stringify(item));
+          result.links = itemToLinks(item, currentURL);
+          return res.json(result);
         }
         return res.status(401).json({ message: 'Unauthorized' });
       }
     });
   },
   updateOne(req, res) {
+    const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     // Get updated data
     const {
       name,
@@ -139,14 +206,23 @@ module.exports = {
           onSale,
           pictureId,
         };
-        item.updateOne(newData, (error, raw) => {
-          if (error) {
-            return res.status(400).json({ message: error });
+        item.updateOne(
+          newData,
+          { omitUndefined: true, runValidators: true },
+          (error, raw) => {
+            if (error) {
+              return res.status(400).json({ message: error });
+            }
+            Item.findById(req.params.id, (er, doc) => {
+              const result = doc;
+              result.links = itemToLinks(doc, currentURL);
+              return res.json(result);
+            });
           }
-          return res.json(raw);
-        });
+        );
+      } else {
+        return res.status(401).json({ message: 'Unauthorized' });
       }
-      return res.status(401).json({ message: 'Unauthorized' });
     });
   },
   deleteOne(req, res) {
@@ -161,16 +237,18 @@ module.exports = {
       // Check if user is item owner or admin
       if (req.userId === item.ownerId || req.userRole === UserRole.ADMIN) {
         item.remove((error, ditem) => {
-          if (err) {
+          if (error) {
             return res.status(400).json({ message: err });
           }
           return res.json(ditem);
         });
+      } else {
+        return res.status(401).json({ message: 'Unauthorized' });
       }
-      return res.status(401).json({ message: 'Unauthorized' });
     });
   },
   sellOne(req, res) {
+    const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     // Find item
     Item.findById(req.params.id, (err, item) => {
       if (err) {
@@ -208,7 +286,11 @@ module.exports = {
                   BankAccount.findByIdAndUpdate(bankAccountId, {
                     $inc: { balance: item.price },
                   });
-                  return res.json(raw);
+                  Item.findById(req.params.id, (er, doc) => {
+                    const result = doc;
+                    result.links = itemToLinks(doc, currentURL);
+                    return res.json(result);
+                  });
                 }
               );
             }
@@ -221,6 +303,7 @@ module.exports = {
               onSale: false,
               ownerId: req.params.userId,
             },
+            { omitUndefined: true },
             (error, raw) => {
               if (error) {
                 return res.status(400).json({ message: error });
@@ -229,7 +312,11 @@ module.exports = {
               BankAccount.findByIdAndUpdate(bankAccountId, {
                 $inc: { balance: item.price },
               });
-              return res.json(raw);
+              Item.findById(req.params.id, (er, doc) => {
+                const result = doc;
+                result.links = itemToLinks(doc, currentURL);
+                return res.json(result);
+              });
             }
           );
         }
@@ -243,6 +330,7 @@ module.exports = {
             onSale: false,
             ownerId: req.params.userId,
           },
+          { omitUndefined: true },
           (error, raw) => {
             if (error) {
               return res.status(400).json({ message: error });
@@ -251,7 +339,11 @@ module.exports = {
             BankAccount.findByIdAndUpdate(bankAccountId, {
               $inc: { balance: item.price },
             });
-            return res.json(raw);
+            Item.findById(req.params.id, (er, doc) => {
+              const result = doc;
+              result.links = itemToLinks(doc, currentURL);
+              return res.json(result);
+            });
           }
         );
       }
