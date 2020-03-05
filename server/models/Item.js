@@ -19,6 +19,10 @@ const itemSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  onSale: {
+    type: Boolean,
+    required: true,
+  },
   pictureId: {
     type: String,
   },
