@@ -33,6 +33,8 @@ exports.modify = (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, {
     name: xssFilters.inHTMLData(req.body.name),
     role: parseInt(xssFilters.inHTMLData(req.body.role)),
+    creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+    bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
   }, (err, user) => {    
     if (err) {
       res.sendStatus(400);
@@ -50,7 +52,9 @@ exports.create = (req, res, next) => {
     var newUser = new User({
       name: xssFilters.inHTMLData(req.body.name),
       role: parseInt(xssFilters.inHTMLData(req.body.role)),
-      password: hash
+      password: hash,
+      creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+      bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
     });
 
     newUser.save(function(err) {
