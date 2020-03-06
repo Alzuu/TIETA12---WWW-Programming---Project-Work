@@ -305,38 +305,40 @@ module.exports = {
                   });
                 }
               );
+            } else {
+              return res.status(401).json({ message: 'Unauthorized' });
             }
-            return res.status(401).json({ message: 'Unauthorized' });
-          }
-          // If item owner is shopkeeper
-          item.updateOne(
-            {
-              ownerIsCustomer: !req.userRole === UserRole.SHOPKEEPER,
-              onSale: false,
-              ownerId: req.params.userid,
-            },
-            { omitUndefined: true },
-            (error, raw) => {
-              if (error || raw.ok === 0) {
-                return res.status(400).json({ message: error });
+          } else {
+            // If item owner is shopkeeper
+            item.updateOne(
+              {
+                ownerIsCustomer: !req.userRole === UserRole.SHOPKEEPER,
+                onSale: false,
+                ownerId: req.params.userid,
+              },
+              { omitUndefined: true },
+              (error, raw) => {
+                if (error || raw.ok === 0) {
+                  return res.status(400).json({ message: error });
+                }
+                const { bankAccountId } = User.findById(item.ownerId);
+                BankAccount.findByIdAndUpdate(bankAccountId, {
+                  $inc: { balance: item.price },
+                });
+                Item.findById(req.params.id, (er, doc) => {
+                  const result = doc;
+                  result.links = itemToLinks(doc, currentURL);
+                  delItemFromUser(item._id, item.ownerId);
+                  addItemToUser(item._id, doc.ownerId);
+                  return res.json(result);
+                });
               }
-              const { bankAccountId } = User.findById(item.ownerId);
-              BankAccount.findByIdAndUpdate(bankAccountId, {
-                $inc: { balance: item.price },
-              });
-              Item.findById(req.params.id, (er, doc) => {
-                const result = doc;
-                result.links = itemToLinks(doc, currentURL);
-                delItemFromUser(item._id, item.ownerId);
-                addItemToUser(item._id, doc.ownerId);
-                return res.json(result);
-              });
-            }
-          );
+            );
+          }
         }
-      }
-      // If item is not on sale, check for admin role
-      if (req.userRole === UserRole.ADMIN) {
+      } else if (req.userRole === UserRole.ADMIN) {
+        // If item is not on sale, check for admin role
+
         const { userRole } = User.findById(req.params.userid);
         item.updateOne(
           {

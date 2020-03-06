@@ -48,6 +48,7 @@ describe('/api/items', () => {
   let customerToken;
   let shopkeeperId;
   let customerId;
+  let adminId;
 
   before((done) => {
     request = chai.request.agent(app);
@@ -65,7 +66,7 @@ describe('/api/items', () => {
         .post(registerUrl)
         .type('json')
         .send(newAdmin)
-        .then(() => {
+        .then((res) => {
           // Get JWT token
           request
             .post(loginUrl)
@@ -73,6 +74,7 @@ describe('/api/items', () => {
             .send(newAdmin)
             .then((response) => {
               adminToken = response.body.token;
+              adminId = res.body._id;
             });
         });
       await request
@@ -634,10 +636,65 @@ describe('/api/items', () => {
       };
       done();
     });
-    it('should require :userid to be userId or admin rights', () => {}); // TODO:
-    it("should transfer money to item sellers' bank account", () => {}); // TODO:
-    it("should change item's ownerId to :userid", () => {}); // TODO:
-    it("should remove item from previous owner's itemlist", () => {}); // TODO:
-    it("should add item to new owner's itemlist", () => {}); // TODO:
+    it('should require :userid to be userId or admin rights', () => {
+      request
+        .post(itemUrl)
+        .set('token', adminToken)
+        .type('json')
+        .send(payload)
+        .then((res) => {
+          request
+            .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
+            .set('token', customerToken)
+            .then((response) => {
+              expect(response.statusCode).to.equal(401);
+            });
+          request
+            .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
+            .set('token', shopkeeperToken)
+            .then((response) => {
+              expect(response.statusCode).to.equal(200);
+            });
+          request
+            .put(`${itemUrl}${res.body._id}/sell/${customerId}`)
+            .set('token', adminToken)
+            .then((response) => {
+              expect(response.statusCode).to.equal(200);
+            });
+        });
+    });
+    it('should require item to be on sale', () => {
+      payload.onSale = false;
+      request
+        .post(itemUrl)
+        .set('token', adminToken)
+        .type('json')
+        .send(payload)
+        .then((res) => {
+          request
+            .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
+            .set('token', shopkeeperToken)
+            .then((response) => {
+              expect(response.statusCode).to.equal(401);
+            });
+        });
+    });
+    it("should change item's ownerId to :userid", () => {
+      payload.onSale = true;
+      request
+        .post(itemUrl)
+        .set('token', adminToken)
+        .type('json')
+        .send(payload)
+        .then((res) => {
+          request
+            .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
+            .set('token', shopkeeperToken)
+            .then((response) => {
+              expect(response.statusCode).to.equal(200);
+              expect(response.body.ownerId).to.equal(shopkeeperId);
+            });
+        });
+    });
   });
 });
