@@ -42,6 +42,12 @@ function itemsToLinks(items, currentURL) {
   });
   return result;
 }
+function delItemFromUser(itemid, userid) {
+  User.findByIdAndUpdate(userid, { $pull: { items: itemid } }, () => {});
+}
+function addItemToUser(itemid, userid) {
+  User.findByIdAndUpdate(userid, { $push: { items: itemid } }, () => {});
+}
 module.exports = {
   /* List all items
    */
@@ -133,6 +139,7 @@ module.exports = {
         }
         const result = JSON.parse(JSON.stringify(item));
         result.links = itemToLinks(item, currentURL);
+        addItemToUser(item._id, item.ownerId);
         return res.json(result);
       });
     } else {
@@ -210,12 +217,14 @@ module.exports = {
           newData,
           { omitUndefined: true, runValidators: true },
           (error, raw) => {
-            if (error) {
+            if (error || raw.ok === 0) {
               return res.status(400).json({ message: error });
             }
             Item.findById(req.params.id, (er, doc) => {
               const result = doc;
               result.links = itemToLinks(doc, currentURL);
+              delItemFromUser(doc._id, item.ownerId);
+              addItemToUser(doc._id, doc.ownerId);
               return res.json(result);
             });
           }
@@ -240,6 +249,7 @@ module.exports = {
           if (error) {
             return res.status(400).json({ message: err });
           }
+          delItemFromUser(item._id, item.ownerId);
           return res.json(ditem);
         });
       } else {
@@ -276,10 +286,10 @@ module.exports = {
                 {
                   ownerIsCustomer: req.userRole === UserRole.ADMIN,
                   onSale: false,
-                  ownerId: req.params.userId,
+                  ownerId: req.params.userid,
                 },
                 (error, raw) => {
-                  if (error) {
+                  if (error || raw.ok === 0) {
                     return res.status(400).json({ message: error });
                   }
                   const { bankAccountId } = User.findById(item.ownerId);
@@ -289,6 +299,8 @@ module.exports = {
                   Item.findById(req.params.id, (er, doc) => {
                     const result = doc;
                     result.links = itemToLinks(doc, currentURL);
+                    delItemFromUser(item._id, item.ownerId);
+                    addItemToUser(item._id, doc.ownerId);
                     return res.json(result);
                   });
                 }
@@ -301,11 +313,11 @@ module.exports = {
             {
               ownerIsCustomer: !req.userRole === UserRole.SHOPKEEPER,
               onSale: false,
-              ownerId: req.params.userId,
+              ownerId: req.params.userid,
             },
             { omitUndefined: true },
             (error, raw) => {
-              if (error) {
+              if (error || raw.ok === 0) {
                 return res.status(400).json({ message: error });
               }
               const { bankAccountId } = User.findById(item.ownerId);
@@ -315,6 +327,8 @@ module.exports = {
               Item.findById(req.params.id, (er, doc) => {
                 const result = doc;
                 result.links = itemToLinks(doc, currentURL);
+                delItemFromUser(item._id, item.ownerId);
+                addItemToUser(item._id, doc.ownerId);
                 return res.json(result);
               });
             }
@@ -328,10 +342,11 @@ module.exports = {
           {
             ownerIsCustomer: !userRole === UserRole.SHOPKEEPER,
             onSale: false,
-            ownerId: req.params.userId,
+            ownerId: req.params.userid,
           },
           { omitUndefined: true },
           (error, raw) => {
+            console.log(raw);
             if (error) {
               return res.status(400).json({ message: error });
             }
@@ -342,12 +357,15 @@ module.exports = {
             Item.findById(req.params.id, (er, doc) => {
               const result = doc;
               result.links = itemToLinks(doc, currentURL);
+              delItemFromUser(item._id, item.ownerId);
+              addItemToUser(item._id, doc.ownerId);
               return res.json(result);
             });
           }
         );
+      } else {
+        return res.status(401).json({ message: 'Unauthorized' });
       }
-      return res.status(401).json({ message: 'Unauthorized' });
     });
   },
 };
