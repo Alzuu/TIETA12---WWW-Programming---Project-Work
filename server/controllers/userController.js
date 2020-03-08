@@ -46,6 +46,7 @@ exports.modify = (req, res, next) => {
 }
 
 exports.create = (req, res, next) => {
+  console.log("create user o/");
   var password = xssFilters.inHTMLData(req.body.password);
 
   bcrypt.hash(password, saltRounds, function(err, hash) {
@@ -100,8 +101,8 @@ exports.deleteOne = (req, res, next) => {
 
 exports.login = (req, res, next) => {
   User.findOne({ name: req.body.name }, function (err, user) {
-    if (err) return res.status(500).send('Error on the server.');
-    if (!user) return res.status(404).send('No user found.');
+    if (err) return res.status(500).send({ auth: false, token: null });
+    if (!user) return res.status(404).send({ auth: false, token: null });
 
     var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
@@ -110,12 +111,7 @@ exports.login = (req, res, next) => {
       expiresIn: 86400 // expires in 24 hours
     });
 
-    res.writeHead(200, {"Content-Type": "application/json"});
-    var json = JSON.stringify({ 
-      auth: true,
-      token,
-    });
-    res.end(json);
+    return res.status(200).send({ auth: true, token });
   });
 }
 
