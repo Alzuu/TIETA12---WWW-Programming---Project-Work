@@ -4,11 +4,16 @@ import { connect } from 'react-redux';
 import { Image } from 'react-bootstrap';
 
 const Header = (props) => {
+    const loggedInUserPanel = (userId, userName) => {
+        return(
+            <div>You are logged in as {userName}</div>
+        );
+    }
 console.log("phead rops.user");
 console.log(props.user);
     return (
             <div className='Header'>
-                {(props.user) && <div>You are logged in</div>}
+                {(props.user ? props.user.auth : false) && loggedInUserPanel(props.user.userId, props.user.userName)}
                 <br />
                 <Image src={require('./smile.PNG')} rounded />
                 <br />
@@ -30,7 +35,7 @@ console.log(props.user);
     const mapStateToProps = (state) => {
         return {
             user: state.user,
-            hasErrored: state.userHasErrored,
+            loginHasErrored: state.loginHasErrored,
             isLoading: state.userIsLoading
         };
     };
