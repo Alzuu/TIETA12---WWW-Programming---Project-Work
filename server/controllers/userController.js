@@ -7,6 +7,43 @@ const config = require('../config.js');
 var User = require('../models/User');
 const saltRounds = 12;
 
+
+function userToLinks(user, currentURL) {
+  const result = [
+    {
+      rel: 'self',
+      method: 'GET',
+      href: `${currentURL}/${user._id}`,
+      types: ['application/json'],
+    },
+    {
+      rel: 'self',
+      method: 'DELETE',
+      href: `${currentURL}/${user._id}`,
+      types: ['application/json'],
+    },
+    {
+      rel: 'self',
+      method: 'PUT',
+      href: `${currentURL}/${user._id}`,
+      types: ['application/json'],
+    },
+  ];
+  return result;
+}
+
+getCurrentUrl = req => (`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+
+usersToLinks = (users, currentURL) => {
+  const result = [];
+  users.forEach((user) => {
+    const userJson = JSON.parse(JSON.stringify(user));
+    userJson.links = userToLinks(user, currentURL);
+    result.push(userJson);
+  });
+  return result;
+}
+
 exports.list = (req, res, next) => {
   User.find(function(err, foundUsers) {
     if (err) {
@@ -14,7 +51,7 @@ exports.list = (req, res, next) => {
       return console.error(err);
     };
     res.status(200);
-    res.json(foundUsers);
+    res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
   });
 }
 

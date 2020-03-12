@@ -6,7 +6,15 @@ import { Image } from 'react-bootstrap';
 const Header = (props) => {
     const loggedInUserPanel = (userId, userName) => {
         return(
-            <div>You are logged in as {userName}</div>
+            <>
+                <div>You are logged in as {userName}</div>
+                <Link to={`/users/${userId}`}>
+                    <i>edit user information</i>
+                </Link>
+                <Link to={`/logout`}>
+                    <i>logout</i>
+                </Link>
+            </>
         );
     }
 console.log("phead rops.user");

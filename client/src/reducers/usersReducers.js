@@ -22,6 +22,8 @@ export function user(state = [], action) {
             return action.user;
         case 'USER_FETCH_DATA_FAILURE':
             return null;
+        case 'USER_HAS_LOGGED_OUT':
+            return null;
         default:
             return state;
     }

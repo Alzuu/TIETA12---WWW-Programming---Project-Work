@@ -25,6 +25,12 @@ export function userFetchDataSuccess(user) {
     };
 }
 
+export function userHasLoggedOut() {
+    return {
+        type: 'USER_HAS_LOGGED_OUT',
+    };
+}
+
 export function userFetchData(userName, password) {
     return (dispatch) => {
         dispatch(userIsLoading(true)); 
@@ -56,5 +62,11 @@ export function userFetchData(userName, password) {
     } catch (error) {
         console.log("error!");
     }
+    };
+}
+
+export function userLogout() {
+    return (dispatch) => {
+        dispatch(userHasLoggedOut(true)); 
     };
 }
