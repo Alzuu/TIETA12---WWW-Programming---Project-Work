@@ -14,6 +14,12 @@ export function itemsReducer(state = { items: [], customerItems: [] }, action) {
       return Object.assign({}, state, { item: action.json });
     case 'RECEIVE_NEW_ITEM':
       return Object.assign({}, state, { newItem: action.json });
+    case 'RECEIVE_DELETED_ITEM':
+      return Object.assign({}, state, { deletedItem: action.json });
+    case 'RECEIVE_EDIT_ITEM':
+      return Object.assign({}, state, { editItem: action.json });
+    case 'RECEIVE_UPDATE_ITEM':
+      return Object.assign({}, state, { editItem: action.json });
     case 'CONFIRM_PURCHASE':
       return Object.assign({}, state, { item: action.json });
     default:

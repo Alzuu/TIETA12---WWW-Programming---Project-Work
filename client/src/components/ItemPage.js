@@ -23,12 +23,19 @@ function ItemPage(props) {
   return (
     <div>
       <h2>Items for sale</h2>
-      <ItemList items={props.items} type="shopkeeper" />
+      <ItemList
+        items={props.items}
+        userId={props.userId ? props.userId : ''}
+        userRole={props.userRole ? props.userRole : 3}
+        type="shopkeeper"
+      />
     </div>
   );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.items,
+  userId: state.user.userId,
+  userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

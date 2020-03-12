@@ -12,6 +12,7 @@ import AllItemsPage from './components/AllItemsPage';
 import CustomerItemsPage from './components/CustomerItemsPage';
 import AddItemPage from './components/AddItemPage';
 import EditItemPage from './components/EditItemPage';
+import DeleteItemPage from './components/DeleteItemPage';
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
             component={ConfirmBuyPage}
           />
           <Route exact path="/items/add" component={AddItemPage} />
-          <Route exact path="/items/edit/:id" component={EditItemPage} />
+          <Route exact path="/items/:id/edit" component={EditItemPage} />
+          <Route exact path="/items/:id/delete" component={DeleteItemPage} />
         </Layout>
       </BrowserRouter>
     </div>

@@ -12,7 +12,7 @@ function ItemList(props) {
               <th>Item name</th>
               <th>Price</th>
               <th>Seller items</th>
-              <th>Buy item</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +42,22 @@ function ItemList(props) {
                 </td>
                 <td>
                   <Link to={'/items/' + item._id + '/buy'}>Buy item</Link>
+                  {item.ownerId === props.userId || props.userRole === 1 ? (
+                    <Link to={'/items/' + item._id + '/edit'}>
+                      <br />
+                      Edit item
+                    </Link>
+                  ) : (
+                    ''
+                  )}
+                  {item.ownerId === props.userId || props.userRole === 1 ? (
+                    <Link to={'/items/' + item._id + '/delete'}>
+                      <br />
+                      Delete item
+                    </Link>
+                  ) : (
+                    ''
+                  )}
                 </td>
               </tr>
             ))}

@@ -34,6 +34,24 @@ export function confirmPurchase(json) {
     json,
   };
 }
+export function receiveDeletedItem(json) {
+  return {
+    type: 'RECEIVE_DELETED_ITEM',
+    json,
+  };
+}
+export function receiveEditItem(json) {
+  return {
+    type: 'RECEIVE_EDIT_ITEM',
+    json,
+  };
+}
+export function receiveUpdateItem(json) {
+  return {
+    type: 'RECEIVE_UPDATE_ITEM',
+    json,
+  };
+}
 export function fetchShopkeeperItems() {
   return (dispatch) => {
     return fetch('/api/items/shopkeepers')
@@ -79,6 +97,15 @@ export function fetchItem(id, token) {
       });
   };
 }
+export function fetchEditItem(id, token) {
+  return (dispatch) => {
+    return fetch(`/api/items/${id}`, { headers: { token: token } })
+      .then((res) => res.json())
+      .then((json) => {
+        dispatch(receiveEditItem(json));
+      });
+  };
+}
 export function buyItem(id, token, userId) {
   return (dispatch) => {
     return fetch(`/api/items/${id}/sell/${userId}`, {
@@ -102,6 +129,32 @@ export function addItem(item, token) {
       .then((res) => res.json())
       .then((json) => {
         dispatch(receiveNewItem(json));
+      });
+  };
+}
+export function deleteItem(id, token) {
+  return (dispatch) => {
+    return fetch(`/api/items/${id}`, {
+      method: 'DELETE',
+      headers: { token: token },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        dispatch(receiveDeletedItem(json));
+      });
+  };
+}
+export function updateItem(id, item, token) {
+  return (dispatch) => {
+    return fetch(`/api/items/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', token: token },
+      body: JSON.stringify(item),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        dispatch(receiveUpdateItem(json));
       });
   };
 }

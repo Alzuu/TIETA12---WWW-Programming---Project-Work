@@ -30,13 +30,20 @@ function AllItemsPage(props) {
   return (
     <div>
       <h2>All items</h2>
-      <ItemList items={props.items} type="all" />
+      <ItemList
+        items={props.items}
+        userId={props.userId}
+        userRole={props.userRole}
+        type="all"
+      />
     </div>
   );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.allItems,
   token: state.user.token,
+  userId: state.user.userId,
+  userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

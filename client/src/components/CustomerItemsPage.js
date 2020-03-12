@@ -30,13 +30,20 @@ function CustomerItemsPage(props) {
   return (
     <div>
       <h2>Customer items for sale</h2>
-      <ItemList items={props.items} type="customer" />
+      <ItemList
+        items={props.items}
+        userId={props.userId}
+        userRole={props.userRole}
+        type="customer"
+      />
     </div>
   );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.customerItems,
   token: state.user.token,
+  userId: state.user.userId,
+  userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {
   return {
