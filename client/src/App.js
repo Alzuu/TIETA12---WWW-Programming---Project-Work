@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Route, BrowserRouter } from 'react-router-dom';
-import ItemPage from './components/ItemPage';
+import HomePage from './components/HomePage';
 import BuyItemPage from './components/BuyItemPage';
 import ConfirmBuyPage from './components/ConfirmBuyPage';
 import Layout from './components/Layout';
@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Layout>
-          <Route exact path="/" component={ItemPage} />
+          <Route exact path="/" component={HomePage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegistrationPage} />
           <Route exact path="/items" component={AllItemsPage} />

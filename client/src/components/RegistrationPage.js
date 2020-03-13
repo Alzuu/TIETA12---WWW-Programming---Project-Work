@@ -31,12 +31,10 @@ const RegistrationPage = (props) => {
         <div className="container">
             <h1>Registration Page</h1>
             <div>
-                {userName}
                 <input
                     type='text'
                     placeholder='Name'
                     onChange={event => setUserName(event.target.value)} />
-                {userName}
                 <input
                     type='password'
                     placeholder='Password'

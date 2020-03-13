@@ -1,7 +1,7 @@
-export function userHasErrored(bool) {
+export function userloginHasErrored(bool) {
     return {
         type: 'USER_HAS_ERRORED',
-        hasErrored: bool,
+        loginHasErrored: bool,
     };
 }
 
@@ -29,7 +29,8 @@ export function userFetchData(userName, password) {
     return (dispatch) => {
         dispatch(userIsLoading(true)); 
         
-        fetch('api/users/login', {
+        try {
+            fetch('http://localhost:3000/api/users/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -37,15 +38,23 @@ export function userFetchData(userName, password) {
             },
             body: JSON.stringify({name: userName, password: password}),
         })
-        .then(res => res.json())   
+        .then(res => res.json())
         .then((user) => {
-            if (user.auth === true) {
-                dispatch(userFetchDataSuccess(user));
-                dispatch(userHasErrored(false));
-            } else {
+            if (user === undefined) {
                 dispatch(userFetchDataFailure(user));
-                dispatch(userHasErrored(true));
+                dispatch(userloginHasErrored(true));
+            } else {
+                if (user.auth === true) {
+                    dispatch(userFetchDataSuccess(user));
+                    dispatch(userloginHasErrored(false));
+                } else {
+                    dispatch(userFetchDataFailure(user));
+                    dispatch(userloginHasErrored(true));
+                }
             }
         })
+    } catch (error) {
+        console.log("error!");
+    }
     };
 }

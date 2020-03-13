@@ -1,7 +1,7 @@
-export function userHasErrored(state = false, action) {
+export function userLoginHasErrored(state = false, action) {
     switch (action.type) {
         case 'USER_HAS_ERRORED':
-            return action.hasErrored;
+            return action.loginHasErrored;
         default:
             return state;
     }
