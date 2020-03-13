@@ -2,47 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchShopkeeperItems } from '../actions/items';
+import ItemList from './ItemList';
+import './ItemPage.css';
 
 function ItemPage(props) {
   function fetchItems() {
     props.fetchShopkeeperItems();
   }
-  console.log(props);
   useEffect(() => {
     fetchItems();
   }, []);
+  console.log(props.items);
+  if (!props.items) {
+    return (
+      <div>
+        <h2>Loading...</h2>
+      </div>
+    );
+  }
   return (
     <div>
       <h2>Items for sale</h2>
-      <table>
-        <tr>
-          <th>Picture</th>
-          <th>Item name</th>
-          <th>Price</th>
-          <th>Seller items</th>
-          <th>Buy item</th>
-        </tr>
-        {props.items.map((item) => (
-          <tr>
-            <td>
-              <img width="100px" src={'static/media/items/' + item.pictureId} />
-            </td>
-            <td>{item.name}</td>
-            <td>{item.price}</td>
-            <td>
-              <Link to={'/users/' + item.ownerId + '/items'}>Seller items</Link>
-            </td>
-            <td>
-              <Link to={'/items/' + item._id + '/buy'}>Buy item</Link>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <ItemList
+        items={props.items}
+        userId={props.userId ? props.userId : ''}
+        userRole={props.userRole ? props.userRole : 3}
+        type="shopkeeper"
+      />
     </div>
   );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.items,
+  userId: state.user.userId,
+  userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -153,6 +153,7 @@ exports.login = (req, res, next) => {
       token,
       userId: user._id,
       userName: user.name,
+      userRole: user.role
     });
   });
 }

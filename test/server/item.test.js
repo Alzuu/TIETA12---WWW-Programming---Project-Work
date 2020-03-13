@@ -101,6 +101,9 @@ describe('/api/items', () => {
                   ownerId: customerId,
                   ownerIsCustomer: false,
                   onSale: true,
+                })
+                .then(() => {
+                  console.log('Added item');
                 });
             });
         });
@@ -128,6 +131,9 @@ describe('/api/items', () => {
                   ownerId: shopkeeperId,
                   ownerIsCustomer: false,
                   onSale: true,
+                })
+                .then(() => {
+                  console.log('Added item.');
                 });
             });
         });
@@ -152,6 +158,7 @@ describe('/api/items', () => {
   describe('GET /api/items/shopkeepers', () => {
     it("should list shopkeepers' items without registering", () => {
       request.get(listShopkeepersItemsUrl).end((err, res) => {
+        console.log(res);
         expect(res.statusCode).to.equal(200);
       });
     });
