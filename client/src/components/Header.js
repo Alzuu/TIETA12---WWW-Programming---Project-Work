@@ -11,6 +11,7 @@ const Header = (props) => {
                 <Link to={`/users/${userId}`}>
                     <i>edit user information</i>
                 </Link>
+                <br />
                 <Link to={`/logout`}>
                     <i>logout</i>
                 </Link>
