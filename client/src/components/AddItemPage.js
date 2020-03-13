@@ -41,7 +41,7 @@ function AddItemPage(props) {
       form.append('name', name);
       form.append('price', price);
       form.append('ownerId', props.userId);
-      form.append('ownerIsCustomer', props.userRole === 3 ? true : false);
+      form.append('ownerIsCustomer', props.userRole === 2 ? false : true);
       form.append('onSale', onSale);
       if (file != null) {
         form.append('image', file);
