@@ -16,7 +16,6 @@ import AddItemPage from './components/AddItemPage';
 import EditItemPage from './components/EditItemPage';
 import DeleteItemPage from './components/DeleteItemPage';
 
-
 function App() {
   return (
     <div className="App">
@@ -25,7 +24,6 @@ function App() {
           <Route exact path="/" component={ItemPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/logout" component={LogoutPage} />
-          <Route path="/items/:id/buy" component={BuyItemPage} />
           <Route path="/register" component={RegistrationPage} />
           <Route path="/users/:id" component={UserPage} />
           <Route exact path="/items" component={AllItemsPage} />

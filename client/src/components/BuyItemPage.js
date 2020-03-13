@@ -42,12 +42,13 @@ function BuyItemPage(props) {
         </div>
       );
     }
+  } else {
+    return (
+      <div>
+        <h2>Loading item...</h2>
+      </div>
+    );
   }
-  return (
-    <div>
-      <h2>Loading item...</h2>
-    </div>
-  );
 }
 const mapStateToProps = (state) => ({
   item: state.itemsReducer.item,

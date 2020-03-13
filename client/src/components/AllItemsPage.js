@@ -12,32 +12,33 @@ function AllItemsPage(props) {
   useEffect(() => {
     fetchItems(props.token);
   }, []);
-  console.log(props.items);
   if (!props.items) {
     return (
       <div>
         <h2>Loading...</h2>
       </div>
     );
+  } else {
+    if (props.items && props.items.auth === false) {
+      return (
+        <div>
+          <h2>Please login as admin to view all items.</h2>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h2>All items</h2>
+          <ItemList
+            items={props.items}
+            userId={props.userId}
+            userRole={props.userRole}
+            type="all"
+          />
+        </div>
+      );
+    }
   }
-  if (props.items && props.items.auth === false) {
-    return (
-      <div>
-        <h2>Please login as admin to view all items.</h2>
-      </div>
-    );
-  }
-  return (
-    <div>
-      <h2>All items</h2>
-      <ItemList
-        items={props.items}
-        userId={props.userId}
-        userRole={props.userRole}
-        type="all"
-      />
-    </div>
-  );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.allItems,
