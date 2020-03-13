@@ -17,51 +17,78 @@ const Header = (props) => {
             </>
         );
     }
-console.log("phead rops.user");
-console.log(props.user);
-    return (
-            <div className='Header'>
-                {(props.user ? props.user.auth : false) && loggedInUserPanel(props.user.userId, props.user.userName)}
-                <br />
-                <Image src={require('./smile.PNG')} rounded />
-                <br />
-                <Link to={'/'}>
-                    <i>home</i>
-                </Link>
-                <br />
-                {props.user.userRole === 1 ? (
-        <Link to={'/items'}>
-          list all items
-          <br />
-        </Link>
-      ) : (
-        ''
-      )}
-      {props.user.userRole === 1 || props.user.userRole === 2 ? (
-        <Link to={'/items/customers'}>
-          list customer items
-          <br />
-        </Link>
-      ) : (
-        ''
-      )}
-      {props.user.userRole ? (
-        <Link to={'/items/add'}>
-          add new item
-          <br />
-        </Link>
-      ) : (
-        ''
-      )}
 
-                <Link to={'/login'}>
-                    <i>login</i>
-                </Link>
-                <br />
-                <Link to={'/register'}>
-                    <i>register</i>
-                </Link>
-            </div>
+    const renderLoggedInUser = (user) => {
+      return (
+        <div className='Header'>
+          {(props.user ? props.user.auth : false) && loggedInUserPanel(props.user.userId, props.user.userName)}
+            <br />
+            <Image src={require('./smile.PNG')} rounded />
+            <br />
+            <Link to={'/'}>
+                <i>home</i>
+            </Link>
+            <br />
+            {props.user.userRole === 1 ? (
+              <Link to={'/items'}>
+              list all items
+              <br />
+              </Link>
+              ) : (
+              ''
+              )}
+              {props.user.userRole === 1 || props.user.userRole === 2 ? (
+              <Link to={'/items/customers'}>
+              list customer items
+              <br />
+              </Link>
+              ) : (
+              ''
+              )}
+              {props.user.userRole ? (
+              <Link to={'/items/add'}>
+              add new item
+              <br />
+              </Link>
+              ) : (
+              ''
+              )}
+
+            <Link to={'/login'}>
+                <i>login</i>
+            </Link>
+            <br />
+            <Link to={'/register'}>
+                <i>register</i>
+            </Link>
+        </div>
+      );
+    }
+
+    const renderNonLoggedUser = (user) => {
+      return (
+        <div className='Header'>
+          {(props.user ? props.user.auth : false) && loggedInUserPanel(props.user.userId, props.user.userName)}
+            <br />
+            <Image src={require('./smile.PNG')} rounded />
+            <br />
+            <Link to={'/'}>
+                <i>home</i>
+            </Link>
+            <br />
+            <Link to={'/login'}>
+                <i>login</i>
+            </Link>
+            <br />
+            <Link to={'/register'}>
+                <i>register</i>
+            </Link>
+        </div>
+      );
+    }
+
+    return (
+      props.user ? renderLoggedInUser(props.user) :  renderNonLoggedUser(props.user)
         );
     }
 
