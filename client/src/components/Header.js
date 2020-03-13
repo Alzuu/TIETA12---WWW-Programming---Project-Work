@@ -21,6 +21,31 @@ console.log(props.user);
                     <i>home</i>
                 </Link>
                 <br />
+                {props.user.userRole === 1 ? (
+        <Link to={'/items'}>
+          list all items
+          <br />
+        </Link>
+      ) : (
+        ''
+      )}
+      {props.user.userRole === 1 || props.user.userRole === 2 ? (
+        <Link to={'/items/customers'}>
+          list customer items
+          <br />
+        </Link>
+      ) : (
+        ''
+      )}
+      {props.user.userRole ? (
+        <Link to={'/items/add'}>
+          add new item
+          <br />
+        </Link>
+      ) : (
+        ''
+      )}
+
                 <Link to={'/login'}>
                     <i>login</i>
                 </Link>
@@ -41,3 +66,4 @@ console.log(props.user);
     };
     
     export default connect(mapStateToProps)(Header)
+
