@@ -12,32 +12,33 @@ function CustomerItemsPage(props) {
   useEffect(() => {
     fetchItems(props.token);
   }, []);
-  console.log(props.items);
   if (!props.items) {
     return (
       <div>
         <h2>Loading...</h2>
       </div>
     );
+  } else {
+    if (props.items && props.items.auth === false) {
+      return (
+        <div>
+          <h2>Please login as shopkeeper or admin to view customer items.</h2>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h2>Customer items for sale</h2>
+          <ItemList
+            items={props.items}
+            userId={props.userId}
+            userRole={props.userRole}
+            type="customer"
+          />
+        </div>
+      );
+    }
   }
-  if (props.items && props.items.auth === false) {
-    return (
-      <div>
-        <h2>Please login as shopkeeper or admin to view customer items.</h2>
-      </div>
-    );
-  }
-  return (
-    <div>
-      <h2>Customer items for sale</h2>
-      <ItemList
-        items={props.items}
-        userId={props.userId}
-        userRole={props.userRole}
-        type="customer"
-      />
-    </div>
-  );
 }
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.customerItems,

@@ -92,7 +92,6 @@ export function fetchItem(id, token) {
     return fetch(`/api/items/${id}`, { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         dispatch(receiveItem(json));
       });
   };

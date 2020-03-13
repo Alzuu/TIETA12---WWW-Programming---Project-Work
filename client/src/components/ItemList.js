@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function ItemList(props) {
-  if (props.items.auth !== false) {
+  if (props.items.length > 0) {
     return (
       <div className="itemList">
         <table>
@@ -68,7 +68,7 @@ function ItemList(props) {
   } else {
     return (
       <div>
-        <h2>Loading...</h2>
+        <h2>No items.</h2>
       </div>
     );
   }
