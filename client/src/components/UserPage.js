@@ -28,6 +28,9 @@ const UserPage = (props) => {
         })
         */
     }
+
+    console.log("UserPsge!");
+    console.log(props.user.userName);
     
     return (
         <div className="container">
@@ -35,7 +38,7 @@ const UserPage = (props) => {
             <div>
                 <input
                     type='text'
-                    placeholder='Name'
+                    placeholder={props.user.userName}
                     onChange={event => setUserName(event.target.value)} />
                 <input
                     type='text'

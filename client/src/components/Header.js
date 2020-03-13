@@ -54,14 +54,6 @@ const Header = (props) => {
               ) : (
               ''
               )}
-
-            <Link to={'/login'}>
-                <i>login</i>
-            </Link>
-            <br />
-            <Link to={'/register'}>
-                <i>register</i>
-            </Link>
         </div>
       );
     }
