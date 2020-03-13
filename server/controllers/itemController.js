@@ -49,6 +49,9 @@ function addItemToUser(itemid, userid) {
   User.findByIdAndUpdate(userid, { $push: { items: itemid } }, () => {});
 }
 module.exports = {
+   exportItemsToLinks(items, currentURL) {
+      return itemsToLinks(items,currentURL);
+   },
   /* List all items
    */
   listAll(req, res) {
