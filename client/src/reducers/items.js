@@ -10,6 +10,8 @@ export function itemsReducer(state = { items: [], customerItems: [] }, action) {
       });
     case 'RECEIVE_ALL_ITEMS':
       return Object.assign({}, state, { allItems: action.json });
+    case 'RECEIVE_USER_ITEMS':
+      return Object.assign({}, state, { userItems: action.json });
     case 'RECEIVE_ITEM':
       return Object.assign({}, state, { item: action.json });
     case 'RECEIVE_NEW_ITEM':
