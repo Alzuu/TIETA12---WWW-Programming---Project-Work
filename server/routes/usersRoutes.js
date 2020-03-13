@@ -42,8 +42,6 @@ router.post('/logout', (req, res, next) => {
     next();
 }, userController.logout);
 
-/*
-router.get('/:id/items');
-*/
+router.get('/:id/items', verifyToken, userController.listItems);
 
 module.exports = router;
