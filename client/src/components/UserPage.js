@@ -38,11 +38,11 @@ const UserPage = (props) => {
             <div>
                 <input
                     type='text'
-                    placeholder={props.user.userName}
+                    defaultValue={props.user.userName}
                     onChange={event => setUserName(event.target.value)} />
                 <input
                     type='text'
-                    placeholder='Role'
+                    defaultValue={props.user.userRole}
                     onChange={event => setUserRole(event.target.value)} />
                 <button onClick={editUser}>Edit</button>                     
             </div>
