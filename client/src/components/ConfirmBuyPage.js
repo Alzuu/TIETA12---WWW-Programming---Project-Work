@@ -67,7 +67,7 @@ function ConfirmBuyPage(props) {
 const mapStateToProps = (state) => ({
   item: state.itemsReducer.item,
   token: state.user.token,
-  userId: state.user.userId,
+  userId: state.user.id,
 });
 const mapDispatchToProps = (dispatch) => {
   return {
