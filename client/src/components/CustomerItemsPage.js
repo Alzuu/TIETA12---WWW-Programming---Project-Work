@@ -43,7 +43,7 @@ function CustomerItemsPage(props) {
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.customerItems,
   token: state.user.token,
-  userId: state.user.userId,
+  userId: state.user.id,
   userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {

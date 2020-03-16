@@ -1,13 +1,13 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
-import { userFetchData, userloginHasErrored } from '../actions/usersActions';
+import { userFetchData, userFetchHasErrored } from '../actions/usersActions';
 
 const LoginPage = (props) => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        props.userloginHasErrored(false);
+        props.userFetchHasErrored(false);
       }, []);
 
     const login = () => {
@@ -46,7 +46,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: (userName, password) => dispatch(userFetchData(userName, password)),
-        userloginHasErrored: (loginHasErrored) => dispatch(userloginHasErrored(loginHasErrored))
+        userFetchHasErrored: (loginHasErrored) => dispatch(userFetchHasErrored(loginHasErrored))
     };
 };
 
