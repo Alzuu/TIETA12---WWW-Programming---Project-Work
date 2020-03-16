@@ -1,4 +1,4 @@
-export function userloginHasErrored(bool) {
+export function userFetchHasErrored(bool) {
     return {
         type: 'USER_HAS_ERRORED',
         loginHasErrored: bool,
@@ -51,14 +51,14 @@ export function userFetchData(userName, password) {
         .then((user) => {
             if (user === undefined) {
                 dispatch(userFetchDataFailure(user));
-                dispatch(userloginHasErrored(true));
+                dispatch(userFetchHasErrored(true));
             } else {
                 if (user.auth === true) {
                     dispatch(userFetchDataSuccess(user));
-                    dispatch(userloginHasErrored(false));
+                    dispatch(userFetchHasErrored(false));
                 } else {
                     dispatch(userFetchDataFailure(user));
-                    dispatch(userloginHasErrored(true));
+                    dispatch(userFetchHasErrored(true));
                 }
             }
         })
@@ -91,14 +91,14 @@ export function userModify(user) {
         .then((user) => {
             if (user === undefined) {
                 dispatch(userFetchDataFailure(user));
-                dispatch(userloginHasErrored(true));
+                dispatch(userFetchHasErrored(true));
             } else {
                 if (user.auth === true) {
                     dispatch(userFetchDataSuccess(user));
-                    dispatch(userloginHasErrored(false));
+                    dispatch(userFetchHasErrored(false));
                 } else {
                     dispatch(userFetchDataFailure(user));
-                    dispatch(userloginHasErrored(true));
+                    dispatch(userFetchHasErrored(true));
                 }
             }
         })

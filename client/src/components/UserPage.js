@@ -11,6 +11,8 @@ import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
 const UserPage = (props) => {
+  console.log("user page o/");
+  console.log(props.user);
     const [selectedRole, setSelectedRole] = useState('');
 
     useEffect(() => {
@@ -50,16 +52,17 @@ const UserPage = (props) => {
     })
   )
 
-  const modify = (user) => {
+  const setNewValuesToUser = (user) => {
     const modifiedUser = {
       ...user,
       id: props.user.id,
       token: props.user.token,
       role: selectedRole.value,
     }
-    console.log("MOD:");
+    console.log("UserPage.js setNewValuesToUser:");
     console.log(modifiedUser);
     props.modify(modifiedUser);
+    setSelectedRole(selectedRole);
   }
 
   const renderRoleSelection = () => {
@@ -80,13 +83,13 @@ const UserPage = (props) => {
   );
 
   return (
-    <div className="addGameForm">
+    <>
       <Formik
         validationSchema={getValidationSchema}
         initialValues={getInitialValuesForForm()}
         onSubmit={(values, actions) => {
             actions.setSubmitting(false);
-            modify(values);
+            setNewValuesToUser(values);
         }}
         render={({ values, touched, errors, dirty, isSubmitting }) => (
           <Form>
@@ -102,7 +105,7 @@ const UserPage = (props) => {
           </Form>
         )}
       />
-    </div>
+    </>
   )
 }
 
