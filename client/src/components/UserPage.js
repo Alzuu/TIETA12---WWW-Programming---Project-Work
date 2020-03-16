@@ -1,12 +1,13 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import CreditCard from './CreditCard';
 
 const UserPage = (props) => {
-    const [userName, setUserName] = useState('');
-    const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
 
-    const editUser = () => {
-      /*
+  const editUser = () => {
+    /*
         fetch('http://localhost:3000/api/users', {
             method: 'POST',
             headers: {
@@ -27,32 +28,36 @@ const UserPage = (props) => {
             console.log(error)
         })
         */
-    }
+  };
 
-    console.log("UserPsge!");
-    console.log(props.user.userName);
-    
-    return (
-        <div className="container">
-            <h1>User Page</h1>
-            <div>
-                <input
-                    type='text'
-                    defaultValue={props.user.userName}
-                    onChange={event => setUserName(event.target.value)} />
-                <input
-                    type='text'
-                    defaultValue={props.user.userRole}
-                    onChange={event => setUserRole(event.target.value)} />
-                <button onClick={editUser}>Edit</button>                     
-            </div>
-        </div>
-    );
-}
+  console.log('UserPsge!');
+  console.log(props.user.userName);
+
+  return (
+    <div className="container">
+      <h1>User Page</h1>
+      <div>
+        <input
+          type="text"
+          defaultValue={props.user.userName}
+          onChange={(event) => setUserName(event.target.value)}
+        />
+        <input
+          type="text"
+          defaultValue={props.user.userRole}
+          onChange={(event) => setUserRole(event.target.value)}
+        />
+        <button onClick={editUser}>Edit</button>
+      </div>
+      <br />
+      <CreditCard id={props.user.creditCardId} />
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
-      user: state.user,
+    user: state.user,
   };
 };
 /*
@@ -63,4 +68,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 */
-export default connect(mapStateToProps)(UserPage)
+export default connect(mapStateToProps)(UserPage);
