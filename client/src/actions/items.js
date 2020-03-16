@@ -16,6 +16,12 @@ export function receiveAllItems(json) {
     json,
   };
 }
+export function receiveUserItems(json) {
+  return {
+    type: 'RECEIVE_USER_ITEMS',
+    json,
+  };
+}
 export function receiveItem(json) {
   return {
     type: 'RECEIVE_ITEM',
@@ -87,12 +93,20 @@ export function fetchAllItems(token) {
       });
   };
 }
+export function fetchUserItems(id, token) {
+  return (dispatch) => {
+    return fetch(`/api/users/${id}/items`, { headers: { token: token } })
+      .then((res) => res.json())
+      .then((json) => {
+        dispatch(receiveUserItems(json));
+      });
+  };
+}
 export function fetchItem(id, token) {
   return (dispatch) => {
     return fetch(`/api/items/${id}`, { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         dispatch(receiveItem(json));
       });
   };

@@ -49,6 +49,9 @@ function addItemToUser(itemid, userid) {
   User.findByIdAndUpdate(userid, { $push: { items: itemid } }, () => {});
 }
 module.exports = {
+  exportItemsToLinks(items, currentURL) {
+    return itemsToLinks(items, currentURL);
+  },
   /* List all items
    */
   listAll(req, res) {
@@ -161,7 +164,8 @@ module.exports = {
         // Check for shopkeeper/admin role
         if (
           req.userRole === UserRole.ADMIN ||
-          req.userRole === UserRole.SHOPKEEPER
+          req.userRole === UserRole.SHOPKEEPER ||
+          req.userId === item.ownerId
         ) {
           const result = JSON.parse(JSON.stringify(item));
           result.links = itemToLinks(item, currentURL);

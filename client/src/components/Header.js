@@ -34,6 +34,7 @@ const Header = (props) => {
       {renderLink('/', 'home')}
       {userIsAdmin && renderLink('/items', 'list all items')}
       {(userIsAdmin || userIsShopkeeper) && renderLink('/items/customers', 'list customer items')}
+      {renderLink(`/users/${props.user.userId}/items`,'list own items')}
       {props.user.userRole && renderLink('/items/add', 'add new item')}
     </div>
   );

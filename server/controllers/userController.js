@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken');
 const xssFilters = require('xss-filters');
 
 const config = require('../config.js');
-
+const Item = require('../models/Item');
+const UserRole = require('../models/UserRole');
+const { exportItemsToLinks } = require('./itemController');
 var User = require('../models/User');
 const saltRounds = 12;
 
@@ -160,4 +162,33 @@ exports.login = (req, res, next) => {
 
 exports.logout = (req, res, next) => {
   res.status(200).send({ auth: false, token: null });
+}
+exports.listItems = (req,res) => {
+   User.findById(req.params.id, (err,user) => {
+      if (err) {
+         return res.status(400).json({ message: err });
+      }
+      if (!user) {
+         return res.status(404).json({ message: 'No user found!' });
+      }
+      const isOwner = req.userId === req.params.id || req.userRole === UserRole.ADMIN;
+      Item.find({ ownerId: req.params.id }, (err,items) => {
+         if (err) {
+            return res.status(400).json({ message: err });
+         }
+         if (!items || items.length === 0) {
+            return res.status(404).json({ message: 'No items found!' });
+         }
+         const currentURL = `${req.protocol}://${req.get('host')}${
+         req.originalUrl
+         }`;
+         let newItems = items;
+         if (!isOwner) {
+            newItems = items.filter(item => item.onSale === true);
+         }
+         const result = exportItemsToLinks(newItems, currentURL);
+         return res.json(result);
+      });
+
+   });
 }

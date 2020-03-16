@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchAllItems } from '../actions/items';
+import { fetchUserItems } from '../actions/items';
 import ItemList from './ItemList';
 import './ItemPage.css';
 
-function AllItemsPage(props) {
-  function fetchItems(token) {
-    props.fetchAllItems(token);
+function UserItemsPage(props) {
+  function fetchItems(id, token) {
+    props.fetchUserItems(id, token);
   }
   useEffect(() => {
-    fetchItems(props.token);
+    fetchItems(props.match.params.id, props.token);
   }, []);
   if (!props.items) {
     return (
@@ -22,18 +22,18 @@ function AllItemsPage(props) {
     if (props.items && props.items.auth === false) {
       return (
         <div>
-          <h2>Please login as admin to view all items.</h2>
+          <h2>Please login to view users items.</h2>
         </div>
       );
     } else {
       return (
         <div>
-          <h2>All items</h2>
+          <h2>User {props.match.params.id} items</h2>
           <ItemList
             items={props.items}
             userId={props.userId}
             userRole={props.userRole}
-            type="all"
+            type="user"
           />
         </div>
       );
@@ -41,14 +41,14 @@ function AllItemsPage(props) {
   }
 }
 const mapStateToProps = (state) => ({
-  items: state.itemsReducer.allItems,
+  items: state.itemsReducer.userItems,
   token: state.user.token,
   userId: state.user.userId,
   userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllItems: (token) => dispatch(fetchAllItems(token)),
+    fetchUserItems: (id, token) => dispatch(fetchUserItems(id, token)),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(AllItemsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(UserItemsPage);
