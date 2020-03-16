@@ -25,11 +25,19 @@ export function receiveUpdatedBankAccount(json) {
 
 export function fetchBankAccount(id, token) {
   return (dispatch) => {
-    return fetch(`/api/bankaccounts/${id}`, { headers: { token: token } })
+    return fetch(`/api/users/${id}`, { headers: { token } })
       .then((res) => res.json())
       .then((json) => {
-        dispatch(receiveBankAccount(json));
-      });
+        const bankAccountId = json.bankAccountId;
+        return fetch(`/api/bankaccounts/${bankAccountId}`, {
+          headers: { token },
+        });
+      })
+      .then((res) => {
+        res.json();
+      })
+      .then((json) => dispatch(receiveBankAccount(json)))
+      .catch((error) => console.log('Request failed', error));
   };
 }
 

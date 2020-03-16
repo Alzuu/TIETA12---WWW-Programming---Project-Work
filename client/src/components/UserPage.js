@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom'
 
 const UserPage = (props) => {
     const [userName, setUserName] = useState('');
@@ -41,7 +42,8 @@ const UserPage = (props) => {
                     type='text'
                     placeholder='Role'
                     onChange={event => setUserRole(event.target.value)} />
-                <button onClick={editUser}>Edit</button>                     
+                <button onClick={editUser}>Edit</button>
+                <Link to={`/users/${props.user.userId}/payment-info`}>Payment Information</Link>                     
             </div>
         </div>
     );

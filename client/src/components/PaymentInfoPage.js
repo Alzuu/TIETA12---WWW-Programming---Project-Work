@@ -5,15 +5,34 @@ import { fetchBankAccount } from '../actions/bankAccounts';
 import BankAccount from './BankAccount';
 
 function PaymentInfoPage(props) {
+  function fetchBA(userId, token) {
+    props.fetchBankAccount(userId, token);
+  }
   useEffect(() => {
-    props.fetchBankAccount();
+    fetchBA(props.userId, props.token);
   }, []);
 
-  return <BankAccount bankAccount={props.bankAccount} />;
+  return (
+    <BankAccount
+      bankAccount={props.bankAccount}
+      userId={props.userId}
+      userRole={props.userRole}
+    />
+  );
 }
 
 const mapStateToProps = (state) => ({
-  bankAccount: state.user.bankAccount,
+  bankAccount: state.bankAccountsReducer.bankAccount,
+  token: state.user.token,
+  userId: state.user.userId,
+  userRole: state.user.userRole,
 });
 
-const mapDispatchToProps = (dispatch) => {};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchBankAccount: (userId, token) =>
+      dispatch(fetchBankAccount(userId, token)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfoPage);

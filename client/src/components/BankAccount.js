@@ -7,34 +7,11 @@ import {
 } from '../actions/bankAccounts';
 
 function BankAccount(props) {
-  const [toggle, setToggle] = useState(false);
-
   return (
-    <form encType="application/json" onSubmit={handleSubmit}>
-      <label>
-        Bank account:
-        <input
-          type="text"
-          name="bankAccount"
-          value={props.bankAccount}
-          disabled={!toggle}
-        />
-      </label>
-      <label>
-        Edit:
-        <input
-          type="checkbox"
-          name="editBankAccount"
-          onChange={(e) => setToggle(e.target.checked)}
-        />
-      </label>
-      {/* <input
-        type="button"
-        name="deleteBankAccount"
-        value="Delete"
-        onClick={handleDelete}
-      /> */}
-    </form>
+    <>
+      <h2>Bank account: {props.bankAccount.number}</h2>
+      <h2>Balance: {props.bankAccount.balance}</h2>
+    </>
   );
 }
 export default BankAccount;
