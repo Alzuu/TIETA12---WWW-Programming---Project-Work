@@ -78,9 +78,9 @@ exports.modify = (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, {
     name: newName,
     role: newRole,
-    // creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
-    // bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
-  }, (err, user) => {    
+    creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+    bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
+  },{omitUndefined: true, new: true}, (err, user) => {    
     if (err) {
       res.sendStatus(400);
       return console.error(err);
@@ -169,6 +169,9 @@ exports.login = (req, res, next) => {
       id: user._id,
       name: user.name,
       role: user.role
+
+      creditCardId: user.creditCardId,
+      bankAccountId: user.bankAccountId
     });
   });
 }

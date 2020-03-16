@@ -5,7 +5,8 @@ import { Formik, Form, Field } from 'formik'
 import isEmpty from 'lodash/isEmpty'
 import Select from 'react-select';
 import * as Yup from 'yup';
-
+import {Link} from 'react-router-dom'
+import CreditCard from './CreditCard';
 import { userModify } from '../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
@@ -105,6 +106,8 @@ const UserPage = (props) => {
           </Form>
         )}
       />
+      <Link to={`/users/${props.user.userId}/payment-info`}>Payment Information</Link>
+      <CreditCard id={props.user.creditCardId} />
     </>
   )
 }
@@ -122,6 +125,7 @@ const mapDispatchToProps = (dispatch) => {
     modify: (user) => dispatch(userModify(user)),
   };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage)
 /*
