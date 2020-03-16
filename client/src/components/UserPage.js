@@ -29,6 +29,9 @@ const UserPage = (props) => {
         })
         */
     }
+
+    console.log("UserPsge!");
+    console.log(props.user.userName);
     
     return (
         <div className="container">
@@ -36,11 +39,11 @@ const UserPage = (props) => {
             <div>
                 <input
                     type='text'
-                    placeholder='Name'
+                    defaultValue={props.user.userName}
                     onChange={event => setUserName(event.target.value)} />
                 <input
                     type='text'
-                    placeholder='Role'
+                    defaultValue={props.user.userRole}
                     onChange={event => setUserRole(event.target.value)} />
                 <button onClick={editUser}>Edit</button>
                 <Link to={`/users/${props.user.userId}/payment-info`}>Payment Information</Link>                     
