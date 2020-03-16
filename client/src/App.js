@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 import LoginPage from './components/LoginPage';
 import LogoutPage from './components/LogoutPage';
 import RegistrationPage from './components/RegistrationPage';
+import HomePage from './components/HomePage';
 import UserPage from './components/UserPage';
 import AllItemsPage from './components/AllItemsPage';
 import CustomerItemsPage from './components/CustomerItemsPage';
@@ -22,7 +23,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Layout>
-          <Route exact path="/" component={ItemPage} />
+          <Route exact path="/" component={HomePage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/logout" component={LogoutPage} />
           <Route path="/register" component={RegistrationPage} />

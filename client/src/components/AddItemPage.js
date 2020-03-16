@@ -140,7 +140,7 @@ function AddItemPage(props) {
 const mapStateToProps = (state) => ({
   item: state.itemsReducer.newItem,
   token: state.user.token,
-  userId: state.user.userId,
+  userId: state.user.id,
   userRole: state.user.userRole,
 });
 const mapDispatchToProps = (dispatch) => {

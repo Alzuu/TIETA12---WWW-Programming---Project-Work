@@ -69,18 +69,30 @@ exports.one = (req, res, next) => {
 };
 
 exports.modify = (req, res, next) => {
+  console.log("modify user o/");
+  console.log(req.body);
+  console.log(req.params.id);
+  const newName = xssFilters.inHTMLData(req.body.name);
+  const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
+
   User.findByIdAndUpdate(req.params.id, {
-    name: xssFilters.inHTMLData(req.body.name),
-    role: parseInt(xssFilters.inHTMLData(req.body.role)),
-    creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
-    bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
+    name: newName,
+    role: newRole,
+    // creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+    // bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
   }, (err, user) => {    
     if (err) {
       res.sendStatus(400);
       return console.error(err);
     };
-    res.status(200);
-    res.json(user);
+
+    res.status(200).send({
+      auth: true,
+      token: req.headers['token'],
+      id: user._id,
+      name: newName,
+      role: newRole,
+    });
   });
 }
 
@@ -139,6 +151,7 @@ exports.deleteOne = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
+  console.log("login user o/");
   User.findOne({ name: req.body.name }, function (err, user) {
     if (err) return res.status(500).send({ auth: false, token: null });
     if (!user) return res.status(404).send({ auth: false, token: null });
@@ -153,9 +166,9 @@ exports.login = (req, res, next) => {
     return res.status(200).send({
       auth: true,
       token,
-      userId: user._id,
-      userName: user.name,
-      userRole: user.role
+      id: user._id,
+      name: user.name,
+      role: user.role
     });
   });
 }
@@ -163,6 +176,7 @@ exports.login = (req, res, next) => {
 exports.logout = (req, res, next) => {
   res.status(200).send({ auth: false, token: null });
 }
+
 exports.listItems = (req,res) => {
    User.findById(req.params.id, (err,user) => {
       if (err) {
