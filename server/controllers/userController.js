@@ -168,8 +168,7 @@ exports.login = (req, res, next) => {
       token,
       id: user._id,
       name: user.name,
-      role: user.role
-
+      role: user.role,
       creditCardId: user.creditCardId,
       bankAccountId: user.bankAccountId
     });

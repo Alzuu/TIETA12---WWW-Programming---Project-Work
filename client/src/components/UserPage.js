@@ -12,8 +12,6 @@ import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
 const UserPage = (props) => {
-  console.log("user page o/");
-  console.log(props.user);
     const [selectedRole, setSelectedRole] = useState('');
 
     useEffect(() => {
@@ -21,9 +19,9 @@ const UserPage = (props) => {
       }, []);
 
     const getRoleSelectionOptions = [
-        { value: 1, label: 'Admin' },
-        { value: 2, label: 'Shopkeeper' },
-        { value: 3, label: 'Customer' },
+        { value: 0, label: 'Admin' },
+        { value: 1, label: 'Shopkeeper' },
+        { value: 2, label: 'Customer' },
     ];
 
     const getDefaultSelectRole = (
