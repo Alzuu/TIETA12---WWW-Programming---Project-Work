@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom'
 import CreditCard from './CreditCard';
 
 const UserPage = (props) => {
@@ -28,7 +29,7 @@ const UserPage = (props) => {
             console.log(error)
         })
         */
-  };
+  
 
   console.log('UserPsge!');
   console.log(props.user.userName);
@@ -50,10 +51,12 @@ const UserPage = (props) => {
         <button onClick={editUser}>Edit</button>
       </div>
       <br />
+      <Link to={`/users/${props.user.userId}/payment-info`}>Payment Information</Link>
       <CreditCard id={props.user.creditCardId} />
     </div>
   );
 };
+
 
 const mapStateToProps = (state) => {
   return {
