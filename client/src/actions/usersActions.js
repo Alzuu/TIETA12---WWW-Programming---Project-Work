@@ -108,6 +108,39 @@ export function userModify(user) {
     };
 }
 
+export function userAdd(user) {
+    console.log("userAdd o/");
+    console.log(user);
+    return (dispatch) => {
+        dispatch(userIsLoading(true)); 
+        
+        try {
+            fetch('api/users', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  name: user.name,
+                  role: user.role,
+                  password: user.password,
+                  creditCardId: '123',
+                  bankAccountId: '456',
+                }),
+              })
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+    } catch (error) {
+        console.log("error!");
+    }
+    };
+}
+
 
 export function userLogout() {
     return (dispatch) => {

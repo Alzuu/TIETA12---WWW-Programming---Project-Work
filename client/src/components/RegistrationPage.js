@@ -1,31 +1,18 @@
 import React, { Component, useState } from 'react';
+import { connect } from 'react-redux';
+import { userAdd } from '../actions/usersActions';
 
 const RegistrationPage = (props) => {
-  const [userName, setUserName] = useState('');
-  const [userRole, setUserRole] = useState('');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('');
   const [password, setPassword] = useState('');
 
   const register = () => {
-    fetch('api/users', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: userName,
-        role: userRole,
-        password: password,
-        creditCardId: '123',
-        bankAccountId: '456',
-      }),
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    props.register({
+      name,
+      password,
+      role,
+    });
   };
 
   return (
@@ -35,7 +22,7 @@ const RegistrationPage = (props) => {
         <input
           type="text"
           placeholder="Name"
-          onChange={(event) => setUserName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
         />
         <input
           type="password"
@@ -45,7 +32,7 @@ const RegistrationPage = (props) => {
         <input
           type="text"
           placeholder="Role"
-          onChange={(event) => setUserRole(event.target.value)}
+          onChange={(event) => setRole(event.target.value)}
         />
         <button onClick={register}>Register</button>
       </div>
@@ -53,4 +40,18 @@ const RegistrationPage = (props) => {
   );
 };
 
-export default RegistrationPage;
+const mapStateToProps = (state) => {
+  return {
+      user: state.user,
+      loginHasErrored: state.userLoginHasErrored,
+      isLoading: state.userIsLoading
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+      register: (user) => dispatch(userAdd(user)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationPage)
