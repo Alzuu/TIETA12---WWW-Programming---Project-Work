@@ -74,7 +74,7 @@ exports.modify = (req, res, next) => {
     role: parseInt(xssFilters.inHTMLData(req.body.role)),
     creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
     bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId)
-  }, (err, user) => {    
+  },{omitUndefined: true, new: true}, (err, user) => {    
     if (err) {
       res.sendStatus(400);
       return console.error(err);
@@ -155,7 +155,9 @@ exports.login = (req, res, next) => {
       token,
       userId: user._id,
       userName: user.name,
-      userRole: user.role
+      userRole: user.role,
+      creditCardId: user.creditCardId,
+      bankAccountId: user.bankAccountId
     });
   });
 }

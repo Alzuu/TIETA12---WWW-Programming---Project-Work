@@ -17,6 +17,9 @@ import EditItemPage from './components/EditItemPage';
 import DeleteItemPage from './components/DeleteItemPage';
 import UserItemsPage from './components/UserItemsPage';
 import PaymentInfoPage from './components/PaymentInfoPage';
+import ListCreditCardsPage from './components/ListCreditCardsPage';
+import CreditCardAdmin from './components/CreditCardAdmin';
+
 
 function App() {
   return (
@@ -45,6 +48,12 @@ function App() {
           <Route exact path="/items/add" component={AddItemPage} />
           <Route exact path="/items/:id/edit" component={EditItemPage} />
           <Route exact path="/items/:id/delete" component={DeleteItemPage} />
+          <Route exact path="/creditcards" component={ListCreditCardsPage} />
+          <Route
+            exact
+            path="/creditcards/:cardid"
+            component={CreditCardAdmin}
+          />
         </Layout>
       </BrowserRouter>
     </div>
