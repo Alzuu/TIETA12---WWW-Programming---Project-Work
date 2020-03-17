@@ -169,64 +169,72 @@ Connections
 
 Here are all API routes. Payload still to be designed.
 
-| Http Method | Route                       | Payload                                                                              |                             Description |
-| ----------- | --------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------: |
-| GET         | /api/users                  | -                                                                                    |                           Get all users |
-| POST        | /api/users                  | payload                                                                              |                       Register new user |
-| GET         | /api/users/:id              | -                                                                                    |                       Get user with :id |
-| PUT         | /api/users/:id              | payload                                                                              |                    Update user with :id |
-| DELETE      | /api/users/:id              | -                                                                                    |                    Delete user with :id |
-| GET         | /api/users/:id/items        | -                                                                                    |         Get users listed items with :id |
-| POST        | /api/users/login            | payload                                                                              |                                   Login |
-| POST        | /api/users/logout           | -                                                                                    |                                  Logout |
-| GET         | /api/items                  | -                                                                                    |                           Get all items |
-| GET         | /api/items/shopkeepers      | -                                                                                    |               Get all shopkeepers items |
-| GET         | /api/items/customers        | -                                                                                    |                     Get customers items |
-| POST        | /api/items                  | formdata: name, price, ownerId, ownerIsCustomer, onSale, image(.png or .jpeg)        |                            Add new item |
-| GET         | /api/items/:id              | -                                                                                    |                       Get item with :id |
-| PUT         | /api/items/:id              | json: { name, price, ownerId, ownerIsCustomer, onSale }<br>Any of these can be empty |                    Update item with :id |
-| DELETE      | /api/items/:id              | -                                                                                    |                    Delete item with :id |
-| PUT         | /api/items/:id/sell/:userid | -                                                                                    | Sell item with :id to user with :userid |
-| GET         | /api/bankaccounts           | -                                                                                    |                   Get all bank accounts |
-| POST        | /api/bankaccounts           | payload                                                                              |                    Add new bank account |
-| GET         | /api/bankaccounts/:id       | -                                                                                    |               Get bank account with :id |
-| PUT         | /api/bankaccounts/:id       | payload                                                                              |            Update bank account with :id |
-| DELETE      | /api/bankaccounts/:id       | -                                                                                    |            Delete bank account with :id |
-| GET         | /api/creditcards            | -                                                                                    |                    Get all credit cards |
-| POST        | /api/creditcards            | payload                                                                              |                     Add new credit card |
-| GET         | /api/creditcards/:id        | -                                                                                    |                Get credit card with :id |
-| PUT         | /api/creditcards/:id        | payload                                                                              |             Update credit card with :id |
-| DELETE      | /api/creditcards/:id        | -                                                                                    |             Delete credit card with :id |
+| Http Method | Route                       | Payload                                                                       |                             Description |
+| ----------- | --------------------------- | ----------------------------------------------------------------------------- | --------------------------------------: |
+| GET         | /api/users                  | -                                                                             |                           Get all users |
+| POST        | /api/users                  | json: { name, role, creditCardId, bankAccountId, password }                   |                       Register new user |
+| GET         | /api/users/:id              | -                                                                             |                       Get user with :id |
+| PUT         | /api/users/:id              | json: { name, role, creditCardId, bankAccountId }                             |                    Update user with :id |
+| DELETE      | /api/users/:id              | -                                                                             |                    Delete user with :id |
+| GET         | /api/users/:id/items        | -                                                                             |         Get users listed items with :id |
+| POST        | /api/users/login            | json: { name, password }                                                      |                                   Login |
+| POST        | /api/users/logout           | -                                                                             |                                  Logout |
+| GET         | /api/items                  | -                                                                             |                           Get all items |
+| GET         | /api/items/shopkeepers      | -                                                                             |               Get all shopkeepers items |
+| GET         | /api/items/customers        | -                                                                             |                     Get customers items |
+| POST        | /api/items                  | formdata: name, price, ownerId, ownerIsCustomer, onSale, image(.png or .jpeg) |                            Add new item |
+| GET         | /api/items/:id              | -                                                                             |                       Get item with :id |
+| PUT         | /api/items/:id              | json: { name, price, ownerId, ownerIsCustomer, onSale }                       |                    Update item with :id |
+| DELETE      | /api/items/:id              | -                                                                             |                    Delete item with :id |
+| PUT         | /api/items/:id/sell/:userid | -                                                                             | Sell item with :id to user with :userid |
+| GET         | /api/bankaccounts           | -                                                                             |                   Get all bank accounts |
+| POST        | /api/bankaccounts           | json: { number, balance }                                                     |                    Add new bank account |
+| GET         | /api/bankaccounts/:id       | -                                                                             |               Get bank account with :id |
+| PUT         | /api/bankaccounts/:id       | json: { number, balance }                                                     |            Update bank account with :id |
+| DELETE      | /api/bankaccounts/:id       | -                                                                             |            Delete bank account with :id |
+| GET         | /api/creditcards            | -                                                                             |                    Get all credit cards |
+| POST        | /api/creditcards            | json: { number, CVC, ownerName }                                              |                     Add new credit card |
+| GET         | /api/creditcards/:id        | -                                                                             |                Get credit card with :id |
+| PUT         | /api/creditcards/:id        | json: { number, CVC, ownerName }                                              |             Update credit card with :id |
+| DELETE      | /api/creditcards/:id        | -                                                                             |             Delete credit card with :id |
 
 ## React and Redux
 
-We're going to plan a React-Redux single-page application as our frontend.
+Our frontend is a React single-page-application that uses Redux to handle state. We use redux-localstorage to keep state from changing from page refreshes. Home page lists all shopkeepers' items on sale. Other things you can do is register a new account and login. When logged in, as a customer, you can also add items for sale and buy items from shopkeepers. You can also list own items and edit and/or delete them. Shopkeepers can in addition to that also buy items from customers and list them on their own page. Admins also see a listing of all items, credit cards and bank accounts that they can modify and/or delete. There is also a page to edit user information, in which you can change user information and add, edit or delete credit cards and bank accounts.
 
 ## Testing
 
-We're going to test at least the API with Mocha/chaihttp.
+We're going to test at least the some of the API with Mocha/chaihttp.
 
 ## Project timetable and division of work
 
-Deadline: 20.3
+Deadline: 23.3
 
-Division of work with deadlines (initial, will update):
+Division of work with deadlines:
 
 Allan
 
+- [x] BankAccount React 22.3
 - [x] Pages and navigation (pictures) 3.3
-- [x] BankAccount
-- [x] CreditCard
+- [x] BankAccount API
+- [x] CreditCard API
 
 Peter
 
-- [ ] Users and login
+- [ ] Code cleanup 22.3
+- [ ] Users API 22.3
+- [ ] Users React 22.3
+- [ ] Users testing 22.3
 
 Kari
 
-- [ ] Documentation 20.3
+- [ ] Documentation 23.3
+- [ ] Code cleanup and bug fixes 22.3
+- [ ] Setup script 22.3
 - [x] Project template 3.3
 - [x] Express application
 - [x] API Routes
-- [ ] Items
-- [ ] Items testing
+- [x] Items API
+- [x] Items testing
+- [x] Items React
+- [x] CreditCard React
