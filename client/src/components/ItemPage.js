@@ -35,7 +35,7 @@ function ItemPage(props) {
 const mapStateToProps = (state) => ({
   items: state.itemsReducer.items,
   userId: state.user.id,
-  userRole: state.user.userRole,
+  userRole: state.user.role,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -44,7 +44,7 @@ const mapStateToProps = (state) => ({
   items: state.itemsReducer.userItems,
   token: state.user.token,
   userId: state.user.id,
-  userRole: state.user.userRole,
+  userRole: state.user.role,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

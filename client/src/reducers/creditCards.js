@@ -13,7 +13,7 @@ export function creditCardsReducer(state = {}, action) {
         allCards: action.json,
       });
     case 'DELETE_CREDITCARD':
-      return {};
+      return Object.assign({}, { allCards: state.allCards });
     case 'CARDS_CLEARED':
       return {
         number: undefined,

@@ -58,14 +58,15 @@ export function addCreditCard(form, token, user) {
         })
           .then((response) => response.json())
           .then((jsonuser) => {
+            console.log(jsonuser);
             const modUser = {
               auth: true,
               bankAccountId: jsonuser.bankAccountId,
               creditCardId: jsonuser.creditCardId,
               token: token,
-              userId: jsonuser._id,
-              userName: jsonuser.name,
-              userRole: jsonuser.role,
+              id: jsonuser.id,
+              name: jsonuser.name,
+              role: jsonuser.role,
             };
             if (jsonuser.creditCardId !== undefined) {
               dispatch(receiveCreditCardId(modUser));
@@ -130,15 +131,17 @@ export function deleteCreditCard(id, token, user) {
         })
           .then((response) => response.json())
           .then((jsonuser) => {
+            console.log(jsonuser);
             const modUser = {
               auth: true,
               bankAccountId: jsonuser.bankAccountId,
               creditCardId: undefined,
               token: token,
-              userId: jsonuser._id,
-              userName: jsonuser.name,
-              userRole: jsonuser.role,
+              id: jsonuser.id,
+              name: jsonuser.name,
+              role: jsonuser.role,
             };
+            console.log(modUser);
             if (jsonuser.creditCardId !== undefined) {
               dispatch(receiveCreditCardId(modUser));
               dispatch(creditCardDeleted());
