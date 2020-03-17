@@ -212,8 +212,13 @@ Deadline: 23.3
 
 Division of work with deadlines:
 
+- [ ] Finishing touches (CSS etc) 22.3
+
 Allan
 
+- [ ] Bankaccount & creditcard testing 22.3
+- [ ] Code cleanup 22.3
+- [ ] BankAccount bug fixes & admin view 22.3
 - [x] BankAccount React 22.3
 - [x] Pages and navigation (pictures) 3.3
 - [x] BankAccount API
@@ -228,7 +233,7 @@ Peter
 
 Kari
 
-- [ ] Documentation 23.3
+- [ ] Documentation 22.3
 - [ ] Code cleanup and bug fixes 22.3
 - [ ] Setup script 22.3
 - [x] Project template 3.3
