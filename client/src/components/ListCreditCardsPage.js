@@ -8,7 +8,7 @@ function ListCreditCardsPage(props) {
   useEffect(() => {
     props.getCreditCards(props.token);
   }, []);
-  console.log(props.creditCards);
+
   if (props.creditCards) {
     return (
       <div>
@@ -43,8 +43,8 @@ function ListCreditCardsPage(props) {
 const mapStateToProps = (state) => ({
   creditCards: state.creditCardsReducer.allCards,
   token: state.user.token,
-  userId: state.user.userId,
-  userRole: state.user.userRole,
+  userId: state.user.id,
+  userRole: state.user.role,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

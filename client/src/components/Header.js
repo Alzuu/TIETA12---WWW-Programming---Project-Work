@@ -6,8 +6,8 @@ import { Image } from 'react-bootstrap';
 const Header = (props) => {
   const userHasLoggedIn = () => (props.user ? props.user.auth : false);
 
-  const userIsAdmin = () => (props.user.userRole === 1);
-  const userIsShopkeeper = () => (props.user.userRole === 2);
+  const userIsAdmin = () => props.user.role === 1;
+  const userIsShopkeeper = () => props.user.role === 2;
 
   const renderLink = (linkPath, linkText) => (
     <>
@@ -30,29 +30,22 @@ const Header = (props) => {
   const renderHeaderForLoggedInUser = () => (
     <div className="Header">
       {(props.user ? props.user.auth : false) &&
-        renderHeaderForLoggedInUserInfoPanel(
-          props.user.userId,
-          props.user.userName
-        )}
+        renderHeaderForLoggedInUserInfoPanel(props.user.id, props.user.name)}
       <br />
-    </>
-  );
-
- 
       <Image src={require('./smile.PNG')} rounded />
       <br />
       {renderLink('/', 'home')}
       {userIsAdmin() && renderLink('/items', 'list all items')}
       {(userIsAdmin() || userIsShopkeeper()) &&
         renderLink('/items/customers', 'list customer items')}
-      {renderLink(`/users/${props.user.userId}/items`, 'list own items')}
-      {props.user.userRole && renderLink('/items/add', 'add new item')}
+      {renderLink(`/users/${props.user.id}/items`, 'list own items')}
+      {props.user.role && renderLink('/items/add', 'add new item')}
       {userIsAdmin() && renderLink('/creditcards', 'list all credit cards')}
     </div>
   );
 
   const renderHeaderForNonLoggedInUser = (user) => (
-    <div className='Header'>
+    <div className="Header">
       <Image src={require('./smile.PNG')} rounded />
       <br />
       {renderLink('/', 'home')}
@@ -61,17 +54,17 @@ const Header = (props) => {
     </div>
   );
 
-  return (
-    props.user ? renderHeaderForLoggedInUser() : renderHeaderForNonLoggedInUser()
-  );
-}
+  return props.user
+    ? renderHeaderForLoggedInUser()
+    : renderHeaderForNonLoggedInUser();
+};
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
     loginHasErrored: state.loginHasErrored,
-    isLoading: state.userIsLoading
+    isLoading: state.userIsLoading,
   };
 };
 
-export default connect(mapStateToProps)(Header)
+export default connect(mapStateToProps)(Header);
