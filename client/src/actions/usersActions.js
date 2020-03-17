@@ -56,6 +56,7 @@ export function userFetchData(userName, password) {
                 if (user.auth === true) {
                     dispatch(userFetchDataSuccess(user));
                     dispatch(userFetchHasErrored(false));
+                    dispatch(userIsLoading(false));
                 } else {
                     dispatch(userFetchDataFailure(user));
                     dispatch(userFetchHasErrored(true));
@@ -96,6 +97,7 @@ export function userModify(user) {
                 if (user.auth === true) {
                     dispatch(userFetchDataSuccess(user));
                     dispatch(userFetchHasErrored(false));
+                    dispatch(userIsLoading(false));
                 } else {
                     dispatch(userFetchDataFailure(user));
                     dispatch(userFetchHasErrored(true));

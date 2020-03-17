@@ -58,8 +58,6 @@ const UserPage = (props) => {
       token: props.user.token,
       role: selectedRole.value,
     }
-    console.log("UserPage.js setNewValuesToUser:");
-    console.log(modifiedUser);
     props.modify(modifiedUser);
     setSelectedRole(selectedRole);
   }
