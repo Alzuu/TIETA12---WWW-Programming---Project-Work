@@ -1,61 +1,107 @@
+export function receiveBankAccountId(json) {
+  return {
+    type: 'USER_FETCH_DATA_SUCCESS',
+    user: json,
+  };
+}
+
 export function receiveBankAccount(json) {
   return {
     type: 'RECEIVE_BANK_ACCOUNT',
     json,
   };
 }
-export function receiveNewBankAccount(json) {
+
+export function receiveBankAccounts(json) {
   return {
-    type: 'RECEIVE_NEW_BANK_ACCOUNT',
-    json,
-  };
-}
-export function receiveDeletedBankAccount(json) {
-  return {
-    type: 'RECEIVE_DELETED_BANK_ACCOUNT',
-    json,
-  };
-}
-export function receiveUpdatedBankAccount(json) {
-  return {
-    type: 'RECEIVE_UPDATED_BANK_ACCOUNT',
+    type: 'RECEIVE_BANK_ACCOUNTS',
     json,
   };
 }
 
+export function bankAccountDeleted() {
+  return {
+    type: 'BANK_ACCOUNT_DELETED',
+  };
+}
+
+export function bankAccountCleared() {
+  return {
+    type: 'BANK_ACCOUNT_CLEARED',
+  };
+}
+
+export function clearBankAccount() {
+  return (dispatch) => dispatch(bankAccountCleared());
+}
+
 export function fetchBankAccount(id, token) {
   return (dispatch) => {
-    return fetch(`/api/users/${id}`, { headers: { token } })
-      .then((res) => res.json())
-      .then((json) => {
-        const bankAccountId = json.bankAccountId;
-        return fetch(`/api/bankaccounts/${bankAccountId}`, {
-          headers: { token },
-        });
-      })
-      .then((res) => {
-        res.json();
-      })
+    fetch(`/api/bankaccounts/${id}`, {
+      headers: { token },
+    })
+      .then((response) => response.json())
       .then((json) => dispatch(receiveBankAccount(json)))
       .catch((error) => console.log('Request failed', error));
   };
 }
 
-export function addBankAccount(details, token) {
+export function fetchBankAccounts(token) {
   return (dispatch) => {
-    return fetch('/api/bankaccounts', {
-      method: 'POST',
-      headers: { token: token },
-      body: details,
-    })
+    return fetch('/api/bankaccounts', { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
-        dispatch(receiveNewBankAccount(json));
+        dispatch(receiveBankAccounts(json));
       });
   };
 }
 
-export function deleteBankAccount(id, token) {
+export function addBankAccount(details, token, user) {
+  return (dispatch) => {
+    return fetch('/api/bankaccounts', {
+      method: 'POST',
+      headers: { token: token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(details),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        fetch(`/api/users/${user.userId}`, {
+          method: 'PUT',
+          headers: { token: token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            Object.assign(
+              {},
+              {
+                name: user.userName,
+                role: user.userRole,
+                bankAccountId: json._id,
+                creditCardId: user.creditCardId,
+              }
+            )
+          ),
+        })
+          .then((response) => response.json())
+          .then((jsonUser) => {
+            console.log(jsonUser);
+            const modUser = {
+              auth: true,
+              bankAccountId: jsonUser.bankAccountId,
+              creditCardId: jsonUser.creditCardId,
+              token: token,
+              id: jsonUser.id,
+              name: jsonUser.name,
+              role: jsonUser.role,
+            };
+            if (jsonUser.bankAccountId !== undefined) {
+              dispatch(receiveBankAccountId(modUser));
+            }
+          });
+      });
+  };
+}
+
+export function deleteBankAccount(id, token, user) {
   return (dispatch) => {
     return fetch(`/api/bankaccounts/${id}`, {
       method: 'DELETE',
@@ -63,13 +109,45 @@ export function deleteBankAccount(id, token) {
     })
       .then((res) => res.json())
       .then((json) => {
-        dispatch(receiveDeletedBankAccount(json));
+        fetch(`/api/users/${user.userId}`, {
+          method: 'PUT',
+          headers: { token: token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            Object.assign(
+              {},
+              {
+                name: user.userName,
+                role: user.userRole,
+                bankAccountId: undefined,
+                creditCardId: user.creditCardId,
+              }
+            )
+          ),
+        })
+          .then((response) => response.json())
+          .then((jsonUser) => {
+            console.log(jsonUser);
+            const modUser = {
+              auth: true,
+              bankAccountId: undefined,
+              creditCardId: jsonUser.creditCardId,
+              token: token,
+              id: jsonUser.id,
+              name: jsonUser.name,
+              role: jsonUser.role,
+            };
+            console.log(modUser);
+            if (jsonUser.bankAccountId !== undefined) {
+              dispatch(receiveBankAccountId(modUser));
+              dispatch(deleteBankAccount());
+            }
+          });
       });
   };
 }
 export function updateBankAccount(id, details, token) {
   return (dispatch) => {
-    return fetch(`/api/items/${id}`, {
+    return fetch(`/api/bankaccounts/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', token: token },
       body: JSON.stringify(details),
@@ -77,7 +155,7 @@ export function updateBankAccount(id, details, token) {
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        dispatch(receiveUpdatedBankAccount(json));
+        dispatch(receiveBankAccount(json));
       });
   };
 }
