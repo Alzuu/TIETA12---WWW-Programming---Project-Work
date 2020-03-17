@@ -80,7 +80,7 @@ function CreditCard(props) {
     setNumber('');
     setCvc('');
     setOwnerName('');
-    if (props.id) {
+    if (props.id && props.id != 'undefined') {
       props.getCreditCard(props.id, props.token);
     }
   }, [props.id]);
