@@ -1,11 +1,14 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { userAdd } from '../actions/usersActions';
 
 const RegistrationPage = (props) => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [password, setPassword] = useState('');
+  const [registrationHasBeenAttempted, setRegistrationHasBeenAttempted] = useState(false);
+  const loginText = ' log in';
 
   const register = () => {
     props.register({
@@ -13,7 +16,18 @@ const RegistrationPage = (props) => {
       password,
       role,
     });
+
+    setRegistrationHasBeenAttempted(true); 
   };
+
+  if (registrationHasBeenAttempted && !props.loginHasErrored) {
+    return (
+      <p>
+        Thanks for registration, you can now 
+        <Link to={'/login'}>{loginText}</Link>
+      </p>
+    );
+  }
 
   return (
     <div className="container">

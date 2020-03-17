@@ -63,11 +63,16 @@ const UserPage = (props) => {
   }
 
   const renderRoleSelection = () => {
-    return (<Select
-        value={selectedRole}
-        onChange={role => setSelectedRole(role)}
-        options={getRoleSelectionOptions}
-    />);
+    return (
+      <div className='userRoleSelection'>
+        <Select
+            className='userRoleSelection'
+            value={selectedRole}
+            onChange={role => setSelectedRole(role)}
+            options={getRoleSelectionOptions}
+        />
+      </div>
+    );
   }
 
   const renderTextInputField = (fieldName, fieldLabel) => (
@@ -88,14 +93,15 @@ const UserPage = (props) => {
             actions.setSubmitting(false);
             setNewValuesToUser(values);
         }}
-        render={({ values, touched, errors, dirty, isSubmitting }) => (
+        render={({ values, errors, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
             {renderRoleSelection()}
+            <br />
             <button
               type="submit"
-              className="btn btn-default"
-              disabled={isSubmitting || !isEmpty(errors) || !dirty}
+              className="submitButton"
+              disabled={isSubmitting || !isEmpty(errors)}
             >
               Save
             </button>
