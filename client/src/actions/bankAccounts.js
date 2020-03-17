@@ -139,7 +139,7 @@ export function deleteBankAccount(id, token, user) {
             console.log(modUser);
             if (jsonUser.bankAccountId !== undefined) {
               dispatch(receiveBankAccountId(modUser));
-              dispatch(deleteBankAccount());
+              dispatch(bankAccountDeleted());
             }
           });
       });

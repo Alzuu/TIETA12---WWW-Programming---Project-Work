@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
   fetchBankAccount,
   addBankAccount,
-  bankAccountDeleted,
+  deleteBankAccount,
   updateBankAccount,
   clearBankAccount,
 } from '../actions/bankAccounts';
@@ -60,7 +60,7 @@ function BankAccount(props) {
   function handleDelete(e) {
     setNumber('');
     setBalance(0);
-    props.bankAccountDeleted(props.id, props.token, {
+    props.deleteBankAccount(props.id, props.token, {
       userId: props.userId,
       creditCardId: props.creditCardId,
       userName: props.userName,
@@ -267,8 +267,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchBankAccount: (id, token) => dispatch(fetchBankAccount(id, token)),
     addBankAccount: (details, token, user) =>
       dispatch(addBankAccount(details, token, user)),
-    bankAccountDeleted: (id, token, user) =>
-      dispatch(bankAccountDeleted(id, token, user)),
+    deleteBankAccount: (id, token, user) =>
+      dispatch(deleteBankAccount(id, token, user)),
     updateBankAccount: (id, details, token) =>
       dispatch(updateBankAccount(id, details, token)),
     clearBankAccount: () => dispatch(clearBankAccount()),
