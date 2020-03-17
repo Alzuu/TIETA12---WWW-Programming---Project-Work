@@ -1,21 +1,23 @@
-export function bankAccountsReducer(state = { bankAccount: '' }, action) {
+export function bankAccountsReducer(state = {}, action) {
   switch (action.type) {
     case 'RECEIVE_BANK_ACCOUNT':
       return Object.assign({}, state, {
-        bankAccount: action.json,
+        message: action.json.message ? action.json.message : null,
+        id: action.json._id,
+        number: action.json.number,
+        balance: action.json.balance,
       });
-    case 'RECEIVE_NEW_BANK_ACCOUNT':
+    case 'RECEIVE_BANK_ACCOUNTS':
       return Object.assign({}, state, {
-        bankAccount: action.json,
+        allBankAccounts: action.json,
       });
-    case 'RECEIVE_DELETED_BANK_ACCOUNT':
-      return Object.assign({}, state, {
-        bankAccount: action.json,
-      });
-    case 'RECEIVE_UPDATED_BANK_ACCOUNT':
-      return Object.assign({}, state, {
-        bankAccount: action.json,
-      });
+    case 'BANK_ACCOUNT_DELETED':
+      return Object.assign({}, { allBankAccounts: state.allBankAccounts });
+    case 'BANK_ACCOUNT_CLEARED':
+      return {
+        number: undefined,
+        balance: undefined,
+      };
     default:
       return state;
   }

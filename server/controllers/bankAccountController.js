@@ -2,15 +2,6 @@
 const xssFilters = require('xss-filters');
 const BankAccount = require('../models/BankAccount');
 const UserRole = require('../models/UserRole');
-const User = require('../models/User');
-
-function setBankAccountToUser(bankAccountId, userId) {
-  User.findByIdAndUpdate(userId, { $set: { bankAccountId } }, () => {});
-}
-
-function deleteBankAccountFromUser(bankAccountId, userId) {
-  User.findByIdAndUpdate(userId, { $set: { bankAccountId: null } }, () => {});
-}
 
 module.exports = {
   /**
@@ -135,7 +126,6 @@ module.exports = {
 
         const newAccount = await account.save();
         await res.status(201).json(newAccount);
-        setBankAccountToUser(newAccount._id, req.userId);
         console.log('New bank account added.');
       } catch (err) {
         res.json({ message: err });
@@ -156,7 +146,6 @@ module.exports = {
       try {
         const ID = req.params.bankAccountId;
         const deletedAccount = await BankAccount.deleteOne({ _id: `${ID}` });
-        deleteBankAccountFromUser(deletedAccount._id, req.userId);
         res.status(200).json(deletedAccount);
         console.log('Successfully removed bank account.');
       } catch (err) {

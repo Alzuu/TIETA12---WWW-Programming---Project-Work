@@ -7,6 +7,7 @@ import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
 import CreditCard from './CreditCard';
+import BankAccount from './BankAccount';
 import { userModify } from '../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
@@ -106,8 +107,9 @@ const UserPage = (props) => {
           </Form>
         )}
       />
-      <Link to={`/users/${props.user.userId}/payment-info`}>Payment Information</Link>
+      
       <CreditCard id={props.user.creditCardId} />
+      <BankAccount id={props.user.bankAccountId} />
     </>
   )
 }
