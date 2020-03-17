@@ -26,6 +26,7 @@ function CreditCard(props) {
         CVC: cvc,
         ownerName: ownerName,
       };
+      console.log(props);
       props.addCreditCard(card, props.token, {
         userId: props.userId,
         bankAccountId: props.bankAccountId,
@@ -287,11 +288,12 @@ function CreditCard(props) {
 const mapStateToProps = (state) => ({
   creditCardId: state.user.creditCardId,
   token: state.user.token,
-  userId: state.user.userId,
-  userRole: state.user.userRole,
-  userName: state.user.userName,
+  userId: state.user.id,
+  userRole: state.user.role,
+  userName: state.user.name,
   creditCard: state.creditCardsReducer,
   bankAccountId: state.user.bankAccountId,
+  user: state.user,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

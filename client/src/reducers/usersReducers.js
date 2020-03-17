@@ -19,6 +19,7 @@ export function userIsLoading(state = false, action) {
 export function user(state = [], action) {
   switch (action.type) {
     case 'USER_FETCH_DATA_SUCCESS':
+      console.log(action.user);
       return action.user;
     case 'USER_FETCH_DATA_FAILURE':
       return false;

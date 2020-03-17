@@ -24,8 +24,8 @@ function PaymentInfoPage(props) {
 const mapStateToProps = (state) => ({
   bankAccount: state.bankAccountsReducer.bankAccount,
   token: state.user.token,
-  userId: state.user.userId,
-  userRole: state.user.userRole,
+  userId: state.user.id,
+  userRole: state.user.role,
 });
 
 const mapDispatchToProps = (dispatch) => {
