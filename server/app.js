@@ -12,6 +12,9 @@ const dbConfig = {
   db: 'storeapp',
 };
 db.connect(dbConfig);
+
+require('./setup');
+
 let port;
 if (process.env.NODE_ENV === 'dev') {
   port = 3001;
