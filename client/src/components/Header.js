@@ -6,15 +6,14 @@ import { Image } from 'react-bootstrap';
 const Header = (props) => {
   const userHasLoggedIn = () => (props.user ? props.user.auth : false);
 
-  const userIsAdmin = () => props.user.role === 1;
-  const userIsShopkeeper = () => props.user.role === 2;
+  const userIsAdmin = () => (props.user.role === 1);
+  const userIsShopkeeper = () => (props.user.role === 2);
 
   const renderLink = (linkPath, linkText) => (
     <>
       <Link to={linkPath}>
         <i>{linkText}</i>
       </Link>
-
       <br />
     </>
   );
@@ -30,7 +29,10 @@ const Header = (props) => {
   const renderHeaderForLoggedInUser = () => (
     <div className="Header">
       {(props.user ? props.user.auth : false) &&
-        renderHeaderForLoggedInUserInfoPanel(props.user.id, props.user.name)}
+        renderHeaderForLoggedInUserInfoPanel(
+          props.user.id,
+          props.user.name,
+        )}
       <br />
       <Image src={require('./smile.PNG')} rounded />
       <br />
@@ -46,7 +48,7 @@ const Header = (props) => {
   );
 
   const renderHeaderForNonLoggedInUser = (user) => (
-    <div className="Header">
+    <div className='Header'>
       <Image src={require('./smile.PNG')} rounded />
       <br />
       {renderLink('/', 'home')}
@@ -55,17 +57,17 @@ const Header = (props) => {
     </div>
   );
 
-  return props.user
-    ? renderHeaderForLoggedInUser()
-    : renderHeaderForNonLoggedInUser();
-};
+  return (
+    props.user ? renderHeaderForLoggedInUser() : renderHeaderForNonLoggedInUser()
+  );
+}
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
     loginHasErrored: state.loginHasErrored,
-    isLoading: state.userIsLoading,
+    isLoading: state.userIsLoading
   };
 };
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(Header)

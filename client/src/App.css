@@ -43,3 +43,12 @@
     transform: rotate(360deg);
   }
 }
+
+.userRoleSelection {
+  color: black;
+}
+
+.submitButton {
+  background-color: ghostwhite;
+  color: black;
+}

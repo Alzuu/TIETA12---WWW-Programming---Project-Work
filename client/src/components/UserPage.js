@@ -13,8 +13,6 @@ import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
 const UserPage = (props) => {
-  console.log("user page o/");
-  console.log(props.user);
     const [selectedRole, setSelectedRole] = useState('');
 
     useEffect(() => {
@@ -22,9 +20,9 @@ const UserPage = (props) => {
       }, []);
 
     const getRoleSelectionOptions = [
-        { value: 1, label: 'Admin' },
-        { value: 2, label: 'Shopkeeper' },
-        { value: 3, label: 'Customer' },
+        { value: 0, label: 'Admin' },
+        { value: 1, label: 'Shopkeeper' },
+        { value: 2, label: 'Customer' },
     ];
 
     const getDefaultSelectRole = (
@@ -61,18 +59,21 @@ const UserPage = (props) => {
       token: props.user.token,
       role: selectedRole.value,
     }
-    console.log("UserPage.js setNewValuesToUser:");
-    console.log(modifiedUser);
     props.modify(modifiedUser);
     setSelectedRole(selectedRole);
   }
 
   const renderRoleSelection = () => {
-    return (<Select
-        value={selectedRole}
-        onChange={role => setSelectedRole(role)}
-        options={getRoleSelectionOptions}
-    />);
+    return (
+      <div className='userRoleSelection'>
+        <Select
+            className='userRoleSelection'
+            value={selectedRole}
+            onChange={role => setSelectedRole(role)}
+            options={getRoleSelectionOptions}
+        />
+      </div>
+    );
   }
 
   const renderTextInputField = (fieldName, fieldLabel) => (
@@ -93,14 +94,15 @@ const UserPage = (props) => {
             actions.setSubmitting(false);
             setNewValuesToUser(values);
         }}
-        render={({ values, touched, errors, dirty, isSubmitting }) => (
+        render={({ values, errors, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
             {renderRoleSelection()}
+            <br />
             <button
               type="submit"
-              className="btn btn-default"
-              disabled={isSubmitting || !isEmpty(errors) || !dirty}
+              className="submitButton"
+              disabled={isSubmitting || !isEmpty(errors)}
             >
               Save
             </button>
