@@ -212,7 +212,6 @@ User.find({}, (err, res) => {
         console.log(error);
       });
   } else {
-    console.log(res);
     console.log('Users found in database, not running setup.');
   }
 });

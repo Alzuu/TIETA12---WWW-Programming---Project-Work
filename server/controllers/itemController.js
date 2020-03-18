@@ -273,6 +273,7 @@ module.exports = {
       }
       // Check that item owner isn't trying to buy own item
       if (item.ownerId !== req.params.userid) {
+        const currentOwner = item.ownerId;
         // Check if item is on sale
         if (item.onSale) {
           // Check that userid in parameter same as in request or user is admin
@@ -290,34 +291,42 @@ module.exports = {
               ) {
                 item.updateOne(
                   {
-                    ownerIsCustomer: req.userRole === UserRole.ADMIN,
+                    ownerIsCustomer: !(req.userRole === UserRole.SHOPKEEPER),
                     onSale: false,
                     ownerId: req.params.userid,
                   },
                   (error, raw) => {
                     if (error || raw.ok === 0) {
                       return res.status(400).json({ message: error });
-                    }
-                    User.findById(item.ownerId, (uerr, udoc) => {
-                      BankAccount.findByIdAndUpdate(
-                        udoc.bankAccountId,
-                        {
-                          $inc: { balance: item.price },
-                        },
-                        (bankerror, bankres) => {
-                          if (bankerror) {
-                            return res.status(400).json({ message: error });
-                          }
+                    } else {
+                      User.findById(currentOwner, (uerr, udoc) => {
+                        if (uerr) {
+                          return res.status(400).json({ message: uerr });
+                        } else {
+                          BankAccount.findByIdAndUpdate(
+                            udoc.bankAccountId,
+                            {
+                              $inc: { balance: item.price },
+                            },
+                            (bankerror, bankres) => {
+                              if (bankerror) {
+                                return res
+                                  .status(400)
+                                  .json({ message: bankerror });
+                              } else {
+                                Item.findById(req.params.id, (er, doc) => {
+                                  const result = doc;
+                                  result.links = itemToLinks(doc, currentURL);
+                                  delItemFromUser(item._id, item.ownerId);
+                                  addItemToUser(item._id, doc.ownerId);
+                                  return res.json(result);
+                                });
+                              }
+                            }
+                          );
                         }
-                      );
-                    });
-                    Item.findById(req.params.id, (er, doc) => {
-                      const result = doc;
-                      result.links = itemToLinks(doc, currentURL);
-                      delItemFromUser(item._id, item.ownerId);
-                      addItemToUser(item._id, doc.ownerId);
-                      return res.json(result);
-                    });
+                      });
+                    }
                   }
                 );
               } else {
@@ -327,7 +336,7 @@ module.exports = {
               // If item owner is shopkeeper
               item.updateOne(
                 {
-                  ownerIsCustomer: !req.userRole === UserRole.SHOPKEEPER,
+                  ownerIsCustomer: !(req.userRole === UserRole.SHOPKEEPER),
                   onSale: false,
                   ownerId: req.params.userid,
                 },
@@ -336,71 +345,81 @@ module.exports = {
                   if (error || raw.ok === 0) {
                     return res.status(400).json({ message: error });
                   }
-                  User.findById(item.ownerId, (uerr, udoc) => {
-                    BankAccount.findByIdAndUpdate(
-                      udoc.bankAccountId,
-                      {
-                        $inc: { balance: item.price },
-                      },
-                      (bankerror, bankres) => {
-                        if (bankerror) {
-                          return res.status(400).json({ message: error });
+                  User.findById(currentOwner, (uerr, udoc) => {
+                    if (uerr) {
+                      return res.status(400).json({ message: uerr });
+                    } else {
+                      BankAccount.findByIdAndUpdate(
+                        udoc.bankAccountId,
+                        {
+                          $inc: { balance: item.price },
+                        },
+                        (bankerror, bankres) => {
+                          if (bankerror) {
+                            return res.status(400).json({ message: error });
+                          } else {
+                            Item.findById(req.params.id, (er, doc) => {
+                              const result = doc;
+                              result.links = itemToLinks(doc, currentURL);
+                              delItemFromUser(item._id, item.ownerId);
+                              addItemToUser(item._id, doc.ownerId);
+                              return res.json(result);
+                            });
+                          }
                         }
-                      }
-                    );
-                  });
-
-                  Item.findById(req.params.id, (er, doc) => {
-                    const result = doc;
-                    result.links = itemToLinks(doc, currentURL);
-                    delItemFromUser(item._id, item.ownerId);
-                    addItemToUser(item._id, doc.ownerId);
-                    return res.json(result);
+                      );
+                    }
                   });
                 }
               );
             }
           }
-        } else if (req.userRole === UserRole.ADMIN) {
-          // If item is not on sale, check for admin role
-
-          const { userRole } = User.findById(req.params.userid);
-          item.updateOne(
-            {
-              ownerIsCustomer: !userRole === UserRole.SHOPKEEPER,
-              onSale: false,
-              ownerId: req.params.userid,
-            },
-            { omitUndefined: true },
-            (error, raw) => {
-              console.log(raw);
-              if (error) {
-                return res.status(400).json({ message: error });
-              }
-              User.findById(item.ownerId, (uerr, udoc) => {
-                BankAccount.findByIdAndUpdate(
-                  udoc.bankAccountId,
-                  {
-                    $inc: { balance: item.price },
-                  },
-                  (bankerror, bankres) => {
-                    if (bankerror) {
-                      return res.status(400).json({ message: error });
-                    }
-                  }
-                );
-              });
-              Item.findById(req.params.id, (er, doc) => {
-                const result = doc;
-                result.links = itemToLinks(doc, currentURL);
-                delItemFromUser(item._id, item.ownerId);
-                addItemToUser(item._id, doc.ownerId);
-                return res.json(result);
-              });
-            }
-          );
         } else {
-          return res.status(401).json({ message: 'Unauthorized' });
+          // If item is not on sale, check for admin role
+          if (req.userRole === UserRole.ADMIN) {
+            const { userRole } = User.findById(req.params.userid);
+            item.updateOne(
+              {
+                ownerIsCustomer: !(req.userRole === UserRole.SHOPKEEPER),
+                onSale: false,
+                ownerId: req.params.userid,
+              },
+              { omitUndefined: true },
+              (error, raw) => {
+                if (error) {
+                  return res.status(400).json({ message: error });
+                } else {
+                  User.findById(currentOwner, (uerr, udoc) => {
+                    if (uerr) {
+                      return res.status(400).json({ message: uerr });
+                    } else {
+                      BankAccount.findByIdAndUpdate(
+                        udoc.bankAccountId,
+                        {
+                          $inc: { balance: item.price },
+                        },
+                        (bankerror, bankres) => {
+                          if (bankerror) {
+                            return res.status(400).json({ message: error });
+                          } else {
+                            Item.findById(req.params.id, (er, doc) => {
+                              const result = doc;
+                              result.links = itemToLinks(doc, currentURL);
+                              delItemFromUser(item._id, item.ownerId);
+                              addItemToUser(item._id, doc.ownerId);
+                              return res.json(result);
+                            });
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+              }
+            );
+          } else {
+            return res.status(401).json({ message: 'Unauthorized' });
+          }
         }
       }
     });
