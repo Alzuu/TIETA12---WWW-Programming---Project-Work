@@ -24,6 +24,7 @@ const listCustomersItemsUrl = '/api/items/customers/';
 const registerUrl = '/api/users/';
 const loginUrl = '/api/users/login/';
 const itemUrl = '/api/items/';
+const bankAccountUrl = '/api/bankaccounts/';
 
 // Tests
 describe('/api/items', () => {
@@ -32,6 +33,10 @@ describe('/api/items', () => {
     name: `admin${Date.now()}`,
     password: 'admin',
     role: UserRole.ADMIN,
+  };
+  const adminBankAccount = {
+    number: `FI${Date.now()}`,
+    balance: 100,
   };
   const newShopkeeper = {
     name: `shopkeeper${Date.now()}`,
@@ -43,25 +48,31 @@ describe('/api/items', () => {
     password: 'customer',
     role: UserRole.CUSTOMER,
   };
+  const newCustomer2 = {
+    name: `customer2${Date.now()}`,
+    password: 'customer',
+    role: UserRole.CUSTOMER,
+  };
   let adminToken;
   let shopkeeperToken;
   let customerToken;
   let shopkeeperId;
   let customerId;
   let adminId;
+  let customer2Id;
+  let customer2Token;
 
   before((done) => {
     request = chai.request.agent(app);
-
     done();
   });
-  after((done) => {
+  after(function(done) {
     request.close();
-    mongoose.disconnect(done);
+    return mongoose.disconnect(done);
   });
-  describe('GET /api/items', () => {
+  describe('GET /api/items', async function() {
     before(async function() {
-      // Add users for each roles
+      // Add users for each roles ( 2 for customer)
       await request
         .post(registerUrl)
         .type('json')
@@ -75,6 +86,23 @@ describe('/api/items', () => {
             .then((response) => {
               adminToken = response.body.token;
               adminId = res.body._id;
+              // Add bank account to admin
+              request
+                .post(bankAccountUrl)
+                .type('json')
+                .set('token', adminToken)
+                .send(adminBankAccount)
+                .then((bankresponse) => {
+                  const bankAccountId = bankresponse.body._id;
+                  newAdmin.bankAccountId = bankAccountId;
+
+                  request
+                    .put(`${registerUrl}${adminId}`)
+                    .set('token', adminToken)
+                    .type('json')
+                    .send(newAdmin)
+                    .then((idresponse) => {});
+                });
             });
         });
       await request
@@ -102,9 +130,35 @@ describe('/api/items', () => {
                   ownerIsCustomer: false,
                   onSale: true,
                 })
-                .then(() => {
-                  console.log('Added item');
-                });
+                .then(() => {});
+            });
+        });
+      await request
+        .post(registerUrl)
+        .type('json')
+        .send(newCustomer2)
+        .then((res) => {
+          // Get JWT token
+          request
+            .post(loginUrl)
+            .type('json')
+            .send(newCustomer2)
+            .then((response) => {
+              customer2Token = response.body.token;
+              customer2Id = res.body._id;
+              // Add item for customer
+              request
+                .post(itemUrl)
+                .set('token', customer2Token)
+                .type('json')
+                .send({
+                  name: 'Kaljaa',
+                  price: 20.0,
+                  ownerId: customer2Id,
+                  ownerIsCustomer: false,
+                  onSale: true,
+                })
+                .then(() => {});
             });
         });
       return request
@@ -132,64 +186,61 @@ describe('/api/items', () => {
                   ownerIsCustomer: false,
                   onSale: true,
                 })
-                .then(() => {
-                  console.log('Added item.');
-                });
+                .then(() => {});
             });
         });
     });
-    it('should require admin rights to list all items', () => {
-      request
+    it('should require admin rights to list all items', async function() {
+      await request
         .get(itemUrl)
         .set('token', customerToken)
-        .end((err, res) => {
+        .then((res) => {
           expect(res.statusCode).to.equal(401);
         });
     });
-    it('should list all items with admin rights', () => {
-      request
+    it('should list all items with admin rights', async function() {
+      await request
         .get(itemUrl)
         .set('token', adminToken)
-        .end((err, res) => {
+        .then((res) => {
           expect(res.statusCode).to.equal(200);
         });
     });
   });
-  describe('GET /api/items/shopkeepers', () => {
-    it("should list shopkeepers' items without registering", () => {
-      request.get(listShopkeepersItemsUrl).end((err, res) => {
-        console.log(res);
+  describe('GET /api/items/shopkeepers', async function() {
+    it("should list shopkeepers' items without registering", async function() {
+      await request.get(listShopkeepersItemsUrl).then((res) => {
         expect(res.statusCode).to.equal(200);
       });
     });
   });
-  describe('GET /api/items/customers', () => {
-    it("should require admin/shopkeeper rights to list customers' items", () => {
-      request
+  describe('GET /api/items/customers', async function() {
+    it("should require admin/shopkeeper rights to list customers' items", async function() {
+      await request
         .get(listCustomersItemsUrl)
         .set('token', customerToken)
-        .end((err, res) => {
+        .then((res) => {
           expect(res.statusCode).to.equal(401);
         });
     });
-    it("should list customers' items with admin rights", () => {
-      request
+    it("should list customers' items with admin rights", async function() {
+      await request
         .get(listCustomersItemsUrl)
         .set('token', shopkeeperToken)
-        .end((err, res) => {
+        .then((res) => {
           expect(res.statusCode).to.equal(200);
         });
     });
-    it("should list customers' items with shopkeeper rights", () => {
-      request
+    it("should list customers' items with shopkeeper rights", async function() {
+      await request
         .get(listCustomersItemsUrl)
         .set('token', adminToken)
-        .end((err, res) => {
+        .then((res) => {
           expect(res.statusCode).to.equal(200);
         });
     });
   });
-  describe('POST /api/items', () => {
+  describe('POST /api/items', async function() {
     let payload;
     beforeEach(() => {
       payload = {
@@ -200,8 +251,8 @@ describe('/api/items', () => {
         onSale: true,
       };
     });
-    it('should require logging in to add new item', () => {
-      request
+    it('should require logging in to add new item', async function() {
+      await request
         .post(itemUrl)
         .type('json')
         .send(payload)
@@ -209,9 +260,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(403);
         });
     });
-    it('should require item name', () => {
+    it('should require item name', async function() {
       delete payload.name;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -220,9 +271,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item name not be empty string', () => {
+    it('should require item name not be empty string', async function() {
       payload.name = '';
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -231,9 +282,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item price', () => {
+    it('should require item price', async function() {
       delete payload.price;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -242,9 +293,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item price to be greater than zero', () => {
+    it('should require item price to be greater than zero', async function() {
       payload.price = -1;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -253,9 +304,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item price to be a number', () => {
+    it('should require item price to be a number', async function() {
       payload.price = 'kolmesataa';
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -264,9 +315,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item ownerId', () => {
+    it('should require item ownerId', async function() {
       delete payload.ownerId;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -275,9 +326,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(401);
         });
     });
-    it('should require item ownerId to be userId or admin rights', () => {
+    it('should require item ownerId to be userId or admin rights', async function() {
       payload.ownerId = customerId;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -285,7 +336,7 @@ describe('/api/items', () => {
         .then((res) => {
           expect(res.statusCode).to.equal(401);
         });
-      request
+      await request
         .post(itemUrl)
         .set('token', adminToken)
         .type('json')
@@ -294,9 +345,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(200);
         });
     });
-    it('should require item ownerIsCustomer', () => {
+    it('should require item ownerIsCustomer', async function() {
       delete payload.ownerIsCustomer;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -305,9 +356,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item ownerIsCustomer to be true or false', () => {
+    it('should require item ownerIsCustomer to be true or false', async function() {
       payload.ownerIsCustomer = 'joo';
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -316,9 +367,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item onSale', () => {
+    it('should require item onSale', async function() {
       delete payload.onSale;
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -327,9 +378,9 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('should require item onSale to be true or false', () => {
+    it('should require item onSale to be true or false', async function() {
       payload.onSale = 'ei';
-      request
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -338,8 +389,8 @@ describe('/api/items', () => {
           expect(res.statusCode).to.equal(400);
         });
     });
-    it('pictureId should be empty string if no picture', () => {
-      request
+    it('pictureId should be empty string if no picture', async function() {
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -348,8 +399,8 @@ describe('/api/items', () => {
           expect(res.body.pictureId).to.equal('');
         });
     });
-    it('pictureId should be non-empty string if given picture', () => {
-      request
+    it('pictureId should be non-empty string if given picture', async function() {
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('form')
@@ -364,7 +415,7 @@ describe('/api/items', () => {
         });
     });
   });
-  describe('GET /api/items/:id', () => {
+  describe('GET /api/items/:id', async function() {
     let payload;
     before(async function(done) {
       payload = {
@@ -377,8 +428,8 @@ describe('/api/items', () => {
       done();
     });
 
-    it("should require admin/shopkeeper rights to show customers' item on sale", () => {
-      request
+    it("should require admin/shopkeeper rights to show customers' item on sale", async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -386,7 +437,7 @@ describe('/api/items', () => {
         .then((res) => {
           request
             .get(itemUrl + res.body._id)
-            .set('token', customerToken)
+            .set('token', customer2Token)
             .then((response) => {
               expect(response.statusCode).to.equal(401);
               request
@@ -404,9 +455,9 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require admin rights or owning the item to show item not on sale', () => {
+    it('should require admin rights or owning the item to show item not on sale', async function() {
       payload.onSale = false;
-      request
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -429,7 +480,7 @@ describe('/api/items', () => {
         });
     });
   });
-  describe('PUT /api/items/:id', () => {
+  describe('PUT /api/items/:id', async function() {
     let payload;
     before(async function(done) {
       payload = {
@@ -441,8 +492,8 @@ describe('/api/items', () => {
       };
       done();
     });
-    it('should require item ownerId to be userId or admin rights', () => {
-      request
+    it('should require item ownerId to be userId or admin rights', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -471,8 +522,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item name not be empty string', () => {
-      request
+    it('should require item name not be empty string', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -487,8 +538,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item price to be greater than zero', () => {
-      request
+    it('should require item price to be greater than zero', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -505,8 +556,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item price to be a number', () => {
-      request
+    it('should require item price to be a number', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -523,8 +574,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item ownerId to be non-empty string', () => {
-      request
+    it('should require item ownerId to be non-empty string', async function() {
+      await request
         .post(itemUrl)
         .set('token', shopkeeperToken)
         .type('json')
@@ -541,8 +592,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item ownerIsCustomer to be true or false', () => {
-      request
+    it('should require item ownerIsCustomer to be true or false', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -559,8 +610,8 @@ describe('/api/items', () => {
             });
         });
     });
-    it('should require item onSale to be true or false', () => {
-      request
+    it('should require item onSale to be true or false', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -578,7 +629,7 @@ describe('/api/items', () => {
         });
     });
   });
-  describe('DELETE /api/items/:id', () => {
+  describe('DELETE /api/items/:id', async function() {
     let payload;
     before(async function(done) {
       payload = {
@@ -590,8 +641,8 @@ describe('/api/items', () => {
       };
       done();
     });
-    it('should require item ownerId to be userId or admin rights', () => {
-      request
+    it('should require item ownerId to be userId or admin rights', async function() {
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -610,7 +661,7 @@ describe('/api/items', () => {
               expect(response.statusCode).to.equal(200);
             });
         });
-      request
+      await request
         .post(itemUrl)
         .set('token', customerToken)
         .type('json')
@@ -631,20 +682,20 @@ describe('/api/items', () => {
         });
     });
   });
-  describe('PUT /api/items/:id/sell/:userid', () => {
+  describe('PUT /api/items/:id/sell/:userid', async function() {
     let payload;
     before(async function(done) {
       payload = {
         name: 'Nakkipaketti',
         price: 1.99,
-        ownerId: customerId,
+        ownerId: adminId,
         ownerIsCustomer: true,
         onSale: true,
       };
       done();
     });
-    it('should require :userid to be userId or admin rights', () => {
-      request
+    it('should require :userid to be userId or admin rights', async function() {
+      await request
         .post(itemUrl)
         .set('token', adminToken)
         .type('json')
@@ -655,24 +706,24 @@ describe('/api/items', () => {
             .set('token', customerToken)
             .then((response) => {
               expect(response.statusCode).to.equal(401);
-            });
-          request
-            .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
-            .set('token', shopkeeperToken)
-            .then((response) => {
-              expect(response.statusCode).to.equal(200);
-            });
-          request
-            .put(`${itemUrl}${res.body._id}/sell/${customerId}`)
-            .set('token', adminToken)
-            .then((response) => {
-              expect(response.statusCode).to.equal(200);
+              request
+                .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
+                .set('token', shopkeeperToken)
+                .then((respons) => {
+                  expect(respons.statusCode).to.equal(200);
+                  request
+                    .put(`${itemUrl}${res.body._id}/sell/${customerId}`)
+                    .set('token', adminToken)
+                    .then((respon) => {
+                      expect(respon.statusCode).to.equal(200);
+                    });
+                });
             });
         });
     });
-    it('should require item to be on sale', () => {
+    it('should require item to be on sale', async function() {
       payload.onSale = false;
-      request
+      await request
         .post(itemUrl)
         .set('token', adminToken)
         .type('json')
@@ -686,20 +737,20 @@ describe('/api/items', () => {
             });
         });
     });
-    it("should change item's ownerId to :userid", () => {
+    it("should change item's ownerId to :userid", async function() {
       payload.onSale = true;
-      request
+      await request
         .post(itemUrl)
         .set('token', adminToken)
         .type('json')
         .send(payload)
-        .then((res) => {
-          request
+        .then(async function(res) {
+          await request
             .put(`${itemUrl}${res.body._id}/sell/${shopkeeperId}`)
             .set('token', shopkeeperToken)
-            .then((response) => {
-              expect(response.statusCode).to.equal(200);
-              expect(response.body.ownerId).to.equal(shopkeeperId);
+            .then(async function(response) {
+              await expect(response.statusCode).to.equal(200);
+              await expect(response.body.ownerId).to.equal(shopkeeperId);
             });
         });
     });
