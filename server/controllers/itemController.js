@@ -272,12 +272,12 @@ module.exports = {
         return res.status(404).json({ message: 'No item found!' });
       }
       // Check that item owner isn't trying to buy own item
-      if (item.ownerId !== req.params.userId) {
+      if (item.ownerId !== req.params.userid) {
         // Check if item is on sale
         if (item.onSale) {
           // Check that userid in parameter same as in request or user is admin
           if (
-            req.params.userId === req.userId ||
+            req.params.userid === req.userId ||
             req.userRole === UserRole.ADMIN
           ) {
             /* Check user rights: if item owner is customer, user has to be admin or shopkeeper
@@ -298,9 +298,18 @@ module.exports = {
                     if (error || raw.ok === 0) {
                       return res.status(400).json({ message: error });
                     }
-                    const { bankAccountId } = User.findById(item.ownerId);
-                    BankAccount.findByIdAndUpdate(bankAccountId, {
-                      $inc: { balance: item.price },
+                    User.findById(item.ownerId, (uerr, udoc) => {
+                      BankAccount.findByIdAndUpdate(
+                        udoc.bankAccountId,
+                        {
+                          $inc: { balance: item.price },
+                        },
+                        (bankerror, bankres) => {
+                          if (bankerror) {
+                            return res.status(400).json({ message: error });
+                          }
+                        }
+                      );
                     });
                     Item.findById(req.params.id, (er, doc) => {
                       const result = doc;
@@ -327,10 +336,20 @@ module.exports = {
                   if (error || raw.ok === 0) {
                     return res.status(400).json({ message: error });
                   }
-                  const { bankAccountId } = User.findById(item.ownerId);
-                  BankAccount.findByIdAndUpdate(bankAccountId, {
-                    $inc: { balance: item.price },
+                  User.findById(item.ownerId, (uerr, udoc) => {
+                    BankAccount.findByIdAndUpdate(
+                      udoc.bankAccountId,
+                      {
+                        $inc: { balance: item.price },
+                      },
+                      (bankerror, bankres) => {
+                        if (bankerror) {
+                          return res.status(400).json({ message: error });
+                        }
+                      }
+                    );
                   });
+
                   Item.findById(req.params.id, (er, doc) => {
                     const result = doc;
                     result.links = itemToLinks(doc, currentURL);
@@ -358,9 +377,18 @@ module.exports = {
               if (error) {
                 return res.status(400).json({ message: error });
               }
-              const { bankAccountId } = User.findById(item.ownerId);
-              BankAccount.findByIdAndUpdate(bankAccountId, {
-                $inc: { balance: item.price },
+              User.findById(item.ownerId, (uerr, udoc) => {
+                BankAccount.findByIdAndUpdate(
+                  udoc.bankAccountId,
+                  {
+                    $inc: { balance: item.price },
+                  },
+                  (bankerror, bankres) => {
+                    if (bankerror) {
+                      return res.status(400).json({ message: error });
+                    }
+                  }
+                );
               });
               Item.findById(req.params.id, (er, doc) => {
                 const result = doc;
