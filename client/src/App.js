@@ -27,7 +27,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Layout>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={ItemPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/logout" component={LogoutPage} />
           <Route path="/register" component={RegistrationPage} />
