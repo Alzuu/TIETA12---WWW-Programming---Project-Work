@@ -8,6 +8,9 @@ const UserRole = require('./models/UserRole');
 // salt rounds for password hashing
 const saltRounds = 12;
 
+// Counter for ids
+let counter = 0;
+
 // Item names for random name generator
 const itemNames = [
   'Toilet paper',
@@ -48,10 +51,11 @@ function addNewUser(name, password, role) {
 function addCreditCard(userid) {
   return new Promise((resolve, reject) => {
     const newCreditCard = new CreditCard({
-      number: Date.now() + Math.floor(Math.random() * 1000),
+      number: `kortti${counter}`,
       CVC: '123',
       ownerName: 'Kortin omistaja',
     });
+    counter += 1;
     newCreditCard.save((error, doc) => {
       if (error) {
         reject(new Error(error));
@@ -77,9 +81,10 @@ function addCreditCard(userid) {
 function addBankAccount(userid) {
   return new Promise((resolve, reject) => {
     const newBankAccount = new BankAccount({
-      number: Date.now() + Math.floor(Math.random() * 1000),
+      number: `pankki${counter}`,
       balance: Math.floor(Math.random() * 1000),
     });
+    counter += 1;
     newBankAccount.save((error, doc) => {
       if (error) {
         reject(new Error(error));
