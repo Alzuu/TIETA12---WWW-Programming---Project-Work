@@ -2,6 +2,7 @@
 const xssFilters = require('xss-filters');
 const BankAccount = require('../models/BankAccount');
 const UserRole = require('../models/UserRole');
+const User = require('../models/User');
 
 module.exports = {
   /**
@@ -60,41 +61,55 @@ module.exports = {
 
   async showBankAccount(req, res) {
     if (req.userRole) {
-      try {
-        const currentURL = `${req.protocol}://${req.get('host')}${
-          req.originalUrl
-        }`;
-        let account = await BankAccount.findById(
-          req.params.bankAccountId
-        ).exec();
-        account = JSON.parse(JSON.stringify(account));
+      User.findById(req.userId, async (uerr, doc) => {
+        if (uerr) {
+          res.status(400).json({ message: uerr });
+        } else {
+          // Checks if bankAccountId matches or user is admin
+          if (
+            doc.bankAccountId === req.params.bankAccountId ||
+            req.userRole === UserRole.ADMIN
+          ) {
+            try {
+              const currentURL = `${req.protocol}://${req.get('host')}${
+                req.originalUrl
+              }`;
+              let account = await BankAccount.findById(
+                req.params.bankAccountId
+              ).exec();
+              account = JSON.parse(JSON.stringify(account));
 
-        // Add HATEOAS links to bank account
-        account.links = [
-          {
-            rel: 'self',
-            method: 'GET',
-            href: currentURL,
-            types: ['application/json'],
-          },
-          {
-            rel: 'self',
-            method: 'DELETE',
-            href: currentURL,
-            types: [],
-          },
-          {
-            rel: 'self',
-            method: 'PUT',
-            href: currentURL,
-            types: ['application/json'],
-          },
-        ];
-        res.status(200).json(account);
-      } catch (err) {
-        res.status(404).json({ message: err });
-        console.log('Caught an error: ', err);
-      }
+              // Add HATEOAS links to bank account
+              account.links = [
+                {
+                  rel: 'self',
+                  method: 'GET',
+                  href: currentURL,
+                  types: ['application/json'],
+                },
+                {
+                  rel: 'self',
+                  method: 'DELETE',
+                  href: currentURL,
+                  types: [],
+                },
+                {
+                  rel: 'self',
+                  method: 'PUT',
+                  href: currentURL,
+                  types: ['application/json'],
+                },
+              ];
+              res.status(200).json(account);
+            } catch (err) {
+              res.status(401).json({ message: err });
+              console.log('Caught an error: ', err);
+            }
+          } else {
+            res.status(403).json({ message: 'Forbidden' });
+          }
+        }
+      });
     } else {
       res.json(401).json({ message: 'Unauthorized' });
     }
@@ -143,15 +158,31 @@ module.exports = {
    */
   async removeBankAccount(req, res) {
     if (req.userRole) {
-      try {
-        const ID = req.params.bankAccountId;
-        const deletedAccount = await BankAccount.deleteOne({ _id: `${ID}` });
-        res.status(200).json(deletedAccount);
-        console.log('Successfully removed bank account.');
-      } catch (err) {
-        res.status(400).json({ message: err });
-        console.log('Caught an error: ', err);
-      }
+      User.findById(req.userId, async (uerr, doc) => {
+        if (uerr) {
+          res.status(400).json({ message: uerr });
+        } else {
+          // Checks if bankAccountId matches or user is admin
+          if (
+            doc.bankAccountId === req.params.bankAccountId ||
+            req.userRole === UserRole.ADMIN
+          ) {
+            try {
+              const ID = req.params.bankAccountId;
+              const deletedAccount = await BankAccount.deleteOne({
+                _id: `${ID}`,
+              });
+              res.status(200).json(deletedAccount);
+              console.log('Successfully removed bank account.');
+            } catch (err) {
+              res.status(400).json({ message: err });
+              console.log('Caught an error: ', err);
+            }
+          } else {
+            res.json(403).json({ message: 'Forbidden' });
+          }
+        }
+      });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
@@ -164,17 +195,33 @@ module.exports = {
    */
   async updateBankAccount(req, res) {
     if (req.userRole) {
-      try {
-        const ID = req.params.bankAccountId;
-        const { number, balance } = req.body;
-        const updatedAccount = await BankAccount.findOne({ _id: `${ID}` });
-        updatedAccount.number = xssFilters.inHTMLData(number);
-        updatedAccount.balance = parseFloat(xssFilters.inHTMLData(balance));
-        await updatedAccount.save();
-        res.status(200).json(updatedAccount);
-      } catch (err) {
-        res.status(400).json({ message: err });
-      }
+      User.findById(req.userId, async (uerr, doc) => {
+        if (uerr) {
+          res.status(400).json({ message: uerr });
+        } else {
+          // Checks if bankAccountId matches or user is admin
+          if (
+            doc.bankAccountId === req.params.bankAccountId ||
+            req.userRole === UserRole.ADMIN
+          ) {
+            try {
+              const ID = req.params.bankAccountId;
+              const { number, balance } = req.body;
+              const updatedAccount = await BankAccount.findOne({
+                _id: `${ID}`,
+              });
+              updatedAccount.number = xssFilters.inHTMLData(number);
+              updatedAccount.balance = parseFloat(
+                xssFilters.inHTMLData(balance)
+              );
+              await updatedAccount.save();
+              res.status(200).json(updatedAccount);
+            } catch (err) {
+              res.status(400).json({ message: err });
+            }
+          }
+        }
+      });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }

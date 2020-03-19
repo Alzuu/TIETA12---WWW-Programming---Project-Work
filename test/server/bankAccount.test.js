@@ -5,12 +5,12 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mocha = require('mocha');
-const mongoose = require('mongoose');
 const app = require('../../server/app');
 const UserRole = require('../../server/models/UserRole');
 
 const { describe } = mocha;
 const { before } = mocha;
+const { beforeEach } = mocha;
 const { after } = mocha;
 const { it } = mocha;
 const { expect } = chai;
@@ -63,9 +63,9 @@ describe(bankAccountUrl, () => {
     request = chai.request.agent(app);
     done();
   });
-  after((done) => {
+  after(() => {
     request.close();
-    return mongoose.disconnect(done);
+    // return mongoose.disconnect(done);
   });
 
   describe('GET /api/bankaccounts', async function() {
@@ -170,22 +170,35 @@ describe(bankAccountUrl, () => {
             });
         });
     });
-
     it('should require admin rights to list all bank accounts', async function() {
       await request
         .get(bankAccountUrl)
         .set('token', shopkeeperToken)
-        .then((res) => {
-          expect(res.statusCode).to.equal(401);
-        });
+        .then((res) => expect(res.statusCode).to.equal(401));
     });
     it('should list all bank accounts with admin rights', async function() {
       await request
         .get(bankAccountUrl)
         .set('token', adminToken)
-        .then((res) => {
-          expect(res.statusCode).to.equal(200);
-        });
+        .then((res) => expect(res.statusCode).to.equal(200));
     });
   });
+
+  describe('POST /api/bankaccounts', async function() {
+    let payload;
+    beforeEach(() => {
+      payload = {
+        number: '1234567890',
+        balance: 100,
+      };
+    });
+    it('should require logging in to add a bank account', async function() {
+      await request
+        .post(bankAccountUrl)
+        .type('json')
+        .send(payload)
+        .then((res) => expect(res.statusCode).to.equal(403));
+    });
+  });
+  // describe('GET /api/bankaccounts/:id', async function() {});
 });
