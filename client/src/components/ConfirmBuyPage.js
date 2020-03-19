@@ -39,16 +39,24 @@ function ConfirmBuyPage(props) {
       );
     }
     if (props.item.auth !== false) {
-      return (
-        <div>
-          <h2>Confirm purchase of {props.item.name}?</h2>
-          If you confirm purchase, your credit card will be automatically
-          charged and the item will be delivered to you.
-          <br />
-          <button onClick={handlePurchase}>Yes</button>
-          <button onClick={handleCancel}>Cancel</button>
-        </div>
-      );
+      if (props.item.ownerId !== props.userId) {
+        return (
+          <div>
+            <h2>Confirm purchase of {props.item.name}?</h2>
+            If you confirm purchase, your credit card will be automatically
+            charged and the item will be delivered to you.
+            <br />
+            <button onClick={handlePurchase}>Yes</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <h2>Purchase of own item prohibited.</h2>
+          </div>
+        );
+      }
     } else {
       return (
         <div>
