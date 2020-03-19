@@ -71,8 +71,8 @@ function BankAccount(props) {
   }
 
   function handleDelete(e) {
-    setNumber(null);
-    setBalance(null);
+    setNumber('');
+    setBalance(0);
     props.deleteBankAccount(props.id, props.token, {
       userId: props.userId,
       creditCardId: props.creditCardId,
@@ -87,15 +87,13 @@ function BankAccount(props) {
   }
 
   useEffect(() => {
-    setNumber(null);
-    setBalance(null);
     props.clearBankAccount();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    setNumber('');
+    setBalance(0);
     props.clearBankAccount();
-    setNumber(null);
-    setBalance(null);
     if (props.id && props.id !== 'undefined') {
       props.fetchBankAccount(props.id, props.token);
     }
@@ -105,7 +103,7 @@ function BankAccount(props) {
     if (
       props.id &&
       props.bankAccount &&
-      props.bankAccount.number !== 'undefined'
+      props.bankAccount.number !== undefined
     ) {
       setNumber(props.bankAccount.number);
       setBalance(props.bankAccount.balance);
@@ -115,6 +113,17 @@ function BankAccount(props) {
       });
     }
   }, [props.bankAccount]);
+  useEffect(() => {
+    if (
+      props.bankAccountId &&
+      props.bankAccountId !== '' &&
+      props.bankAccountId !== 'undefined'
+    ) {
+      setNumber(null);
+      setBalance(null);
+      props.clearBankAccount();
+    }
+  }, [props.bankAccountId]);
 
   useEffect(() => {
     if (
@@ -126,17 +135,17 @@ function BankAccount(props) {
       setEdited(false);
     }
     if (number === undefined) {
-      setNumber(null);
+      setNumber('');
       setSavedBankAccount({
-        number: null,
-        balance: null,
+        number: '',
+        balance: 0,
       });
     }
     if (balance === undefined) {
-      setBalance(null);
+      setBalance(0);
       setSavedBankAccount({
-        number: null,
-        balance: null,
+        number: '',
+        balance: 0,
       });
     }
   }, [number, balance]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -182,14 +191,17 @@ function BankAccount(props) {
                 required
                 value={number}
                 onChange={handleNumberChange}
+                InputLabelProps={{ shrink: true }}
               />
               <TextField
                 label="Bank account balance"
                 type="number"
                 name="balance"
+                min="0"
                 required
                 value={balance}
                 onChange={handleBalanceChange}
+                InputLabelProps={{ shrink: true }}
               />
               <FormGroup row={true}>
                 <Button
@@ -266,7 +278,7 @@ function BankAccount(props) {
               ) : (
                 ''
               )}
-              <form onSubmit={handleUpdateSubmit}>
+              <form onSubmit={handleUpdateSubmit} className="bankAccountBox">
                 <TextField
                   label="Bank account number"
                   type="text"
