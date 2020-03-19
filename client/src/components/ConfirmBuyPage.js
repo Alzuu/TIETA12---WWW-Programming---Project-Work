@@ -1,7 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { buyItem } from '../actions/items';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import Button from '@material-ui/core/Button';
+import './items.css';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 function ConfirmBuyPage(props) {
   const [redirect, setRedirect] = useState(null);
@@ -24,51 +37,89 @@ function ConfirmBuyPage(props) {
   if (props.item !== undefined) {
     if (confirmed && props.item.ownerId === props.userId) {
       return (
-        <div>
-          <h2>Purchase confirmed!</h2>
-          Redirecting to home in a few seconds...
-        </div>
+        <Box className="addItemBox">
+          <Alert severity="success" className="warningBox">
+            <AlertTitle>Success</AlertTitle>
+            Purchase confirmed! Redirecting to home...
+          </Alert>
+        </Box>
       );
     }
     if (confirmed && props.item.ownerId !== props.userId) {
       return (
-        <div>
-          <h2>Purchase failed!</h2>
-          Redirecting to home in a few seconds...
-        </div>
+        <Box className="addItemBox">
+          <Alert severity="error" className="warningBox">
+            <AlertTitle>Error</AlertTitle>
+            Purchase failed! Redirecting to home...
+          </Alert>
+        </Box>
       );
     }
     if (props.item.auth !== false) {
       if (props.item.ownerId !== props.userId) {
         return (
-          <div>
-            <h2>Confirm purchase of {props.item.name}?</h2>
-            If you confirm purchase, your credit card will be automatically
-            charged and the item will be delivered to you.
-            <br />
-            <button onClick={handlePurchase}>Yes</button>
-            <button onClick={handleCancel}>Cancel</button>
-          </div>
+          <Box className="addItemBox">
+            <Card className="itemCard">
+              <CardActionArea>
+                <CardHeader title={`Confirm purchase of ${props.item.name}?`} />
+
+                <CardContent>
+                  <Typography variant="body">
+                    If you confirm purchase, your credit card will be
+                    automatically charged and the item will be delivered to you.
+                  </Typography>
+                </CardContent>
+
+                <CardActions className="buttons">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handlePurchase}
+                    startIcon={<CheckIcon />}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleCancel}
+                    startIcon={<CloseIcon />}
+                  >
+                    Cancel
+                  </Button>
+                </CardActions>
+              </CardActionArea>
+            </Card>
+          </Box>
         );
       } else {
         return (
-          <div>
-            <h2>Purchase of own item prohibited.</h2>
-          </div>
+          <Box className="addItemBox">
+            <Alert severity="warning" className="warningBox">
+              <AlertTitle>Warning</AlertTitle>
+              Purchase of own item prohibited.
+            </Alert>
+          </Box>
         );
       }
     } else {
       return (
-        <div>
-          <h2>Please log in to view item.</h2>
-        </div>
+        <Box className="addItemBox">
+          <Alert severity="warning" className="warningBox">
+            <AlertTitle>Warning</AlertTitle>
+            Please log in to view item.
+          </Alert>
+        </Box>
       );
     }
   }
   return (
-    <div>
-      <h2>Loading item...</h2>
-    </div>
+    <Box className="addItemBox">
+      <Alert severity="info" className="warningBox">
+        <AlertTitle>Info</AlertTitle>
+        Loading item...
+      </Alert>
+    </Box>
   );
 }
 

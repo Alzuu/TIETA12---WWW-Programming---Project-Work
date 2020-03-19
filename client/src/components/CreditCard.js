@@ -13,9 +13,6 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -89,7 +86,7 @@ function CreditCard(props) {
     });
     setSavedCard({});
     setEdited(false);
-    if (props.admin == true) {
+    if (props.admin === true) {
       setRedirect('/creditcards');
     }
   }
@@ -102,7 +99,7 @@ function CreditCard(props) {
     setNumber('');
     setCvc('');
     setOwnerName('');
-    if (props.id && props.id != 'undefined') {
+    if (props.id && props.id !== 'undefined') {
       props.getCreditCard(props.id, props.token);
     }
   }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -118,19 +115,19 @@ function CreditCard(props) {
         ownerName: props.creditCard.ownerName,
       });
     }
-  }, [props.creditCard]);
+  }, [props.creditCard]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       number !== savedCard.number ||
       cvc !== savedCard.cvc ||
-      ownerName != savedCard.ownerName
+      ownerName !== savedCard.ownerName
     ) {
       setEdited(true);
     } else {
       setEdited(false);
     }
-    if (number == undefined) {
+    if (number === undefined) {
       setNumber('');
       setSavedCard({
         number: '',
@@ -138,7 +135,7 @@ function CreditCard(props) {
         ownerName: '',
       });
     }
-    if (cvc == undefined) {
+    if (cvc === undefined) {
       setCvc('');
       setSavedCard({
         number: '',
@@ -146,7 +143,7 @@ function CreditCard(props) {
         ownerName: '',
       });
     }
-    if (ownerName == undefined) {
+    if (ownerName === undefined) {
       setOwnerName('');
       setSavedCard({
         number: '',
@@ -169,12 +166,13 @@ function CreditCard(props) {
     );
   } else {
     if (
-      props.creditCard.id != undefined &&
-      props.id != null &&
-      props.id != 'undefined'
+      props.creditCard.id !== undefined &&
+      props.id !== null &&
+      props.id !== undefined &&
+      props.id !== 'undefined'
     ) {
       if (
-        (props.id == props.creditCardId && props.creditCardId != undefined) ||
+        (props.id === props.creditCardId && props.creditCardId !== undefined) ||
         (props.userRole === 1 && props.admin === true)
       ) {
         return (

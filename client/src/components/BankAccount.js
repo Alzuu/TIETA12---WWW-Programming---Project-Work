@@ -13,9 +13,6 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -112,7 +109,7 @@ function BankAccount(props) {
         balance: props.bankAccount.balance,
       });
     }
-  }, [props.bankAccount]);
+  }, [props.bankAccount]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (
       props.bankAccountId &&
@@ -123,7 +120,7 @@ function BankAccount(props) {
       setBalance(null);
       props.clearBankAccount();
     }
-  }, [props.bankAccountId]);
+  }, [props.bankAccountId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (

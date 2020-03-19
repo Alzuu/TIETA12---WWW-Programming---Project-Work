@@ -16,6 +16,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/List';
 import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
 import EditIcon from '@material-ui/icons/Edit';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
 function BuyItemPage(props) {
   function fetchItem(id) {
@@ -107,16 +109,22 @@ function BuyItemPage(props) {
       );
     } else {
       return (
-        <div>
-          <h2>Please log in to view item.</h2>
-        </div>
+        <Box className="addItemBox">
+          <Alert severity="warning" className="warningBox">
+            <AlertTitle>Warning</AlertTitle>
+            Please log in to view item.
+          </Alert>
+        </Box>
       );
     }
   } else {
     return (
-      <div>
-        <h2>Loading item...</h2>
-      </div>
+      <Box className="addItemBox">
+        <Alert severity="info" className="warningBox">
+          <AlertTitle>Info</AlertTitle>
+          Loading item...
+        </Alert>
+      </Box>
     );
   }
 }

@@ -25,3 +25,9 @@
   margin-top: 1vh;
   margin-bottom: 1vh;
 }
+.buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
