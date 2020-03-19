@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchBankAccounts } from '../actions/bankAccounts';
@@ -7,7 +7,7 @@ import './ItemPage.css';
 function ListBankAccountsPage(props) {
   useEffect(() => {
     props.fetchBankAccounts(props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (props.bankAccounts) {
     return (

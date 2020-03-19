@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import BankAccount from './BankAccount';
 
 function BankAccountAdmin(props) {

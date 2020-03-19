@@ -7,7 +7,7 @@ import './ItemPage.css';
 function ListCreditCardsPage(props) {
   useEffect(() => {
     props.getCreditCards(props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (props.creditCards) {
     return (

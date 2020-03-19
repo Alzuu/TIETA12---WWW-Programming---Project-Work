@@ -74,7 +74,7 @@ function BankAccount(props) {
 
   useEffect(() => {
     props.clearBankAccount();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setNumber(null);
@@ -82,7 +82,7 @@ function BankAccount(props) {
     if (props.id) {
       props.fetchBankAccount(props.id, props.token);
     }
-  }, [props.id]);
+  }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.bankAccount) {
@@ -106,13 +106,19 @@ function BankAccount(props) {
     }
     if (number === undefined) {
       setNumber(null);
-      setSavedBankAccount({ number: null, balance: null });
+      setSavedBankAccount({
+        number: null,
+        balance: null,
+      });
     }
     if (balance === undefined) {
       setBalance(null);
-      setSavedBankAccount({ number: null, balance: null });
+      setSavedBankAccount({
+        number: null,
+        balance: null,
+      });
     }
-  }, [number, balance]);
+  }, [number, balance]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (redirect) {
     return <Redirect to={redirect} />;
