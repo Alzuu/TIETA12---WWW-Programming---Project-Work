@@ -6,6 +6,7 @@ const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 
+// Open MongoDB connection
 const dbConfig = {
   host: 'localhost',
   port: '27017',
@@ -13,8 +14,10 @@ const dbConfig = {
 };
 db.connect(dbConfig);
 
+// Run setup script
 require('./setup');
 
+// Choose port according to environment used
 let port;
 if (process.env.NODE_ENV === 'dev') {
   port = 3001;
