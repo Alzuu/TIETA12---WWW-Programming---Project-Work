@@ -23,7 +23,6 @@ function BankAccount(props) {
         number,
         balance,
       };
-      console.log(props);
       props.addBankAccount(bankAccount, props.token, {
         userId: props.userId,
         creditCardId: props.creditCardId,
@@ -68,14 +67,14 @@ function BankAccount(props) {
     });
     setSavedBankAccount({});
     setEdited(false);
-    if (props.admin == true) {
+    if (props.admin === true) {
       setRedirect('/bankaccounts');
     }
   }
 
   useEffect(() => {
     props.clearBankAccount();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setNumber(null);
@@ -83,7 +82,7 @@ function BankAccount(props) {
     if (props.id) {
       props.fetchBankAccount(props.id, props.token);
     }
-  }, [props.id]);
+  }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.bankAccount) {
@@ -105,15 +104,21 @@ function BankAccount(props) {
     } else {
       setEdited(false);
     }
-    if (number == undefined) {
+    if (number === undefined) {
       setNumber(null);
-      setSavedBankAccount({ number: null, balance: null });
+      setSavedBankAccount({
+        number: null,
+        balance: null,
+      });
     }
-    if (balance == undefined) {
+    if (balance === undefined) {
       setBalance(null);
-      setSavedBankAccount({ number: null, balance: null });
+      setSavedBankAccount({
+        number: null,
+        balance: null,
+      });
     }
-  }, [number, balance]);
+  }, [number, balance]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (redirect) {
     return <Redirect to={redirect} />;
@@ -122,12 +127,13 @@ function BankAccount(props) {
     return <h2>Please login to view bank account.</h2>;
   } else {
     if (
-      props.bankAccount.id != undefined &&
-      props.id != null &&
-      props.id != undefined
+      props.bankAccount.id !== undefined &&
+      props.id !== null &&
+      props.id !== undefined
     ) {
       if (
-        (props.id == props.bankAccountId && props.bankAccountId != undefined) ||
+        (props.id === props.bankAccountId &&
+          props.bankAccountId !== undefined) ||
         (props.userRole === 1 && props.admin === true)
       ) {
         return (

@@ -44,7 +44,11 @@ function CreditCard(props) {
         ownerName: ownerName,
       };
       props.editCreditCard(card, props.token, props.id);
-      setSavedCard({ number: number, cvc: cvc, ownerName: ownerName });
+      setSavedCard({
+        number: number,
+        cvc: cvc,
+        ownerName: ownerName,
+      });
       setEdited(false);
     }
   }
@@ -75,7 +79,7 @@ function CreditCard(props) {
   }
   useEffect(() => {
     props.clearCreditCard();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     setNumber('');
     setCvc('');
@@ -83,7 +87,7 @@ function CreditCard(props) {
     if (props.id && props.id != 'undefined') {
       props.getCreditCard(props.id, props.token);
     }
-  }, [props.id]);
+  }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.creditCard) {
@@ -110,17 +114,29 @@ function CreditCard(props) {
     }
     if (number == undefined) {
       setNumber('');
-      setSavedCard({ number: '', cvc: '', ownerName: '' });
+      setSavedCard({
+        number: '',
+        cvc: '',
+        ownerName: '',
+      });
     }
     if (cvc == undefined) {
       setCvc('');
-      setSavedCard({ number: '', cvc: '', ownerName: '' });
+      setSavedCard({
+        number: '',
+        cvc: '',
+        ownerName: '',
+      });
     }
     if (ownerName == undefined) {
       setOwnerName('');
-      setSavedCard({ number: '', cvc: '', ownerName: '' });
+      setSavedCard({
+        number: '',
+        cvc: '',
+        ownerName: '',
+      });
     }
-  }, [number, cvc, ownerName]);
+  }, [number, cvc, ownerName]); // eslint-disable-line react-hooks/exhaustive-deps
   if (redirect) {
     return <Redirect to={redirect} />;
   }

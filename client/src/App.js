@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Route, BrowserRouter } from 'react-router-dom';
 import BuyItemPage from './components/BuyItemPage';
@@ -9,7 +8,6 @@ import Layout from './components/Layout';
 import LoginPage from './components/LoginPage';
 import LogoutPage from './components/LogoutPage';
 import RegistrationPage from './components/RegistrationPage';
-import HomePage from './components/HomePage';
 import UserPage from './components/UserPage';
 import AllItemsPage from './components/AllItemsPage';
 import CustomerItemsPage from './components/CustomerItemsPage';
