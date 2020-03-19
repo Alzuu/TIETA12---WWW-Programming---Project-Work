@@ -1,31 +1,6 @@
-.body {
-  background-color: #282c34;
-}
-.App {
-  background-color: #282c34;
-  color: whitesmoke;
-  text-align: center;
-  min-height: 100vh;
-  width: 70vw;
-  margin: auto;
-}
-
 .Header {
   background-color: white;
   color: black;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .userRoleSelection {
@@ -35,4 +10,12 @@
 .submitButton {
   background-color: ghostwhite;
   color: black;
+}
+.navigationbar {
+  margin-top: 5vh;
+}
+.rootContainer {
+  width: 70vw;
+  margin: 0 auto 0 auto;
+  padding-bottom: 5vh;
 }
