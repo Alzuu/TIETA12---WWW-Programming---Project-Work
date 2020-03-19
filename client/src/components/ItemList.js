@@ -41,7 +41,7 @@ function ItemList(props) {
                   </Link>
                 </td>
                 <td>
-                  <Link to={'/items/' + item._id + '/buy'}>Buy item</Link>
+                  <Link to={'/items/' + item._id + '/buy'}>View item</Link>
                   {item.ownerId === props.userId || props.userRole === 1 ? (
                     <Link to={'/items/' + item._id + '/edit'}>
                       <br />

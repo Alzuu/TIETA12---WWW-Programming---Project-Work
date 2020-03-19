@@ -19,8 +19,8 @@ function BuyItemPage(props) {
           <img
             width="300px"
             src={
-              '../../itemimages/' +
-              (props.item.pictureId === ''
+              '../../../itemimages/' +
+              (props.item.pictureId === '' || props.item.pictureId == undefined
                 ? 'nologo.png'
                 : props.item.pictureId)
             }
@@ -28,11 +28,19 @@ function BuyItemPage(props) {
           <br />
           Price: {props.item.price}
           <br />
-          <Link to={'/users/' + props.item.ownerId + '/items'}>
-            Seller items
-          </Link>
-          <br />
-          <Link to={'/items/' + props.item._id + '/buy/confirm'}>Buy item</Link>
+          {props.item.ownerId === props.userId ? (
+            <div>On sale: {props.item.onSale.toString()}</div>
+          ) : (
+            <div>
+              <Link to={'/users/' + props.item.ownerId + '/items'}>
+                Seller items
+              </Link>
+              <br />
+              <Link to={'/items/' + props.item._id + '/buy/confirm'}>
+                Buy item
+              </Link>
+            </div>
+          )}
         </div>
       );
     } else {
@@ -53,6 +61,7 @@ function BuyItemPage(props) {
 const mapStateToProps = (state) => ({
   item: state.itemsReducer.item,
   token: state.user.token,
+  userId: state.user.id,
 });
 const mapDispatchToProps = (dispatch) => {
   return {
