@@ -1,41 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { fetchCustomerItems } from '../actions/items';
 import ItemList from './ItemList';
 import './ItemPage.css';
-
+import './ItemPage.css';
+import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Box from '@material-ui/core/Box';
 function CustomerItemsPage(props) {
   function fetchItems(token) {
     props.fetchCustomerItems(token);
   }
   useEffect(() => {
     fetchItems(props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!props.items) {
     return (
-      <div>
-        <h2>Loading...</h2>
-      </div>
+      <Box className="listItemBox">
+        <Typography variant="h2">Loading...</Typography>
+      </Box>
     );
   } else {
     if (props.items && props.items.auth === false) {
       return (
-        <div>
-          <h2>Please login as shopkeeper or admin to view customer items.</h2>
-        </div>
+        <Box className="listItemBox">
+          <Alert severity="warning" className="warningBox">
+            <AlertTitle>Warning</AlertTitle>
+            Please login as shopkeeper or admin to view customer items.
+          </Alert>
+        </Box>
       );
     } else {
       return (
-        <div>
-          <h2>Customer items for sale</h2>
+        <Box>
+          <Typography variant="h2">Customer items for sale</Typography>
           <ItemList
             items={props.items}
             userId={props.userId}
             userRole={props.userRole}
             type="customer"
           />
-        </div>
+        </Box>
       );
     }
   }

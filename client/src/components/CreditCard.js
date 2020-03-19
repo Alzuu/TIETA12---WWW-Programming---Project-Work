@@ -8,7 +8,17 @@ import {
   deleteCreditCard,
   clearCreditCard,
 } from '../actions/creditCards';
-
+import './creditcards.css';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
+import FormGroup from '@material-ui/core/FormGroup';
 function CreditCard(props) {
   const [savedCard, setSavedCard] = useState({});
   const [number, setNumber] = useState('');
@@ -17,7 +27,6 @@ function CreditCard(props) {
   const [edited, setEdited] = useState(false);
   const [redirect, setRedirect] = useState(null);
 
-  console.log(props);
   function handleAddSubmit(e) {
     e.preventDefault();
     if (e.target.checkValidity()) {
@@ -26,7 +35,6 @@ function CreditCard(props) {
         CVC: cvc,
         ownerName: ownerName,
       };
-      console.log(props);
       props.addCreditCard(card, props.token, {
         userId: props.userId,
         bankAccountId: props.bankAccountId,
@@ -35,6 +43,7 @@ function CreditCard(props) {
       });
     }
   }
+
   function handleEditSubmit(e) {
     e.preventDefault();
     if (e.target.checkValidity()) {
@@ -52,15 +61,19 @@ function CreditCard(props) {
       setEdited(false);
     }
   }
+
   function handleNumberChange(e) {
     setNumber(e.target.value);
   }
+
   function handleCvcChange(e) {
     setCvc(e.target.value);
   }
+
   function handleOwnerNameChange(e) {
     setOwnerName(e.target.value);
   }
+
   function handleDelete(e) {
     setNumber('');
     setCvc('');
@@ -73,24 +86,26 @@ function CreditCard(props) {
     });
     setSavedCard({});
     setEdited(false);
-    if (props.admin == true) {
+    if (props.admin === true) {
       setRedirect('/creditcards');
     }
   }
+
   useEffect(() => {
     props.clearCreditCard();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     setNumber('');
     setCvc('');
     setOwnerName('');
-    if (props.id && props.id != 'undefined') {
+    if (props.id && props.id !== 'undefined') {
       props.getCreditCard(props.id, props.token);
     }
   }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (props.creditCard) {
+    if (props.id && props.creditCard && props.creditCard.number !== undefined) {
       setNumber(props.creditCard.number);
       setCvc(props.creditCard.cvc);
       setOwnerName(props.creditCard.ownerName);
@@ -100,19 +115,19 @@ function CreditCard(props) {
         ownerName: props.creditCard.ownerName,
       });
     }
-  }, [props.creditCard]);
+  }, [props.creditCard]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (
       number !== savedCard.number ||
       cvc !== savedCard.cvc ||
-      ownerName != savedCard.ownerName
+      ownerName !== savedCard.ownerName
     ) {
       setEdited(true);
     } else {
       setEdited(false);
     }
-    if (number == undefined) {
+    if (number === undefined) {
       setNumber('');
       setSavedCard({
         number: '',
@@ -120,7 +135,7 @@ function CreditCard(props) {
         ownerName: '',
       });
     }
-    if (cvc == undefined) {
+    if (cvc === undefined) {
       setCvc('');
       setSavedCard({
         number: '',
@@ -128,7 +143,7 @@ function CreditCard(props) {
         ownerName: '',
       });
     }
-    if (ownerName == undefined) {
+    if (ownerName === undefined) {
       setOwnerName('');
       setSavedCard({
         number: '',
@@ -141,24 +156,36 @@ function CreditCard(props) {
     return <Redirect to={redirect} />;
   }
   if (!props.userId) {
-    return <h2>Please login to view creditcard.</h2>;
+    return (
+      <Box className="bankAccountBox">
+        <Alert className="warningbox" severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Please login to view bank account.
+        </Alert>
+      </Box>
+    );
   } else {
     if (
-      props.creditCard.id != undefined &&
-      props.id != null &&
-      props.id != 'undefined'
+      props.creditCard.id !== undefined &&
+      props.id !== null &&
+      props.id !== undefined &&
+      props.id !== 'undefined'
     ) {
       if (
-        (props.id == props.creditCardId && props.creditCardId != undefined) ||
+        (props.id === props.creditCardId && props.creditCardId !== undefined) ||
         (props.userRole === 1 && props.admin === true)
       ) {
         return (
-          <div>
-            <h2>Edit credit card</h2>
-            {edited ? <p>Press 'Update credit card' to save changes.</p> : ''}
-            <form onSubmit={handleEditSubmit}>
-              <label htmlFor="number">Credit card number: </label>
-              <input
+          <Box className="creditCardBox">
+            <Typography variant="h2">Edit credit card</Typography>
+            {edited ? (
+              <Alert severity="info">Press 'Update' to save changes.</Alert>
+            ) : (
+              ''
+            )}
+            <form onSubmit={handleEditSubmit} className="creditCardBox">
+              <TextField
+                label="Credit card number"
                 type="text"
                 name="number"
                 minLength="1"
@@ -167,9 +194,8 @@ function CreditCard(props) {
                 value={number}
                 onChange={handleNumberChange}
               />
-              <br />
-              <label htmlFor="cvc">CVC: </label>
-              <input
+              <TextField
+                label="Credit card CVC"
                 type="text"
                 name="cvc"
                 minLength="3"
@@ -178,9 +204,8 @@ function CreditCard(props) {
                 value={cvc}
                 onChange={handleCvcChange}
               />
-              <br />
-              <label htmlFor="ownerName">Credit card owner name: </label>
-              <input
+              <TextField
+                label="Credit card owner name"
                 type="text"
                 name="ownerName"
                 minLength="1"
@@ -189,30 +214,44 @@ function CreditCard(props) {
                 value={ownerName}
                 onChange={handleOwnerNameChange}
               />
-              <br />
-              <button type="submit">Update credit card</button>
-              <button type="button" onClick={handleDelete}>
-                Delete credit card
-              </button>
+              <FormGroup row={true}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="outlined"
+                  startIcon={<UpdateIcon />}
+                >
+                  Update
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleDelete}
+                  startIcon={<DeleteIcon />}
+                  color="secondary"
+                  variant="outlined"
+                >
+                  Delete
+                </Button>
+              </FormGroup>
             </form>
-          </div>
+          </Box>
         );
       }
     } else {
       if (props.id === props.creditCardId) {
         return (
-          <div>
-            <h2>Add credit card</h2>
+          <Box className="creditCardBox">
+            <Typography variant="h2">Add credit card</Typography>
             {props.creditCard && props.creditCard.message ? (
-              <p>
+              <Alert severity="error" className="warningBox">
                 Adding credit card failed! Are you sure the number is correct?
-              </p>
+              </Alert>
             ) : (
               ''
             )}
-            <form onSubmit={handleAddSubmit}>
-              <label htmlFor="number">Credit card number: </label>
-              <input
+            <form onSubmit={handleAddSubmit} className="creditCardBox">
+              <TextField
+                label="Credit card number"
                 type="text"
                 name="number"
                 minLength="1"
@@ -221,9 +260,8 @@ function CreditCard(props) {
                 value={number}
                 onChange={handleNumberChange}
               />
-              <br />
-              <label htmlFor="cvc">CVC: </label>
-              <input
+              <TextField
+                label="Credit card CVC"
                 type="text"
                 name="cvc"
                 minLength="3"
@@ -232,9 +270,8 @@ function CreditCard(props) {
                 value={cvc}
                 onChange={handleCvcChange}
               />
-              <br />
-              <label htmlFor="ownerName">Credit card owner name: </label>
-              <input
+              <TextField
+                label="Credit card owner name"
                 type="text"
                 name="ownerName"
                 minLength="1"
@@ -243,20 +280,31 @@ function CreditCard(props) {
                 value={ownerName}
                 onChange={handleOwnerNameChange}
               />
-              <br />
-              <button type="submit">Add credit card</button>
+
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                startIcon={<AddIcon />}
+              >
+                Add credit card
+              </Button>
             </form>
-          </div>
+          </Box>
         );
       } else {
         if (props.userRole === 1) {
           return (
-            <div>
-              <h2>Edit credit card</h2>
-              {edited ? <p>Press 'Update credit card' to save changes.</p> : ''}
-              <form onSubmit={handleEditSubmit}>
-                <label htmlFor="number">Credit card number: </label>
-                <input
+            <Box className="creditCardBox">
+              <Typography variant="h2">Edit credit card</Typography>
+              {edited ? (
+                <Alert severity="info">Press 'Update' to save changes.</Alert>
+              ) : (
+                ''
+              )}
+              <form onSubmit={handleEditSubmit} className="creditCardBox">
+                <TextField
+                  label="Credit card number"
                   type="text"
                   name="number"
                   minLength="1"
@@ -265,9 +313,8 @@ function CreditCard(props) {
                   value={number}
                   onChange={handleNumberChange}
                 />
-                <br />
-                <label htmlFor="cvc">CVC: </label>
-                <input
+                <TextField
+                  label="Credit card CVC"
                   type="text"
                   name="cvc"
                   minLength="3"
@@ -276,9 +323,8 @@ function CreditCard(props) {
                   value={cvc}
                   onChange={handleCvcChange}
                 />
-                <br />
-                <label htmlFor="ownerName">Credit card owner name: </label>
-                <input
+                <TextField
+                  label="Credit card owner name"
                   type="text"
                   name="ownerName"
                   minLength="1"
@@ -287,13 +333,27 @@ function CreditCard(props) {
                   value={ownerName}
                   onChange={handleOwnerNameChange}
                 />
-                <br />
-                <button type="submit">Update credit card</button>
-                <button type="button" onClick={handleDelete}>
-                  Delete credit card
-                </button>
+                <FormGroup row={true}>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="outlined"
+                    startIcon={<UpdateIcon />}
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleDelete}
+                    startIcon={<DeleteIcon />}
+                    color="secondary"
+                    variant="outlined"
+                  >
+                    Delete
+                  </Button>
+                </FormGroup>
               </form>
-            </div>
+            </Box>
           );
         }
       }

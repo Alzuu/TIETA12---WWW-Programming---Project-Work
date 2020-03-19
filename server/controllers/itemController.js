@@ -119,10 +119,12 @@ module.exports = {
   /* Add new item
    */
   add(req, res) {
+    // Check that userId same as ownerId or user is admin
     if (req.userId === req.body.ownerId || req.userRole === UserRole.ADMIN) {
       const currentURL = `${req.protocol}://${req.get('host')}${
         req.originalUrl
       }`;
+      // Create new item
       const newItem = new Item({
         name: xssFilters.inHTMLData(req.body.name ? req.body.name : ''),
         price: parseFloat(xssFilters.inHTMLData(req.body.price)),
@@ -133,6 +135,7 @@ module.exports = {
         onSale: xssFilters.inHTMLData(req.body.onSale),
         pictureId: xssFilters.inHTMLData(req.file ? req.file.filename : ''),
       });
+      // Save the item and respond with the result
       newItem.save((err, item) => {
         if (err) {
           return res.status(400).json({ message: err });
@@ -160,8 +163,9 @@ module.exports = {
       if (!item) {
         return res.status(404).json({ message: 'No item found!' });
       }
+      // If owner is customer
       if (item.onSale && item.ownerIsCustomer) {
-        // Check for shopkeeper/admin role
+        // Check for shopkeeper/admin role or own item
         if (
           req.userRole === UserRole.ADMIN ||
           req.userRole === UserRole.SHOPKEEPER ||
@@ -173,11 +177,13 @@ module.exports = {
         }
         return res.status(401).json({ message: 'Unauthorized' });
       }
+      // If owner is shopkeeper and item on sale
       if (item.onSale && !item.ownerIsCustomer) {
         const result = JSON.parse(JSON.stringify(item));
         result.links = itemToLinks(item, currentURL);
         return res.json(result);
       }
+      // If item not on sale, check for owner or admin rights
       if (!item.onSale) {
         if (req.userRole === UserRole.ADMIN || req.userId === item.ownerId) {
           const result = JSON.parse(JSON.stringify(item));
@@ -188,6 +194,8 @@ module.exports = {
       }
     });
   },
+  /* Updates item
+   */
   updateOne(req, res) {
     const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     // Get updated data
@@ -209,14 +217,18 @@ module.exports = {
       }
       // Check if user is item owner or admin
       if (req.userId === item.ownerId || req.userRole === UserRole.ADMIN) {
+        // Create new item
         const newData = {
-          name,
-          price,
-          ownerId,
-          ownerIsCustomer,
-          onSale,
+          name: name ? xssFilters.inHTMLData(name) : undefined,
+          price: price ? parseFloat(xssFilters.inHTMLData(price)) : undefined,
+          ownerId: ownerId ? xssFilters.inHTMLData(ownerId) : undefined,
+          ownerIsCustomer: ownerIsCustomer
+            ? xssFilters.inHTMLData(ownerIsCustomer)
+            : undefined,
+          onSale: onSale ? xssFilters.inHTMLData(onSale) : undefined,
           pictureId,
         };
+        // Update item
         item.updateOne(
           newData,
           { omitUndefined: true, runValidators: true },
@@ -224,6 +236,7 @@ module.exports = {
             if (error || raw.ok === 0) {
               return res.status(400).json({ message: error });
             }
+            // return new item
             Item.findById(req.params.id, (er, doc) => {
               const result = doc;
               result.links = itemToLinks(doc, currentURL);
@@ -238,6 +251,8 @@ module.exports = {
       }
     });
   },
+  /* delete item
+   */
   deleteOne(req, res) {
     // Find item
     Item.findById(req.params.id, (err, item) => {
@@ -261,6 +276,8 @@ module.exports = {
       }
     });
   },
+  /* Sell item to user
+   */
   sellOne(req, res) {
     const currentURL = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     // Find item
@@ -289,6 +306,7 @@ module.exports = {
                 req.userRole === UserRole.ADMIN ||
                 req.userRole === UserRole.SHOPKEEPER
               ) {
+                // Update item
                 item.updateOne(
                   {
                     ownerIsCustomer: !(req.userRole === UserRole.SHOPKEEPER),
@@ -299,24 +317,28 @@ module.exports = {
                     if (error || raw.ok === 0) {
                       return res.status(400).json({ message: error });
                     } else {
+                      // Get previous owner
                       User.findById(currentOwner, (uerr, udoc) => {
                         if (uerr) {
                           return res.status(400).json({ message: uerr });
                         } else {
+                          // Update previous owners bank account
                           BankAccount.findByIdAndUpdate(
                             udoc.bankAccountId,
                             {
                               $inc: { balance: item.price },
                             },
-                            (bankerror, bankres) => {
+                            (bankerror) => {
                               if (bankerror) {
                                 return res
                                   .status(400)
                                   .json({ message: bankerror });
                               } else {
+                                // Respond with item
                                 Item.findById(req.params.id, (er, doc) => {
                                   const result = doc;
                                   result.links = itemToLinks(doc, currentURL);
+                                  // Update users' item lists
                                   delItemFromUser(item._id, item.ownerId);
                                   addItemToUser(item._id, doc.ownerId);
                                   return res.json(result);
@@ -354,7 +376,7 @@ module.exports = {
                         {
                           $inc: { balance: item.price },
                         },
-                        (bankerror, bankres) => {
+                        (bankerror) => {
                           if (bankerror) {
                             return res.status(400).json({ message: error });
                           } else {
@@ -380,12 +402,12 @@ module.exports = {
             const { userRole } = User.findById(req.params.userid);
             item.updateOne(
               {
-                ownerIsCustomer: !(req.userRole === UserRole.SHOPKEEPER),
+                ownerIsCustomer: !(userRole === UserRole.SHOPKEEPER),
                 onSale: false,
                 ownerId: req.params.userid,
               },
               { omitUndefined: true },
-              (error, raw) => {
+              (error) => {
                 if (error) {
                   return res.status(400).json({ message: error });
                 } else {
@@ -398,7 +420,7 @@ module.exports = {
                         {
                           $inc: { balance: item.price },
                         },
-                        (bankerror, bankres) => {
+                        (bankerror) => {
                           if (bankerror) {
                             return res.status(400).json({ message: error });
                           } else {

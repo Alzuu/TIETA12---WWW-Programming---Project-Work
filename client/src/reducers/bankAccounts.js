@@ -17,6 +17,7 @@ export function bankAccountsReducer(state = {}, action) {
       return {
         number: undefined,
         balance: undefined,
+        message: undefined,
       };
     default:
       return state;

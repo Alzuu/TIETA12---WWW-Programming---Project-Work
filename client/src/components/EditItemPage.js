@@ -1,17 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { updateItem, fetchEditItem } from '../actions/items';
-
+import './items.css';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import FormGroup from '@material-ui/core/FormGroup';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 function EditItemPage(props) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0.0);
   const [onSale, setOnSale] = useState(true);
   const [redirect, setRedirect] = useState(null);
   const [itemUpdated, setItemUpdated] = useState(false);
+
   useEffect(() => {
     props.fetchEditItem(props.match.params.id, props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (props.item) {
       setName(props.item.name);
@@ -24,6 +37,7 @@ function EditItemPage(props) {
       }
     }
   }, [props]);
+
   function handleNameChange(e) {
     setName(e.target.value);
   }
@@ -56,14 +70,21 @@ function EditItemPage(props) {
   }
   if (props.token) {
     if (!redirect && itemUpdated) {
-      return <h2>Item updated. Redirecting...</h2>;
+      return (
+        <Box className="addItemBox">
+          <Alert severity="success" className="warningBox">
+            <AlertTitle>Success</AlertTitle>
+            Item updated succesfully! Redirecting...
+          </Alert>
+        </Box>
+      );
     } else if (props.item) {
       return (
-        <div>
-          <h2>Edit item {props.item._id}</h2>
-          <form onSubmit={handleClick}>
-            <label htmlFor="name">Name: </label>
-            <input
+        <Box className="addItemBox">
+          <Typography variant="h2">Edit item {props.item._id}</Typography>
+          <form onSubmit={handleClick} className="addItemBox">
+            <TextField
+              label="Item name"
               type="text"
               name="name"
               value={name}
@@ -71,9 +92,8 @@ function EditItemPage(props) {
               required
               onChange={handleNameChange}
             />
-            <br />
-            <label htmlFor="price">Price: </label>
-            <input
+            <TextField
+              label="Item price"
               type="number"
               name="price"
               value={price}
@@ -82,21 +102,38 @@ function EditItemPage(props) {
               required
               onChange={handlePriceChange}
             />
-            <br />
-            <label htmlFor="onsale">Put on sale: </label>
-            <input
-              type="checkbox"
-              name="onsale"
-              checked={onSale}
-              onChange={handleOnSaleChange}
+            <FormControlLabel
+              label="On sale"
+              control={
+                <Checkbox
+                  name="onsale"
+                  checked={onSale}
+                  onChange={handleOnSaleChange}
+                  color="primary"
+                />
+              }
             />
-            <br />
-            <button type="button" onClick={handleCancel}>
-              Cancel
-            </button>
-            <button type="submit">Update item</button>
+            <FormGroup row={true}>
+              <Button
+                variant="outlined"
+                color="primary"
+                type="submit"
+                startIcon={<CheckIcon />}
+              >
+                Update item
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancel}
+                startIcon={<CloseIcon />}
+              >
+                Cancel
+              </Button>
+            </FormGroup>
           </form>
-        </div>
+        </Box>
       );
     } else {
       return <h2>Loading item...</h2>;

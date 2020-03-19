@@ -498,22 +498,22 @@ describe('/api/items', () => {
         .set('token', customerToken)
         .type('json')
         .send(payload)
-        .then((res) => {
-          request
+        .then(async function(res) {
+          await request
             .put(itemUrl + res.body._id)
             .set('token', shopkeeperToken)
             .send({ name: 'NAKKI' })
             .then((response) => {
               expect(response.statusCode).to.equal(401);
             });
-          request
+          await request
             .put(itemUrl + res.body._id)
             .set('token', adminToken)
             .send({ name: 'NAKKI' })
             .then((response) => {
               expect(response.statusCode).to.equal(200);
             });
-          request
+          await request
             .put(itemUrl + res.body._id)
             .set('token', customerToken)
             .send({ name: 'NAKKI' })

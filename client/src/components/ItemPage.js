@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { fetchShopkeeperItems } from '../actions/items';
 import ItemList from './ItemList';
 import './ItemPage.css';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 function ItemPage(props) {
   function fetchItems() {
@@ -11,24 +12,24 @@ function ItemPage(props) {
   }
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!props.items) {
     return (
-      <div>
-        <h2>Loading...</h2>
-      </div>
+      <Box className="listItemBox">
+        <Typography variant="h2">Loading...</Typography>
+      </Box>
     );
   } else {
     return (
-      <div>
-        <h2>Items for sale</h2>
+      <Box>
+        <Typography variant="h2">Items for sale</Typography>
         <ItemList
           items={props.items}
           userId={props.userId ? props.userId : ''}
           userRole={props.userRole ? props.userRole : 3}
           type="shopkeeper"
         />
-      </div>
+      </Box>
     );
   }
 }

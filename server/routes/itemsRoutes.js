@@ -5,24 +5,27 @@ const verifyToken = require('../authentication/verifyToken');
 const getRole = require('../authentication/getRole');
 
 const router = express.Router();
+
+// Set up multer for uploading images
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination(req, file, cb) {
     cb(null, 'client/public/itemimages/');
   },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
+// Set up limits for files: only jpeg/png images and max 5MB in size
 const allowedTypes = ['image/jpeg', 'image/png'];
 const upload = multer({
   storage,
-  fileFilter: function(req, file, cb) {
+  fileFilter(req, file, cb) {
     if (allowedTypes.indexOf(file.mimetype) < 0) {
       return cb(null, false);
     }
     cb(null, true);
   },
-  limits: { fileSize: 2 * 1000000 },
+  limits: { fileSize: 5 * 1000000 },
 }).single('image');
 
 router.get('/shopkeepers', itemController.listShopkeepersItems);
