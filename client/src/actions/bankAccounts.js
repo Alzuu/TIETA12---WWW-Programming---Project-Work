@@ -65,7 +65,6 @@ export function addBankAccount(details, token, user) {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         fetch(`/api/users/${user.userId}`, {
           method: 'PUT',
           headers: { token: token, 'Content-Type': 'application/json' },
@@ -83,7 +82,6 @@ export function addBankAccount(details, token, user) {
         })
           .then((response) => response.json())
           .then((jsonUser) => {
-            console.log(jsonUser);
             const modUser = {
               auth: true,
               bankAccountId: jsonUser.bankAccountId,
@@ -126,7 +124,6 @@ export function deleteBankAccount(id, token, user) {
         })
           .then((response) => response.json())
           .then((jsonUser) => {
-            console.log(jsonUser);
             const modUser = {
               auth: true,
               bankAccountId: undefined,
@@ -136,7 +133,6 @@ export function deleteBankAccount(id, token, user) {
               name: jsonUser.name,
               role: jsonUser.role,
             };
-            console.log(modUser);
             if (jsonUser.bankAccountId !== undefined) {
               dispatch(receiveBankAccountId(modUser));
               dispatch(bankAccountDeleted());
@@ -145,6 +141,7 @@ export function deleteBankAccount(id, token, user) {
       });
   };
 }
+
 export function updateBankAccount(id, details, token) {
   return (dispatch) => {
     return fetch(`/api/bankaccounts/${id}`, {
@@ -154,7 +151,6 @@ export function updateBankAccount(id, details, token) {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         dispatch(receiveBankAccount(json));
       });
   };
