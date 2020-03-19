@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { fetchCustomerItems } from '../actions/items';
 import ItemList from './ItemList';
@@ -15,7 +14,7 @@ function CustomerItemsPage(props) {
   }
   useEffect(() => {
     fetchItems(props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!props.items) {
     return (
       <Box className="listItemBox">
@@ -34,7 +33,7 @@ function CustomerItemsPage(props) {
       );
     } else {
       return (
-        <Box className="listItemBox">
+        <Box>
           <Typography variant="h2">Customer items for sale</Typography>
           <ItemList
             items={props.items}

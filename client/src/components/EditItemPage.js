@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { updateItem, fetchEditItem } from '../actions/items';
@@ -23,7 +23,7 @@ function EditItemPage(props) {
 
   useEffect(() => {
     props.fetchEditItem(props.match.params.id, props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.item) {

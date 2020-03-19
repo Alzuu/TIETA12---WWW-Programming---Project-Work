@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import Header from './Header';
 import Navigation from './Navigation';
 import Container from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';

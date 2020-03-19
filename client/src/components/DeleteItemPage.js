@@ -34,7 +34,7 @@ function DeleteItemPage(props) {
 
   useEffect(() => {
     props.fetchItem(props.match.params.id, props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (redirect) {
     return <Redirect to={redirect} />;

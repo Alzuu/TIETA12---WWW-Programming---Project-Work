@@ -33,7 +33,7 @@ function UserItemsPage(props) {
             items={props.items}
             userId={props.userId}
             userRole={props.userRole}
-            type="user"
+            type={props.userId === props.match.params.id ? 'own' : 'user'}
           />
         </div>
       );

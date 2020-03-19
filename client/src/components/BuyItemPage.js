@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchItem } from '../actions/items';
@@ -25,9 +25,9 @@ function BuyItemPage(props) {
   }
   useEffect(() => {
     fetchItem(props.match.params.id);
-  }, []);
-  if (props.item != undefined) {
-    if (props.item.auth != false) {
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  if (props.item !== undefined) {
+    if (props.item.auth !== false) {
       return (
         <Box className="addItemBox">
           <Card className="itemCard">
@@ -38,7 +38,7 @@ function BuyItemPage(props) {
                 src={
                   '../../../itemimages/' +
                   (props.item.pictureId === '' ||
-                  props.item.pictureId == undefined
+                  props.item.pictureId === undefined
                     ? 'nologo.png'
                     : props.item.pictureId)
                 }

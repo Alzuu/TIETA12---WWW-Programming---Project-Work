@@ -33,7 +33,7 @@ function AllItemsPage(props) {
       );
     } else {
       return (
-        <Box className="listItemBox">
+        <Box>
           <Typography variant="h2">All items</Typography>
           <ItemList
             items={props.items}
