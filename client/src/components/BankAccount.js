@@ -8,6 +8,20 @@ import {
   updateBankAccount,
   clearBankAccount,
 } from '../actions/bankAccounts';
+import './bankaccounts.css';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
+import FormGroup from '@material-ui/core/FormGroup';
 
 function BankAccount(props) {
   const [savedBankAccount, setSavedBankAccount] = useState({});
@@ -57,8 +71,8 @@ function BankAccount(props) {
   }
 
   function handleDelete(e) {
-    setNumber('');
-    setBalance(0);
+    setNumber(null);
+    setBalance(null);
     props.deleteBankAccount(props.id, props.token, {
       userId: props.userId,
       creditCardId: props.creditCardId,
@@ -73,19 +87,26 @@ function BankAccount(props) {
   }
 
   useEffect(() => {
+    setNumber(null);
+    setBalance(null);
     props.clearBankAccount();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    props.clearBankAccount();
     setNumber(null);
     setBalance(null);
-    if (props.id) {
+    if (props.id && props.id !== 'undefined') {
       props.fetchBankAccount(props.id, props.token);
     }
   }, [props.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (props.bankAccount) {
+    if (
+      props.id &&
+      props.bankAccount &&
+      props.bankAccount.number !== 'undefined'
+    ) {
       setNumber(props.bankAccount.number);
       setBalance(props.bankAccount.balance);
       setSavedBankAccount({
@@ -124,7 +145,14 @@ function BankAccount(props) {
     return <Redirect to={redirect} />;
   }
   if (!props.userId) {
-    return <h2>Please login to view bank account.</h2>;
+    return (
+      <Box className="bankAccountBox">
+        <Alert className="warningbox" severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          Please login to view bank account.
+        </Alert>
+      </Box>
+    );
   } else {
     if (
       props.bankAccount.id !== undefined &&
@@ -137,57 +165,110 @@ function BankAccount(props) {
         (props.userRole === 1 && props.admin === true)
       ) {
         return (
-          <div>
-            <h2>Edit bank account</h2>
-            {edited ? <p>Press 'Update' to save changes.</p> : ''}
-            <form onSubmit={handleUpdateSubmit}>
-              <label>
-                Bank account number:
-                <input
-                  type="text"
-                  name="number"
-                  minLength="1"
-                  maxLength="20"
-                  required
-                  value={number}
-                  onChange={handleNumberChange}
-                />
-              </label>
-              <label>
-                Bank account balance:
-                <input
-                  type="number"
-                  name="balance"
-                  required
-                  value={balance}
-                  onChange={handleBalanceChange}
-                />
-              </label>
-              <br />
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleDelete}>
-                Delete
-              </button>
+          <Box className="bankAccountBox">
+            <Typography variant="h2">Edit bank account</Typography>
+            {edited ? (
+              <Alert severity="info">Press 'Update' to save changes.</Alert>
+            ) : (
+              ''
+            )}
+            <form onSubmit={handleUpdateSubmit} className="bankAccountBox">
+              <TextField
+                label="Bank account number"
+                type="text"
+                name="number"
+                minLength="1"
+                maxLength="20"
+                required
+                value={number}
+                onChange={handleNumberChange}
+              />
+              <TextField
+                label="Bank account balance"
+                type="number"
+                name="balance"
+                required
+                value={balance}
+                onChange={handleBalanceChange}
+              />
+              <FormGroup row={true}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="outlined"
+                  startIcon={<UpdateIcon />}
+                >
+                  Update
+                </Button>
+                <Button
+                  type="button"
+                  startIcon={<DeleteIcon />}
+                  color="secondary"
+                  variant="outlined"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </Button>
+              </FormGroup>
             </form>
-          </div>
+          </Box>
         );
       }
     } else {
       if (props.id === props.bankAccountId) {
         return (
-          <div>
-            <h2>Add bank account</h2>
+          <Box className="bankAccountBox">
+            <Typography variant="h2">Add bank account</Typography>
             {props.bankAccount && props.bankAccount.message ? (
-              <p>
+              <Alert severity="error" className="warningBox">
                 Adding bank account failed! Are you sure the number is correct?
-              </p>
+              </Alert>
             ) : (
               ''
             )}
-            <form onSubmit={handleAddSubmit}>
-              <label>
-                Bank account number:
-                <input
+            <form onSubmit={handleAddSubmit} className="bankAccountBox">
+              <TextField
+                label="Bank account number"
+                type="text"
+                name="number"
+                minLength="1"
+                maxLength="20"
+                required
+                value={number}
+                onChange={handleNumberChange}
+              />
+              <TextField
+                label="Bank account balance"
+                type="number"
+                name="balance"
+                required
+                value={balance}
+                onChange={handleBalanceChange}
+              />
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                startIcon={<AddIcon />}
+              >
+                Add bank account
+              </Button>
+            </form>
+          </Box>
+        );
+      } else {
+        if (props.userRole === 1) {
+          return (
+            <Box className="bankAccountBox">
+              <Typography variant="h2">Edit bank account</Typography>
+              {edited ? (
+                <Alert severity="info">Press 'Update' to save changes.</Alert>
+              ) : (
+                ''
+              )}
+              <form onSubmit={handleUpdateSubmit}>
+                <TextField
+                  label="Bank account number"
                   type="text"
                   name="number"
                   minLength="1"
@@ -196,60 +277,35 @@ function BankAccount(props) {
                   value={number}
                   onChange={handleNumberChange}
                 />
-              </label>
-              <br />
-              <label>
-                Bank account balance:
-                <input
+                <TextField
+                  label="Bank account balance"
                   type="number"
                   name="balance"
                   required
                   value={balance}
                   onChange={handleBalanceChange}
                 />
-              </label>
-              <br />
-              <button type="submit">Add bank account</button>
-            </form>
-          </div>
-        );
-      } else {
-        if (props.userRole === 1) {
-          return (
-            <div>
-              <h2>Edit bank account</h2>
-              {edited ? <p>Press 'Update' to save changes.</p> : ''}
-              <form onSubmit={handleUpdateSubmit}>
-                <label>
-                  Bank account number:
-                  <input
-                    type="text"
-                    name="number"
-                    minLength="1"
-                    maxLength="20"
-                    required
-                    value={number}
-                    onChange={handleNumberChange}
-                  />
-                </label>
-                <br />
-                <label>
-                  Bank account balance:
-                  <input
-                    type="number"
-                    name="balance"
-                    required
-                    value={balance}
-                    onChange={handleBalanceChange}
-                  />
-                </label>
-                <br />
-                <button type="submit">Update</button>
-                <button type="button" onClick={handleDelete}>
-                  Delete
-                </button>
+                <FormGroup row={true}>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="outlined"
+                    startIcon={<UpdateIcon />}
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    type="button"
+                    startIcon={<DeleteIcon />}
+                    color="secondary"
+                    variant="outlined"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </Button>
+                </FormGroup>
               </form>
-            </div>
+            </Box>
           );
         }
       }

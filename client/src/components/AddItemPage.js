@@ -165,9 +165,7 @@ function AddItemPage(props) {
             {validateFileSize(fileSize) ? (
               ''
             ) : (
-              <Alert severity="warning">
-                <AlertTitle>Warning</AlertTitle>File size too big! (max 5MB)
-              </Alert>
+              <Alert severity="error">File size too big! (max 5MB)</Alert>
             )}
             <Button
               variant="outlined"
