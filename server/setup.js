@@ -29,8 +29,8 @@ function addNewUser(name, password, role) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, saltRounds, (err, hash) => {
       const newUser = new User({
-        name: name,
-        role: role,
+        name,
+        role,
         password: hash,
         items: [],
         creditCardId: 'undefined',

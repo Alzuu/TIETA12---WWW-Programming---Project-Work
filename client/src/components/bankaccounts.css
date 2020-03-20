@@ -1,0 +1,19 @@
+.warningBox {
+  margin-top: 5vh;
+  min-width: 20vw;
+}
+.bankAccountBox {
+  width: 50%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.bankAccountBox button {
+  margin-top: 10px;
+}
+.bankAccountBox input {
+  width: 200px;
+}

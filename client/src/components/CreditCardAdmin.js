@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React from 'react';
 import CreditCard from './CreditCard';
 
 function CreditCardAdmin(props) {

@@ -60,81 +60,93 @@ export function receiveUpdateItem(json) {
 }
 export function fetchShopkeeperItems() {
   return (dispatch) => {
+    // Get shopkeeper items from database
     return fetch('/api/items/shopkeepers')
       .then((res) => res.json())
       .then((json) => {
+        // Update state with shopkeeper items
         dispatch(receiveShopkeeperItems(json));
       });
   };
 }
 export function fetchCustomerItems(token) {
   return (dispatch) => {
+    // Get customer items from database
     return fetch('/api/items/customers', { headers: { token: token } })
       .then((res) => {
         const resJson = res.json();
-
         return resJson;
       })
       .then((json) => {
+        // Update state with customer items
         dispatch(receiveCustomerItems(json));
       });
   };
 }
 export function fetchAllItems(token) {
   return (dispatch) => {
+    // Get all items from database
     return fetch('/api/items', { headers: { token: token } })
       .then((res) => {
         const resJson = res.json();
-
         return resJson;
       })
       .then((json) => {
+        // Update state with all items
         dispatch(receiveAllItems(json));
       });
   };
 }
 export function fetchUserItems(id, token) {
   return (dispatch) => {
+    // Get one user's items
     return fetch(`/api/users/${id}/items`, { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
+        // Update state with user's items
         dispatch(receiveUserItems(json));
       });
   };
 }
 export function fetchItem(id, token) {
   return (dispatch) => {
+    // Get one item from database
     return fetch(`/api/items/${id}`, { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
+        // Update state with item
         dispatch(receiveItem(json));
       });
   };
 }
 export function fetchEditItem(id, token) {
   return (dispatch) => {
+    // Get one item for editing from database
     return fetch(`/api/items/${id}`, { headers: { token: token } })
       .then((res) => res.json())
       .then((json) => {
+        // Update state with item for editing
         dispatch(receiveEditItem(json));
       });
   };
 }
 export function buyItem(id, token, userId) {
   return (dispatch) => {
+    // Sell item to user
     return fetch(`/api/items/${id}/sell/${userId}`, {
       method: 'PUT',
       headers: { token: token },
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // Update state with item
         dispatch(confirmPurchase(json));
       });
   };
 }
 export function addItem(item, token) {
   return (dispatch) => {
+    // Add item to database
     return fetch('/api/items', {
       method: 'POST',
       headers: { token: token },
@@ -142,24 +154,28 @@ export function addItem(item, token) {
     })
       .then((res) => res.json())
       .then((json) => {
+        // Update state with new item
         dispatch(receiveNewItem(json));
       });
   };
 }
 export function deleteItem(id, token) {
   return (dispatch) => {
+    // Delete item from database
     return fetch(`/api/items/${id}`, {
       method: 'DELETE',
       headers: { token: token },
     })
       .then((res) => res.json())
       .then((json) => {
+        // update state
         dispatch(receiveDeletedItem(json));
       });
   };
 }
 export function updateItem(id, item, token) {
   return (dispatch) => {
+    // Update item in database
     return fetch(`/api/items/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', token: token },
@@ -167,7 +183,7 @@ export function updateItem(id, item, token) {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // Update state with item
         dispatch(receiveUpdateItem(json));
       });
   };

@@ -1,0 +1,19 @@
+.warningBox {
+  margin-top: 5vh;
+  min-width: 20vw;
+}
+.creditCardBox {
+  width: 50%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.creditCardBox button {
+  margin-top: 10px;
+}
+.creditCardBox input {
+  width: 200px;
+}

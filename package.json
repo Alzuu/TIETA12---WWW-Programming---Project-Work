@@ -18,6 +18,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.9.7",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.46",
+    "@material-ui/styles": "^4.9.6",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.4.1",
     "concurrently": "^5.1.0",
