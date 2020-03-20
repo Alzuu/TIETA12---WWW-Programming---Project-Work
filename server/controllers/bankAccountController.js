@@ -122,30 +122,40 @@ module.exports = {
    */
   async addBankAccount(req, res) {
     if (req.userRole) {
-      try {
-        const { number, balance } = req.body;
-        let account = await BankAccount.findOne({ number }).exec();
+      User.findById(req.userId, async (uerr, doc) => {
+        if (uerr) {
+          res.status(400).json({ message: uerr });
+        } else {
+          try {
+            const { number, balance } = req.body;
+            let account = await BankAccount.findOne({ number }).exec();
 
-        if (account) {
-          const errorMessage = 'Bank account already registered in DB!';
+            if (account) {
+              const errorMessage = 'Bank account already registered in DB!';
 
-          if (!req.is('json')) {
-            res.status(400).json({ message: errorMessage });
+              if (!req.is('json')) {
+                res.status(400).json({ message: errorMessage });
+              }
+            }
+
+            account = new BankAccount({
+              number: xssFilters.inHTMLData(number),
+              balance: parseFloat(xssFilters.inHTMLData(balance)),
+            });
+
+            const newAccount = await account.save();
+            await User.findByIdAndUpdate(
+              { _id: doc._id },
+              { bankAccountId: newAccount._id }
+            );
+            await res.status(200).json(newAccount);
+            console.log('New bank account added.');
+          } catch (err) {
+            res.json({ message: err });
+            console.log('Caught an error: ', err);
           }
         }
-
-        account = new BankAccount({
-          number: xssFilters.inHTMLData(number),
-          balance: parseFloat(xssFilters.inHTMLData(balance)),
-        });
-
-        const newAccount = await account.save();
-        await res.status(201).json(newAccount);
-        console.log('New bank account added.');
-      } catch (err) {
-        res.json({ message: err });
-        console.log('Caught an error: ', err);
-      }
+      });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
@@ -172,6 +182,10 @@ module.exports = {
               const deletedAccount = await BankAccount.deleteOne({
                 _id: `${ID}`,
               });
+              await User.findByIdAndUpdate(
+                { _id: doc._id },
+                { bankAccountId: 'undefined' }
+              );
               res.status(200).json(deletedAccount);
               console.log('Successfully removed bank account.');
             } catch (err) {
@@ -179,7 +193,7 @@ module.exports = {
               console.log('Caught an error: ', err);
             }
           } else {
-            res.json(403).json({ message: 'Forbidden' });
+            res.status(403).json({ message: 'Forbidden' });
           }
         }
       });
@@ -219,6 +233,8 @@ module.exports = {
             } catch (err) {
               res.status(400).json({ message: err });
             }
+          } else {
+            res.status(403).json({ message: 'Forbidden' });
           }
         }
       });

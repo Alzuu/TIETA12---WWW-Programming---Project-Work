@@ -1,7 +1,4 @@
-/* eslint-disable prefer-arrow-callback */
-/* eslint-disable func-names */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable space-before-function-paren */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mocha = require('mocha');
@@ -68,8 +65,8 @@ describe(bankAccountUrl, () => {
     // return mongoose.disconnect(done);
   });
 
-  describe('GET /api/bankaccounts', async function() {
-    before(async function() {
+  describe('GET /api/bankaccounts', async () => {
+    before(async () => {
       // Add users for each roles
       await request
         .post(registerUrl)
@@ -170,13 +167,13 @@ describe(bankAccountUrl, () => {
             });
         });
     });
-    it('should require admin rights to list all bank accounts', async function() {
+    it('should require admin rights to list all bank accounts', async () => {
       await request
         .get(bankAccountUrl)
         .set('token', shopkeeperToken)
         .then((res) => expect(res.statusCode).to.equal(401));
     });
-    it('should list all bank accounts with admin rights', async function() {
+    it('should list all bank accounts with admin rights', async () => {
       await request
         .get(bankAccountUrl)
         .set('token', adminToken)
@@ -184,7 +181,7 @@ describe(bankAccountUrl, () => {
     });
   });
 
-  describe('POST /api/bankaccounts', async function() {
+  describe('POST /api/bankaccounts', async () => {
     let payload;
     beforeEach(() => {
       payload = {
@@ -192,7 +189,23 @@ describe(bankAccountUrl, () => {
         balance: 100,
       };
     });
-    it('should require logging in to add a bank account', async function() {
+    it('should require logging in to add a bank account', async () => {
+      await request
+        .post(bankAccountUrl)
+        .type('json')
+        .send(payload)
+        .then((res) => expect(res.statusCode).to.equal(403));
+    });
+    it('should require bank account balance to be a number', async () => {
+      payload.number = 'ten';
+      await request
+        .post(bankAccountUrl)
+        .type('json')
+        .send(payload)
+        .then((res) => expect(res.statusCode).to.equal(403));
+    });
+    it('should require bank account balance to be a number greater than zero', async () => {
+      payload.number = -1;
       await request
         .post(bankAccountUrl)
         .type('json')
@@ -200,5 +213,93 @@ describe(bankAccountUrl, () => {
         .then((res) => expect(res.statusCode).to.equal(403));
     });
   });
-  // describe('GET /api/bankaccounts/:id', async function() {});
+  describe('GET /api/bankaccounts/:id', async () => {
+    it('should require admin rights or owning the bank account to show bank account', async () => {
+      await request
+        .get(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', shopkeeperToken)
+        .then((res) => expect(res.statusCode).to.equal(403));
+      await request
+        .get(`${bankAccountUrl}${newCustomer.bankAccountId}`)
+        .set('token', adminToken)
+        .then((response) => expect(response.statusCode).to.equal(200));
+      await request
+        .get(`${bankAccountUrl}${newCustomer.bankAccountId}`)
+        .set('token', customerToken)
+        .then((r) => expect(r.statusCode).to.equal(200));
+    });
+  });
+  describe('PUT /api/bankaccounts/:id', async () => {
+    it('should require admin rights or owning the bank account to update', async () => {
+      await request
+        .put(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', shopkeeperToken)
+        .send({ number: `new${Date.now()}`, balance: 123 })
+        .then((response) => {
+          expect(response.statusCode).to.equal(403);
+        });
+      await request
+        .put(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', adminToken)
+        .send({ number: `new${Date.now()}`, balance: 123 })
+        .then((response) => {
+          expect(response.statusCode).to.equal(200);
+        });
+      await request
+        .put(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', customerToken)
+        .send({ number: `new${Date.now()}`, balance: 123 })
+        .then((r) => {
+          expect(r.statusCode).to.equal(200);
+        });
+    });
+    it('should require bank account balance to be a number', async () => {
+      await request
+        .put(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', customerToken)
+        .send({ balance: 'ten' })
+        .then((response) => expect(response.statusCode).to.equal(400));
+    });
+    it('should require bank account balance to be a number greater than zero', async () => {
+      await request
+        .put(`${bankAccountUrl}/${newCustomer.bankAccountId}`)
+        .set('token', customerToken)
+        .send({ balance: -1 })
+        .then((response) => expect(response.statusCode).to.equal(400));
+    });
+  });
+  describe('DELETE /api/bankaccounts/:id', async () => {
+    it('should require admin rights or owning the bank account to delete', async () => {
+      await request
+        .post(bankAccountUrl)
+        .set('token', customerToken)
+        .type('json')
+        .send({ number: `new${Date.now()}`, balance: 321 })
+        .then(async (res) => {
+          await request
+            .delete(`${bankAccountUrl}/${res.body._id}`)
+            .set('token', shopkeeperToken)
+            .then((response) => expect(response.statusCode).to.equal(403));
+          await request
+            .delete(`${bankAccountUrl}/${res.body._id}`)
+            .set('token', adminToken)
+            .then((response) => expect(response.statusCode).to.equal(200));
+        });
+      await request
+        .post(bankAccountUrl)
+        .set('token', customerToken)
+        .type('json')
+        .send({ number: `new${Date.now()}`, balance: 321 })
+        .then(async (res) => {
+          await request
+            .delete(`${bankAccountUrl}/${res.body._id}`)
+            .set('token', shopkeeperToken)
+            .then((response) => expect(response.statusCode).to.equal(403));
+          await request
+            .delete(`${bankAccountUrl}/${res.body._id}`)
+            .set('token', customerToken)
+            .then((response) => expect(response.statusCode).to.equal(200));
+        });
+    });
+  });
 });
