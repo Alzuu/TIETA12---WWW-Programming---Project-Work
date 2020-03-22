@@ -69,6 +69,28 @@ export function userFetchData(userName, password) {
   };
 }
 
+export function userDelete(user) {
+  console.log('userDeete o/');
+  console.log(user);
+  
+  return (dispatch) => {
+    dispatch(userIsLoading(true));
+
+      return fetch(`/api/users/${user.id}`, {
+        method: 'DELETE',
+        headers: {
+          token: user.token,
+        },
+      })
+      .then((res) => res.json())
+        .then((json) => {
+          // Update state with new item¨
+          console.log("user delete action OK o/");
+          dispatch(userHasLoggedOut(true));
+        });
+  };
+}
+
 export function userModify(user) {
   console.log('userModify o/');
   console.log(user);

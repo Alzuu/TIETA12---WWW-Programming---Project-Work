@@ -213,18 +213,36 @@ exports.delete = (req, res, next) => {
 };
 
 exports.deleteOne = (req, res, next) => {
+  console.log("delOne o/");
+  console.log(req.params);
+  
+  User.findByIdAndRemove(req.params.id, (err, todo) => {
+    // As always, handle any potential errors:
+    if (err) return res.status(500).send(err);
+    // We'll create a simple object to send back with a message and the id of the document that was removed
+    // You can really do this however you want, though.
+    const response = {
+        message: "Todo successfully deleted",
+        id: todo._id
+    };
+    return res.status(200).send(response);
+  });
+  /*
   User.findByIdAndDelete(req.params.id, function(err, user) {
     if (err) {
+      console.log("user delete error 1");
       res.sendStatus(404);
       return console.error(err);
     }
     if (!user) {
+      console.log("user delete error 2");
       res.sendStatus(404);
     } else {
-      res.status(204);
-      res.json();
+      console.log("user delete OK");
+      return res.status(204).json({ auth: false, token: null });
     }
   });
+  */
 };
 
 exports.login = (req, res, next) => {
