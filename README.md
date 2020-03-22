@@ -78,27 +78,95 @@ Group members:
 
 ```
 .
-├── package.json                        --> app info and dependencies
-├── client                              --> React application
+
+├── client                                --> React frontend
+│   ├── public                            --> public files for React
+│   │   └── itemimages                    --> folder for uploading item images
+│   │       └── nologo.png                --> placeholder image
+│   ├── src                               --> source code for React
+│   │   ├── actions                       --> Redux actions
+│   │   │   ├── bankAccounts.js           --> bank accounts actions
+│   │   │   ├── creditCards.js            --> credit cards actions
+│   │   │   ├── darkMode.js               --> dark mode actions
+│   │   │   ├── items.js                  --> items actions
+│   │   │   └── usersActions.js           --> users actions
+│   │   ├── components                    --> React components
+│   │   │   ├── AddItemPage.js            --> add item
+│   │   │   ├── AllItemsPage.js           --> show all items
+│   │   │   ├── BankAccount.js            --> edit bank account
+│   │   │   ├── BankAccountAdmin.js       --> edit bank account (admin)
+│   │   │   ├── bankaccounts.css          --> styles for bank accounts
+│   │   │   ├── BuyItemPage.js            --> show item information
+│   │   │   ├── ConfirmBuyPage.js         --> confirm purchase of item
+│   │   │   ├── CreditCard.js             --> edit credit card
+│   │   │   ├── CreditCardAdmin.js        --> edit credit card (admin)
+│   │   │   ├── creditcards.css           --> styles for credit cards
+│   │   │   ├── CustomerItemsPage.js      --> show customer items
+│   │   │   ├── DeleteItemPage.js         --> delete item
+│   │   │   ├── EditItemPage.js           --> edit item
+│   │   │   ├── ItemList.js               --> component to list items
+│   │   │   ├── ItemPage.css              --> styles for item page
+│   │   │   ├── ItemPage.js               --> show shopkeeper items
+│   │   │   ├── items.css                 --> styles for items
+│   │   │   ├── Layout.js                 --> page layout
+│   │   │   ├── ListBankAccountsPage.js   --> list all bank accounts (admin)
+│   │   │   ├── ListCreditCardsPage.js    --> list all credit cards (admin)
+│   │   │   ├── LoginPage.js              --> log in user
+│   │   │   ├── LogoutPage.js             --> log out user
+│   │   │   ├── Navigation.js             --> Material UI navigation bar
+│   │   │   ├── RegistrationPage.js       --> register new user
+│   │   │   ├── TextInputFormik.js        --> validate user forms
+│   │   │   ├── UserItemsPage.js          --> list user's items
+│   │   │   ├── UserPage.js               --> edit user information
+│   │   │   ├── UserPageForAdmin.js       --> edit user information (admin)
+│   │   │   ├── UserPageForCustomer.js    --> edit user information (customer)
+│   │   │   ├── UserPageForShopkeeper.js  --> edit user information (shopkeeper)
+│   │   │   └── UserRole.js               --> user roles
+│   │   ├── reducers                    --> Redux reducers
+│   │   │   ├── bankAccounts.js         --> bank accounts reducer
+│   │   │   ├── creditCards.js          --> credit cards reducer
+│   │   │   ├── darkMode.js             --> dark mode reducer
+│   │   │   ├── index.js                --> combining all reducers
+│   │   │   ├── items.js                --> items reducer
+│   │   │   └── usersReducer.js         --> users reducer
+│   │   ├── store                       --> Redux store
+│   │   │   └── configureStore.js       --> configure Redux store
+│   │   ├── App.css                     --> styles for app
+│   │   ├── App.js                      --> App entry point
+│   │   ├── index.css                   --> styles for index
+│   │   ├── index.js                    --> start React
+│   │   └── serviceWorker.js            --> React service workers
+│   ├── .gitignore                      --> ignore list for git
+│   ├── package.json                    --> React app info and dependencies
+│   └── README.md                       --> React app readme
 ├── plan                                --> design document images
-├── server                              --> Backend application
-    ├── app.js                          --> express app
-    ├── db.js                           --> database connection setup
-    ├── controllers                     --> controllers
-    │   ├── itemController.js           --> controller for items
-    │   ├── userController.js           --> controller for users
-    │   ├── creditCardController.js     --> controller for users' credit cards
-    │   └── bankAccountController.js    --> controller for users' bank accounts
-    ├── models                          --> models (Mongoose schemas etc.)
-    │   ├── itemModel.js                --> model for items
-    │   ├── userModel.js                --> model for users
-    │   ├── creditCardModel.js          --> model for users' credit cards
-    │   └── bankAccountModel.js         --> model for users' bank accounts
-    └── routes                          --> API routes
-        ├── itemsRoute.js               --> route for items
-        ├── usersRoute.js               --> route for users
-        ├── creditCardsRoute.js         --> route for users' credit cards
-        └── bankAccountsRoute.js        --> route for users' bank accounts
+├── server                              --> Express backend
+│   ├── app.js                          --> Express app
+│   ├── db.js                           --> database connection setup
+│   ├── controllers                     --> controllers
+│   │   ├── itemController.js           --> controller for items
+│   │   ├── userController.js           --> controller for users
+│   │   ├── creditCardController.js     --> controller for users' credit cards
+│   │   └── bankAccountController.js    --> controller for users' bank accounts
+│   ├── models                          --> models (Mongoose schemas etc.)
+│   │   ├── itemModel.js                --> model for items
+│   │   ├── userModel.js                --> model for users
+│   │   ├── creditCardModel.js          --> model for users' credit cards
+│   │   └── bankAccountModel.js         --> model for users' bank accounts
+│   └── routes                          --> API routes
+│       ├── itemsRoute.js               --> route for items
+│       ├── usersRoute.js               --> route for users
+│       ├── creditCardsRoute.js         --> route for users' credit cards
+│       └── bankAccountsRoute.js        --> route for users' bank accounts
+├── .eslintrc.json                      --> Eslint configuration
+├── .gitignore                          --> ignore list for git
+├── .prettierrc.json                    --> Prettier configuration
+├── LICENSE                             --> Project licensing
+├── package.json                        --> app info and dependencies
+├── provision.sh                        --> Vagrant provision file
+├── README.md                           --> project documentation
+├── Vagrantfile                         --> modified Vagrantfile for project
+
 ```
 
 ## Mongo database and Mongoose schemas
@@ -221,7 +289,8 @@ Deadline: 23.3
 
 Division of work with deadlines:
 
-- [ ] Finishing touches (CSS etc) 22.3
+- [ ] Final testing (install clean repo and try with instructions, try to do stuff) 23.3
+- [x] Finishing touches (CSS etc) 22.3
 
 Allan
 
