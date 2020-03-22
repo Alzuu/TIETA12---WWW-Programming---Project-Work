@@ -39,6 +39,16 @@ const UserPageForShopkeeper = (props) => {
     props.modify(modifiedUser);
   }
 
+  const renderPasswordInputField = (fieldName, fieldLabel) => (
+    <Field
+      type="password"
+      name={fieldName}
+      placeholder={"********"}
+      label={fieldLabel}
+      component={TextInput}
+    />
+  );
+
   const renderTextInputField = (fieldName, fieldLabel) => (
     <Field
       type="text"
@@ -60,6 +70,7 @@ const UserPageForShopkeeper = (props) => {
         render={({ values, errors, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
+            {renderPasswordInputField('password', 'Password')}
             <br />
             <button
               type="submit"

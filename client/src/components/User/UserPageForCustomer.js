@@ -37,10 +37,20 @@ const UserPageForCustomer = (props) => {
       ...user,
       id: props.user.id,
       token: props.user.token,
-      role: props.uiser.role,
+      role: props.user.role,
     }
     props.modify(modifiedUser);
   }
+
+  const renderPasswordInputField = (fieldName, fieldLabel) => (
+    <Field
+      type="password"
+      name={fieldName}
+      placeholder={"********"}
+      label={fieldLabel}
+      component={TextInput}
+    />
+  );
 
   const renderTextInputField = (fieldName, fieldLabel) => (
     <Field
@@ -63,11 +73,11 @@ const UserPageForCustomer = (props) => {
         render={({ values, errors, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
+            {renderPasswordInputField('password', 'Password')}
             <br />
             <button
               type="submit"
               className="submitButton"
-              disabled={isSubmitting || !isEmpty(errors)}
             >
               Save
             </button>

@@ -33,7 +33,6 @@ const UserPageForAdmin = (props) => {
     props.user ? 
       {
         name: props.user.name,
-        password: props.user.password,
         role: props.user.role,
       }
       :
@@ -76,6 +75,16 @@ const UserPageForAdmin = (props) => {
     );
   }
 
+  const renderPasswordInputField = (fieldName, fieldLabel) => (
+    <Field
+      type="password"
+      name={fieldName}
+      placeholder={"********"}
+      label={fieldLabel}
+      component={TextInput}
+    />
+  );
+
   const renderTextInputField = (fieldName, fieldLabel) => (
     <Field
       type="text"
@@ -97,7 +106,7 @@ const UserPageForAdmin = (props) => {
         render={({ values, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
-            {renderTextInputField('password', 'Password')}
+            {renderPasswordInputField('password', 'Password')}
             {renderRoleSelection()}
             <br />
             <button
