@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { fetchUserItems } from '../actions/items';
 import ItemList from './ItemList';
@@ -11,7 +10,7 @@ function UserItemsPage(props) {
   }
   useEffect(() => {
     fetchItems(props.match.params.id, props.token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!props.items) {
     return (
       <div>
