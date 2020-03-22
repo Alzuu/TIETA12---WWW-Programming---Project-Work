@@ -57,7 +57,11 @@ function ConfirmBuyPage(props) {
     }
     if (props.item.auth !== false) {
       if (props.item.ownerId !== props.userId) {
-        if (props.creditCardId) {
+        if (
+          props.creditCardId &&
+          props.creditCardId !== '' &&
+          props.creditCardId !== 'undefined'
+        ) {
           return (
             <Box className="addItemBox">
               <Card className="itemCard">

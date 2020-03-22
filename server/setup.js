@@ -171,21 +171,10 @@ User.find({}, (err, res) => {
     // If no users are found, begin setup
     console.log('First run! Adding initial data to database.');
     // Add admin
-    addFullUser('admin', 'admin', UserRole.ADMIN)
-      .then((user) => {
-        console.log(`User added: ${user.name}`);
-        // Add item for user
-        addItem(user._id, true)
-          .then((usr) => {
-            console.log(`Item added to user: ${usr.name}`);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    addNewUser('admin', 'admin', UserRole.ADMIN).then((user) => {
+      console.log(`User added: ${user.name}`);
+    });
     addFullUser('shopkeeper', 'shopkeeper', UserRole.SHOPKEEPER)
       .then((user) => {
         console.log(`User added: ${user.name}`);

@@ -76,7 +76,9 @@ function BuyItemPage(props) {
                 </Link>
 
                 {props.item.ownerId !== props.userId ? (
-                  props.creditCardId ? (
+                  props.creditCardId &&
+                  props.creditCardId !== '' &&
+                  props.creditCardId !== 'undefined' ? (
                     <Link
                       component={RouterLink}
                       to={'/items/' + props.item._id + '/buy/confirm'}

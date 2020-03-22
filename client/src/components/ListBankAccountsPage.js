@@ -33,7 +33,7 @@ function ListBankAccountsPage(props) {
   useEffect(() => {
     props.fetchBankAccounts(props.token);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  console.log(props.bankAccounts);
   if (props.bankAccounts) {
     const emptyRows =
       rowsPerPage -
