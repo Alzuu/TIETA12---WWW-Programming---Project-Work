@@ -3,13 +3,11 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom'
 import { userModify } from '../../actions/usersActions';
-import EditableUserPageForAdmin from './EditableUserPageForAdmin';
 
 const UserList = (props) => {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        console.log("UserList.js useEffect o/");
         getUsers();
     }, []);
 
@@ -22,18 +20,14 @@ const UserList = (props) => {
             })
     );
 
-    console.log("UserList.js o/");
-
     return (
         <>
             <h1>User List</h1>
             {users.map((user) => 
-                (
-                    <div>
-                        <Link to={`/users/adminEdit/${user._id}`}>edit</Link>
-                        {user.name}
-                    </div>
-                )
+                <>
+                    <Link to={`/users/adminEdit/${user._id}`}>edit {user.name}</Link>
+                    <br />
+                </>
             )}
         </>
     );
@@ -42,8 +36,6 @@ const UserList = (props) => {
 const mapStateToProps = (state) => {
   return {
       user: state.user,
-      loginHasErrored: state.userLoginHasErrored,
-      isLoading: state.userIsLoading
   };
 };
 
