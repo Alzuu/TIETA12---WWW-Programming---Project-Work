@@ -20,6 +20,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { toggleDarkMode } from '../actions/darkMode';
 
 function Navigation(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -144,6 +147,17 @@ function Navigation(props) {
                   <Typography>Logout</Typography>
                 </IconButton>
               </Link>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={props.darkMode}
+                    onChange={(e) => {
+                      props.toggleDarkMode(e.target.checked);
+                    }}
+                  />
+                }
+                label="Dark mode"
+              />
             </Box>
           ) : (
             <Box>
@@ -159,6 +173,17 @@ function Navigation(props) {
                   <Typography>Register</Typography>
                 </IconButton>
               </Link>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={props.darkMode}
+                    onChange={(e) => {
+                      props.toggleDarkMode(e.target.checked);
+                    }}
+                  />
+                }
+                label="Dark mode"
+              />
             </Box>
           )}
         </Box>
@@ -166,12 +191,18 @@ function Navigation(props) {
     </AppBar>
   );
 }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleDarkMode: (toggled) => dispatch(toggleDarkMode(toggled)),
+  };
+};
 const mapStateToProps = (state) => {
   return {
     user: state.user,
     loginHasErrored: state.loginHasErrored,
     isLoading: state.userIsLoading,
+    darkMode: state.darkMode,
   };
 };
 
-export default connect(mapStateToProps)(Navigation);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
