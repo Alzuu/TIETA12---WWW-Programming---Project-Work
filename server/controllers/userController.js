@@ -70,6 +70,75 @@ exports.one = (req, res, next) => {
 
 exports.modify = (req, res, next) => {
   console.log('modify user o/');
+
+  const newName = xssFilters.inHTMLData(req.body.name);
+  const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
+
+  if (req.body.password) {
+    console.log("change user password o/");
+    var password = xssFilters.inHTMLData(req.body.password);
+
+    bcrypt.hash(password, saltRounds, function(err, hash) {  
+      User.findByIdAndUpdate(
+        req.params.id,
+        {
+          name: newName,
+          password: hash,
+          role: newRole,
+          creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+          bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
+        },
+        { omitUndefined: true, new: true },
+        (err, user) => {
+          if (err) {
+            res.sendStatus(400);
+            return console.error(err);
+          }
+    
+          res.status(200).send({
+            auth: true,
+            token: req.headers['token'],
+            id: user._id,
+            name: newName,
+            role: newRole,
+            creditCardId: user.creditCardId,
+            bankAccountId: user.bankAccountId,
+          });
+        }
+      );
+    });
+  } else {
+    console.log("change user, but dont change password o/");
+
+    User.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: newName,
+        role: newRole,
+        creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+        bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
+      },
+      { omitUndefined: true, new: true },
+      (err, user) => {
+        if (err) {
+          res.sendStatus(400);
+          return console.error(err);
+        }
+  
+        res.status(200).send({
+          auth: true,
+          token: req.headers['token'],
+          id: user._id,
+          name: newName,
+          role: newRole,
+          creditCardId: user.creditCardId,
+          bankAccountId: user.bankAccountId,
+        });
+      }
+    );
+  }
+  /*
+  console.log('modify user o/');
   console.log(req.body);
   console.log(req.params.id);
   const newName = xssFilters.inHTMLData(req.body.name);
@@ -101,6 +170,7 @@ exports.modify = (req, res, next) => {
       });
     }
   );
+  */
 };
 
 exports.create = (req, res, next) => {

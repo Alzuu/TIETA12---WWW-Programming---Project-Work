@@ -6,11 +6,16 @@ import isEmpty from 'lodash/isEmpty'
 import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import { userModify } from '../actions/usersActions';
+import CreditCard from '../CreditCard';
+import BankAccount from '../BankAccount';
+import { userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
+import UserPageForAdmin from './UserPageForAdmin';
+import UserPageForShopkeeper from './UserPageForShopkeeper';
+import UserPageForCustomer from './UserPageForCustomer';
  
-const UserPageForAdmin = (props) => {
+const UserPage = (props) => {
     const [selectedRole, setSelectedRole] = useState('');
 
     useEffect(() => {
@@ -83,30 +88,16 @@ const UserPageForAdmin = (props) => {
     />
   );
 
+  const userRoleAsNumber = parseInt(props.user.role, 10);
+
+  console.log("UserPage.js o/");
+  console.log(userRoleAsNumber);
+
   return (
     <>
-      <Formik
-        validationSchema={getValidationSchema}
-        initialValues={getInitialValuesForForm()}
-        onSubmit={(values, actions) => {
-            actions.setSubmitting(false);
-            setNewValuesToUser(values);
-        }}
-        render={({ values, errors, isSubmitting }) => (
-          <Form>
-            {renderTextInputField('name', 'Name')}
-            {renderRoleSelection()}
-            <br />
-            <button
-              type="submit"
-              className="submitButton"
-              disabled={isSubmitting || !isEmpty(errors)}
-            >
-              Save
-            </button>
-          </Form>
-        )}
-      />
+      {(userRoleAsNumber === 0) && <UserPageForAdmin />}
+      {(userRoleAsNumber === 1) && <UserPageForShopkeeper />}
+      {(userRoleAsNumber === 2) && <UserPageForCustomer />}
     </>
   )
 }
@@ -126,14 +117,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPage)
 /*
 import React, { Component } from 'react'
 import { Formik, Field } from 'formik';
 import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
 import * as Yup from 'yup';
 
-export default function UserPageForAdmin() {
+export default function UserPage() {
 
   const SignupSchema = Yup.object().shape({
     address: Yup.string()

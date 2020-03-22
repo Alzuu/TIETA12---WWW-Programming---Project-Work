@@ -8,7 +8,7 @@ import Layout from './components/Layout';
 import LoginPage from './components/LoginPage';
 import LogoutPage from './components/LogoutPage';
 import RegistrationPage from './components/RegistrationPage';
-import UserPage from './components/UserPage';
+import UserPage from './components/User/UserPage';
 import AllItemsPage from './components/AllItemsPage';
 import CustomerItemsPage from './components/CustomerItemsPage';
 import AddItemPage from './components/AddItemPage';

@@ -6,21 +6,41 @@ import isEmpty from 'lodash/isEmpty'
 import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import CreditCard from './CreditCard';
-import BankAccount from './BankAccount';
-import { userModify } from '../actions/usersActions';
+import { userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
-const UserPageForCustomer = (props) => {
+const UserPageForAdmin = (props) => {
+    const [selectedRole, setSelectedRole] = useState('');
+
+    useEffect(() => {
+        setSelectedRole(getDefaultSelectRole);
+      }, []);
+
+    const getRoleSelectionOptions = [
+        { value: 0, label: 'Admin' },
+        { value: 1, label: 'Shopkeeper' },
+        { value: 2, label: 'Customer' },
+    ];
+
+    const getDefaultSelectRole = (
+        props.user ?
+            getRoleSelectionOptions.filter(option => option.value === parseInt(props.user.role, 10))[0]
+            :
+            '');
+
   const getInitialValuesForForm = () => (
     props.user ? 
       {
         name: props.user.name,
+        password: props.user.password,
+        role: props.user.role,
       }
       :
       {
         name: '',
+        password: '',
+        role: '',
       }
   );
 
@@ -37,9 +57,23 @@ const UserPageForCustomer = (props) => {
       ...user,
       id: props.user.id,
       token: props.user.token,
-      role: props.uiser.role,
+      role: selectedRole.value,
     }
     props.modify(modifiedUser);
+    setSelectedRole(selectedRole);
+  }
+
+  const renderRoleSelection = () => {
+    return (
+      <div className='userRoleSelection'>
+        <Select
+            className='userRoleSelection'
+            value={selectedRole}
+            onChange={role => setSelectedRole(role)}
+            options={getRoleSelectionOptions}
+        />
+      </div>
+    );
   }
 
   const renderTextInputField = (fieldName, fieldLabel) => (
@@ -60,23 +94,21 @@ const UserPageForCustomer = (props) => {
             actions.setSubmitting(false);
             setNewValuesToUser(values);
         }}
-        render={({ values, errors, isSubmitting }) => (
+        render={({ values, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
+            {renderTextInputField('password', 'Password')}
+            {renderRoleSelection()}
             <br />
             <button
               type="submit"
               className="submitButton"
-              disabled={isSubmitting || !isEmpty(errors)}
             >
               Save
             </button>
           </Form>
         )}
       />
-      
-      <CreditCard id={props.user.creditCardId} />
-      <BankAccount id={props.user.bankAccountId} />
     </>
   )
 }
@@ -96,14 +128,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForCustomer)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin)
 /*
 import React, { Component } from 'react'
 import { Formik, Field } from 'formik';
 import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
 import * as Yup from 'yup';
 
-export default function UserPageForCustomer() {
+export default function UserPageForAdmin() {
 
   const SignupSchema = Yup.object().shape({
     address: Yup.string()

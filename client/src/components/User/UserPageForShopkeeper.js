@@ -3,42 +3,21 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik'
 import isEmpty from 'lodash/isEmpty'
-import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import { userModify } from '../actions/usersActions';
+import { userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
 const UserPageForShopkeeper = (props) => {
-    const [selectedRole, setSelectedRole] = useState('');
-
-    useEffect(() => {
-        setSelectedRole(getDefaultSelectRole);
-      }, []);
-
-    const getRoleSelectionOptions = [
-        { value: UserRole.ADMIN, label: 'Admin' },
-        { value: UserRole.CUSTOMER, label: 'Customer' },
-        { value: UserRole.SHOPKEEPER, label: 'Shopkeeper' },
-    ];
-
-    const getDefaultSelectRole = (
-        props.user ?
-            getRoleSelectionOptions.filter(option => option.value === parseInt(props.user.role, 10))[0]
-            :
-            '');
-
   const getInitialValuesForForm = () => (
     props.user ? 
       {
         name: props.user.name,
-        role: props.user.role,
       }
       :
       {
         name: '',
-        role: '',
       }
   );
 
@@ -55,23 +34,9 @@ const UserPageForShopkeeper = (props) => {
       ...user,
       id: props.user.id,
       token: props.user.token,
-      role: selectedRole.value,
+      role: props.user.role,
     }
     props.modify(modifiedUser);
-    setSelectedRole(selectedRole);
-  }
-
-  const renderRoleSelection = () => {
-    return (
-      <div className='userRoleSelection'>
-        <Select
-            className='userRoleSelection'
-            value={selectedRole}
-            onChange={role => setSelectedRole(role)}
-            options={getRoleSelectionOptions}
-        />
-      </div>
-    );
   }
 
   const renderTextInputField = (fieldName, fieldLabel) => (
