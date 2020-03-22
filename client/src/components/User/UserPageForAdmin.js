@@ -1,7 +1,8 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field } from 'formik';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from 'react-select';
 import * as Yup from 'yup';
@@ -41,6 +42,19 @@ const UserPageForAdmin = (props) => {
       }
   );
 
+  const renderRoleSelection = () => {
+    return (
+      <div className='userRoleSelection'>
+        <Select
+            className='userRoleSelection'
+            value={selectedRole}
+            onChange={role => setSelectedRole(role)}
+            options={getRoleSelectionOptions}
+        />
+      </div>
+    );
+  }
+
   const getValidationSchema = () => (
     Yup.object().shape({
       name: Yup.string()
@@ -50,11 +64,12 @@ const UserPageForAdmin = (props) => {
   )
 
   const deleteUser = () => {
-    console.log("UserPageForAdmin.js deleteUser o/");
     props.delete(props.user);
   }
 
   const setNewValuesToUser = (user) => {
+    console.log("setNewValuesToUser user:");
+    console.log(user);
     const modifiedUser = {
       ...user,
       id: props.user.id,
@@ -101,24 +116,29 @@ const UserPageForAdmin = (props) => {
             <Form>
               {renderTextInputField('name', 'Name')}
               {renderPasswordInputField('password', 'Password')}
-              {renderTextInputField('role', 'Role')}
+              {renderRoleSelection()}
               <br />
-              <button
+              <Button
+                type="button"
+                color="primary"
+                variant="outlined"
                 type="submit"
                 className="submitButton"
               >
                 Save
-              </button>
+              </Button>
             </Form>
           )}
         />
         <br />
-        <button
+        <Button
           type="button"
+          color="primary"
+          variant="outlined"
           onClick={deleteUser}
         >
           Delete user
-        </button>
+        </Button>
       </>
   );
 }

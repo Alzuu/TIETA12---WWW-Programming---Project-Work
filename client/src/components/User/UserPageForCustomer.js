@@ -3,6 +3,7 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CreditCard from '../CreditCard';
 import BankAccount from '../BankAccount';
@@ -91,12 +92,12 @@ const UserPageForCustomer = (props) => {
           )}
         />
         <br />
-        <button
+        <Button
           type="button"
           onClick={deleteUser}
         >
           Delete user
-        </button>
+        </Button>
         
         <CreditCard id={props.user.creditCardId} />
         <BankAccount id={props.user.bankAccountId} />

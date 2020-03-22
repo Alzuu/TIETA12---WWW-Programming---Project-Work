@@ -1,7 +1,8 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field } from 'formik';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import isEmpty from 'lodash/isEmpty'
 import * as Yup from 'yup';
@@ -91,12 +92,14 @@ const UserPageForShopkeeper = (props) => {
           )}
         />
         <br />
-        <button
+        <Button
           type="button"
+          color="primary"
+          variant="outlined"
           onClick={deleteUser}
         >
           Delete user
-        </button>
+        </Button>
       </>
   )
 }
