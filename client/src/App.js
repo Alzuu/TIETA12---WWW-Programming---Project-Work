@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Route, BrowserRouter } from 'react-router-dom';
 import BuyItemPage from './components/BuyItemPage';
@@ -19,9 +19,10 @@ import ListCreditCardsPage from './components/ListCreditCardsPage';
 import CreditCardAdmin from './components/CreditCardAdmin';
 import ListBankAccountsPage from './components/ListBankAccountsPage';
 import BankAccountAdmin from './components/BankAccountAdmin';
-import theme from './components/theme';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { Switch, FormControlLabel } from '@material-ui/core';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 const useStyles = makeStyles({
   App: (props) => ({
@@ -33,11 +34,47 @@ const useStyles = makeStyles({
     backgroundColor: props.bgcolor,
   }),
 });
+
+const themeObject = {
+  palette: {
+    primary: {
+      main: '#81c784',
+    },
+    secondary: {
+      main: '#ff8a80',
+    },
+    type: 'light',
+  },
+};
+
+const useDarkMode = () => {
+  const [theme, setTheme] = useState(themeObject);
+  const {
+    palette: { type },
+  } = theme;
+  const toggleDarkMode = () => {
+    const updatedTheme = {
+      ...theme,
+      palette: {
+        ...theme.palette,
+        type: type === 'light' ? 'dark' : 'light',
+      },
+    };
+    setTheme(updatedTheme);
+  };
+  return [theme, toggleDarkMode];
+};
+
 function App() {
-  const classes = useStyles({ bgcolor: theme.palette.background.default });
+  const [theme, toggleDarkMode] = useDarkMode();
+  const themeConfig = createMuiTheme(theme);
+  const classes = useStyles({
+    bgcolor: themeConfig.palette.background.default,
+  });
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeConfig}>
       <div className={classes.App}>
+        <FormControlLabel control={<Switch onClick={toggleDarkMode} />} />
         <BrowserRouter>
           <Layout>
             <Route exact path="/" component={ItemPage} />
