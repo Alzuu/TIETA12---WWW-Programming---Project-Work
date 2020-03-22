@@ -1,7 +1,7 @@
 var UserRole = {
-    ADMIN: 1,
-    SHOPKEEPER: 2,
-    CUSTOMER: 3,
+    ADMIN: 0,
+    SHOPKEEPER: 1,
+    CUSTOMER: 2,
 };
 
 module.exports =  UserRole;
