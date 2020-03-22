@@ -3,16 +3,13 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik'
 import isEmpty from 'lodash/isEmpty'
-import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import CreditCard from './CreditCard';
-import BankAccount from './BankAccount';
-import { userModify } from '../actions/usersActions';
+import { userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
-const UserPageForCustomer = (props) => {
+const UserPageForShopkeeper = (props) => {
   const getInitialValuesForForm = () => (
     props.user ? 
       {
@@ -37,10 +34,20 @@ const UserPageForCustomer = (props) => {
       ...user,
       id: props.user.id,
       token: props.user.token,
-      role: props.uiser.role,
+      role: props.user.role,
     }
     props.modify(modifiedUser);
   }
+
+  const renderPasswordInputField = (fieldName, fieldLabel) => (
+    <Field
+      type="password"
+      name={fieldName}
+      placeholder={"********"}
+      label={fieldLabel}
+      component={TextInput}
+    />
+  );
 
   const renderTextInputField = (fieldName, fieldLabel) => (
     <Field
@@ -63,6 +70,7 @@ const UserPageForCustomer = (props) => {
         render={({ values, errors, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
+            {renderPasswordInputField('password', 'Password')}
             <br />
             <button
               type="submit"
@@ -74,9 +82,6 @@ const UserPageForCustomer = (props) => {
           </Form>
         )}
       />
-      
-      <CreditCard id={props.user.creditCardId} />
-      <BankAccount id={props.user.bankAccountId} />
     </>
   )
 }
@@ -96,14 +101,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForCustomer)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPageForShopkeeper)
 /*
 import React, { Component } from 'react'
 import { Formik, Field } from 'formik';
 import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
 import * as Yup from 'yup';
 
-export default function UserPageForCustomer() {
+export default function UserPageForShopkeeper() {
 
   const SignupSchema = Yup.object().shape({
     address: Yup.string()

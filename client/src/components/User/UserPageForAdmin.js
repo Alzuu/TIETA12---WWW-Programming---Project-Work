@@ -6,11 +6,11 @@ import isEmpty from 'lodash/isEmpty'
 import Select from 'react-select';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import { userModify } from '../actions/usersActions';
+import { userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
-const UserPageForShopkeeper = (props) => {
+const UserPageForAdmin = (props) => {
     const [selectedRole, setSelectedRole] = useState('');
 
     useEffect(() => {
@@ -18,9 +18,9 @@ const UserPageForShopkeeper = (props) => {
       }, []);
 
     const getRoleSelectionOptions = [
-        { value: UserRole.ADMIN, label: 'Admin' },
-        { value: UserRole.CUSTOMER, label: 'Customer' },
-        { value: UserRole.SHOPKEEPER, label: 'Shopkeeper' },
+        { value: 0, label: 'Admin' },
+        { value: 1, label: 'Shopkeeper' },
+        { value: 2, label: 'Customer' },
     ];
 
     const getDefaultSelectRole = (
@@ -38,6 +38,7 @@ const UserPageForShopkeeper = (props) => {
       :
       {
         name: '',
+        password: '',
         role: '',
       }
   );
@@ -74,6 +75,16 @@ const UserPageForShopkeeper = (props) => {
     );
   }
 
+  const renderPasswordInputField = (fieldName, fieldLabel) => (
+    <Field
+      type="password"
+      name={fieldName}
+      placeholder={"********"}
+      label={fieldLabel}
+      component={TextInput}
+    />
+  );
+
   const renderTextInputField = (fieldName, fieldLabel) => (
     <Field
       type="text"
@@ -92,14 +103,15 @@ const UserPageForShopkeeper = (props) => {
             actions.setSubmitting(false);
             setNewValuesToUser(values);
         }}
-        render={({ values, errors, isSubmitting }) => (
+        render={({ values, isSubmitting }) => (
           <Form>
             {renderTextInputField('name', 'Name')}
+            {renderPasswordInputField('password', 'Password')}
+            {renderRoleSelection()}
             <br />
             <button
               type="submit"
               className="submitButton"
-              disabled={isSubmitting || !isEmpty(errors)}
             >
               Save
             </button>
@@ -125,14 +137,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForShopkeeper)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin)
 /*
 import React, { Component } from 'react'
 import { Formik, Field } from 'formik';
 import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
 import * as Yup from 'yup';
 
-export default function UserPageForShopkeeper() {
+export default function UserPageForAdmin() {
 
   const SignupSchema = Yup.object().shape({
     address: Yup.string()

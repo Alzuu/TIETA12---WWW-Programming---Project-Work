@@ -85,6 +85,7 @@ export function userModify(user) {
         },
         body: JSON.stringify({
           name: user.name,
+          password: user.password,
           role: user.role,
         }),
       })
