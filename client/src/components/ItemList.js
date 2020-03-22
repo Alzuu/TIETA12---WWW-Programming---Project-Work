@@ -42,13 +42,14 @@ function ItemList(props) {
               <TableCell>Picture</TableCell>
               <TableCell>Item name</TableCell>
               <TableCell>Price (€)</TableCell>
-              {props.type === 'user' || props.type === 'own' ? (
-                ''
-              ) : (
-                <TableCell>All seller items</TableCell>
-              )}
-              {props.type === 'own' ? <TableCell>On sale</TableCell> : ''}
-              <TableCell>Actions</TableCell>
+              {props.userId ? (
+                props.type === 'user' || props.type === 'own' ? null : (
+                  <TableCell>All seller items</TableCell>
+                )
+              ) : null}
+
+              {props.type === 'own' ? <TableCell>On sale</TableCell> : null}
+              {props.userId ? <TableCell>Actions</TableCell> : null}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -75,52 +76,52 @@ function ItemList(props) {
                   </TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.price}</TableCell>
-                  {props.type === 'user' || props.type === 'own' ? (
-                    ''
-                  ) : (
-                    <TableCell>
-                      <Link to={'/users/' + item.ownerId + '/items'}>
-                        <IconButton color="primary">
-                          {props.type === 'shopkeeper' ? (
-                            <StorefrontIcon />
-                          ) : (
-                            <EmojiPeopleIcon />
-                          )}
-                        </IconButton>
-                      </Link>
-                    </TableCell>
-                  )}
+                  {props.userId ? (
+                    props.type === 'user' || props.type === 'own' ? null : (
+                      <TableCell>
+                        <Link to={'/users/' + item.ownerId + '/items'}>
+                          <IconButton color="primary">
+                            {props.type === 'shopkeeper' ? (
+                              <StorefrontIcon />
+                            ) : (
+                              <EmojiPeopleIcon />
+                            )}
+                          </IconButton>
+                        </Link>
+                      </TableCell>
+                    )
+                  ) : null}
+
                   {props.type === 'own' ? (
                     <TableCell>{item.onSale.toString()}</TableCell>
-                  ) : (
-                    ''
-                  )}
-
-                  <TableCell>
-                    <Link to={'/items/' + item._id + '/buy'}>
-                      <IconButton color="primary">
-                        <SearchIcon />
-                      </IconButton>
-                    </Link>
-                    {item.ownerId === props.userId || props.userRole === 1 ? (
-                      <Link to={'/items/' + item._id + '/edit'}>
+                  ) : null}
+                  {props.userId ? (
+                    <TableCell>
+                      <Link to={'/items/' + item._id + '/buy'}>
                         <IconButton color="primary">
-                          <EditIcon />
+                          <SearchIcon />
                         </IconButton>
                       </Link>
-                    ) : (
-                      ''
-                    )}
-                    {item.ownerId === props.userId || props.userRole === 1 ? (
-                      <Link to={'/items/' + item._id + '/delete'}>
-                        <IconButton color="secondary">
-                          <DeleteIcon />
-                        </IconButton>
-                      </Link>
-                    ) : (
-                      ''
-                    )}
-                  </TableCell>
+                      {item.ownerId === props.userId || props.userRole === 1 ? (
+                        <Link to={'/items/' + item._id + '/edit'}>
+                          <IconButton color="primary">
+                            <EditIcon />
+                          </IconButton>
+                        </Link>
+                      ) : (
+                        ''
+                      )}
+                      {item.ownerId === props.userId || props.userRole === 1 ? (
+                        <Link to={'/items/' + item._id + '/delete'}>
+                          <IconButton color="secondary">
+                            <DeleteIcon />
+                          </IconButton>
+                        </Link>
+                      ) : (
+                        ''
+                      )}
+                    </TableCell>
+                  ) : null}
                 </TableRow>
               ))}
             {emptyRows > 0 && (
