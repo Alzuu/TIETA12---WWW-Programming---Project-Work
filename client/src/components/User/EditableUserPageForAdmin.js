@@ -56,7 +56,16 @@ const EditableUserPageForAdmin = (props) => {
   const handleUserRoleChange = (e) => { setUserRole(e.target.value) }
   
   const deleteUser = () => {
-    props.delete(editableUser);
+    fetch(`/api/users/${editableUser._id}`, {
+      method: 'DELETE',
+      headers: {
+        token: props.adminUser.token,
+      },
+    })
+    .then((res) => res.json())
+      .then((json) => {
+        console.log("user delete OK o/");
+      });
   }
 
   const handleUserEditSubmit = (user) => {
@@ -149,6 +158,15 @@ const EditableUserPageForAdmin = (props) => {
               startIcon={<UpdateIcon />}
             >
               Update
+            </Button>
+            <br />
+            <Button
+              type="button"
+              color="primary"
+              variant="outlined"
+              onClick={deleteUser}
+            >
+              Delete
             </Button>
           </FormGroup>
         </form>
