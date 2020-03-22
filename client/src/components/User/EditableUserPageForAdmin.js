@@ -1,18 +1,13 @@
 import React, { Component, useEffect, useState } from 'react'
-
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { userDelete, userModify } from '../../actions/usersActions';
-import TextInput from './TextInputFormik';
-import UserRole from './UserRole';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
 import UpdateIcon from '@material-ui/icons/Update';
 
 const EditableUserPageForAdmin = (props) => {
   const [userCreditCardId, setUserCreditCardId] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
   const [editableUser, setEditableUser] = useState(undefined);
   const [userPassword, setUserPassword] = useState('');
   const [userBankAccountId, setUserBankAccountId] = useState('');
@@ -24,9 +19,9 @@ const EditableUserPageForAdmin = (props) => {
     }, []);
 
   const getRoleSelectionOptions = [
-      { value: 0, label: 'Admin' },
-      { value: 1, label: 'Shopkeeper' },
-      { value: 2, label: 'Customer' },
+      { value: 1, label: 'Admin' },
+      { value: 2, label: 'Shopkeeper' },
+      { value: 3, label: 'Customer' },
   ];
 
   const getDefaultSelectRole = (
@@ -45,7 +40,6 @@ const EditableUserPageForAdmin = (props) => {
           setEditableUser(json);
           setUserName(json.name);
           setUserRole(json.role);
-          setSelectedRole(getDefaultSelectRole);
       })
   }
 
@@ -93,20 +87,20 @@ const EditableUserPageForAdmin = (props) => {
         console.log(user);
       });  
   }
-/*
+
   const renderRoleSelection = () => {
     return (
       <div className='userRoleSelection'>
         <Select
             className='userRoleSelection'
-            value={selectedRole}
-            onChange={role => setSelectedRole(role)}
+            value={userRole}
+            onChange={role => setUserRole(role)}
             options={getRoleSelectionOptions}
         />
       </div>
     );
   }
-*/
+
   const renderTextField = (fieldName, fieldLabel, handlerFunction, maxLength, minLength, val) => (
     <TextField
       label={fieldLabel}
@@ -124,7 +118,7 @@ const EditableUserPageForAdmin = (props) => {
   if (editableUser) {
     return (
       <>
-        <form className="creditCardBox">
+        <form>
           {renderTextField('userBankAccountId', 'Bank Account ID',
                            handleUserBankAccountIdChange, 1, 8,
                            userBankAccountId)}

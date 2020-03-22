@@ -2,14 +2,12 @@ import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik'
-import isEmpty from 'lodash/isEmpty'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from 'react-select';
 import * as Yup from 'yup';
-import { Link, Redirect } from 'react-router-dom'
 import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
-import UserRole from './UserRole';
- 
+
 const UserPageForAdmin = (props) => {
     const [selectedRole, setSelectedRole] = useState('');
 
@@ -67,19 +65,6 @@ const UserPageForAdmin = (props) => {
     setSelectedRole(selectedRole);
   }
 
-  const renderRoleSelection = () => {
-    return (
-      <div className='userRoleSelection'>
-        <Select
-            className='userRoleSelection'
-            value={selectedRole}
-            onChange={role => setSelectedRole(role)}
-            options={getRoleSelectionOptions}
-        />
-      </div>
-    );
-  }
-
   const renderPasswordInputField = (fieldName, fieldLabel) => (
     <Field
       type="password"
@@ -100,37 +85,42 @@ const UserPageForAdmin = (props) => {
   );
 
   return (
-    <>
-      <Formik
-        validationSchema={getValidationSchema}
-        initialValues={getInitialValuesForForm()}
-        onSubmit={(values, actions) => {
-            actions.setSubmitting(false);
-            setNewValuesToUser(values);
-        }}
-        render={({ values, isSubmitting }) => (
-          <Form>
-            {renderTextInputField('name', 'Name')}
-            {renderPasswordInputField('password', 'Password')}
-            {renderRoleSelection()}
-            <br />
-            <button
-              type="submit"
-              className="submitButton"
-            >
-              Save
-            </button>
-          </Form>
-        )}
-      />
-      <button
-        type="button"
-        onClick={deleteUser}
-      >
-        Delete user
-      </button>
-    </>
-  )
+    props.isLoading
+      ?
+      <CircularProgress color="secondary" />
+      :
+      <>
+        <Formik
+          validationSchema={getValidationSchema}
+          initialValues={getInitialValuesForForm()}
+          onSubmit={(values, actions) => {
+              actions.setSubmitting(false);
+              setNewValuesToUser(values);
+          }}
+          render={({ values, isSubmitting }) => (
+            <Form>
+              {renderTextInputField('name', 'Name')}
+              {renderPasswordInputField('password', 'Password')}
+              {renderTextInputField('role', 'Role')}
+              <br />
+              <button
+                type="submit"
+                className="submitButton"
+              >
+                Save
+              </button>
+            </Form>
+          )}
+        />
+        <br />
+        <button
+          type="button"
+          onClick={deleteUser}
+        >
+          Delete user
+        </button>
+      </>
+  );
 }
 
 const mapStateToProps = (state) => {

@@ -2,15 +2,12 @@ import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik'
-import isEmpty from 'lodash/isEmpty'
-import Select from 'react-select';
 import * as Yup from 'yup';
-import {Link} from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CreditCard from '../CreditCard';
 import BankAccount from '../BankAccount';
 import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
-import UserRole from './UserRole';
  
 const UserPageForCustomer = (props) => {
   const getInitialValuesForForm = () => (
@@ -67,38 +64,43 @@ const UserPageForCustomer = (props) => {
   );
 
   return (
-    <>
-      <Formik
-        validationSchema={getValidationSchema}
-        initialValues={getInitialValuesForForm()}
-        onSubmit={(values, actions) => {
-            actions.setSubmitting(false);
-            setNewValuesToUser(values);
-        }}
-        render={({ values, errors, isSubmitting }) => (
-          <Form>
-            {renderTextInputField('name', 'Name')}
-            {renderPasswordInputField('password', 'Password')}
-            <br />
-            <button
-              type="submit"
-              className="submitButton"
-            >
-              Save
-            </button>
-          </Form>
-        )}
-      />
-      <button
-        type="button"
-        onClick={deleteUser}
-      >
-        Delete user
-      </button>
-      
-      <CreditCard id={props.user.creditCardId} />
-      <BankAccount id={props.user.bankAccountId} />
-    </>
+    props.isLoading
+      ?
+      <CircularProgress color="secondary" />
+      :
+      <>
+        <Formik
+          validationSchema={getValidationSchema}
+          initialValues={getInitialValuesForForm()}
+          onSubmit={(values, actions) => {
+              actions.setSubmitting(false);
+              setNewValuesToUser(values);
+          }}
+          render={({ values, errors, isSubmitting }) => (
+            <Form>
+              {renderTextInputField('name', 'Name')}
+              {renderPasswordInputField('password', 'Password')}
+              <br />
+              <button
+                type="submit"
+                className="submitButton"
+              >
+                Save
+              </button>
+            </Form>
+          )}
+        />
+        <br />
+        <button
+          type="button"
+          onClick={deleteUser}
+        >
+          Delete user
+        </button>
+        
+        <CreditCard id={props.user.creditCardId} />
+        <BankAccount id={props.user.bankAccountId} />
+      </>
   )
 }
 
@@ -119,74 +121,3 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPageForCustomer)
-/*
-import React, { Component } from 'react'
-import { Formik, Field } from 'formik';
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
-import * as Yup from 'yup';
-
-export default function UserPageForCustomer() {
-
-  const SignupSchema = Yup.object().shape({
-    address: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    password: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Required")
-  });
-
-  const customInputForm = ({field, form: {touched, errors}, ...props}) => (
-    <div>
-        <Input
-            invalid={!!(touched[field.name] && errors[field.name])}
-            {...field}
-            {...props} />
-        {touched[field.name] && errors[field.name] && <FormFeedback>{errors[field.name]}</FormFeedback>}
-    </div>
-  );
-
-  return (
-    <div className="container">
-      <Formik
-        initialValues={{
-          email: '',
-          address: '',
-          password: ''
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, actions) => {
-          // this could also easily use props or other
-          // local state to alter the behavior if needed
-          // this.props.sendValuesToServer(values)
-
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            actions.setSubmitting(false)
-          }, 1000)
-        }}>
-        <Form>
-            <FormGroup>
-              <Label for="exampleEmail">Email</Label>
-              <Field name="email" type={'email'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="address">Address</Label>
-              <Field name="address" type={'text'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="examplePassword">Password</Label>
-              <Field name="password" type={'password'} component={customInputForm}/>
-            </FormGroup>
-            <Button>Submit</Button>
-        </Form>
-      </Formik>    
-    </div>
-  )
-}
-*/
