@@ -3,6 +3,7 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom'
 import { userModify } from '../../actions/usersActions';
+import EditableUserPageForAdmin from './EditableUserPageForAdmin';
 
 const UserList = (props) => {
     const [users, setUsers] = useState([]);
@@ -29,6 +30,7 @@ const UserList = (props) => {
             {users.map((user) => 
                 (
                     <div>
+                        <Link to={`/users/adminEdit/${user._id}`}>edit</Link>
                         {user.name}
                     </div>
                 )
