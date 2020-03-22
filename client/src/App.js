@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import './App.css';
 import { Route, BrowserRouter } from 'react-router-dom';
 import BuyItemPage from './components/BuyItemPage';
@@ -21,7 +22,6 @@ import ListBankAccountsPage from './components/ListBankAccountsPage';
 import BankAccountAdmin from './components/BankAccountAdmin';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Switch, FormControlLabel } from '@material-ui/core';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 const useStyles = makeStyles({
@@ -47,26 +47,19 @@ const themeObject = {
   },
 };
 
-const useDarkMode = () => {
-  const [theme, setTheme] = useState(themeObject);
-  const {
-    palette: { type },
-  } = theme;
-  const toggleDarkMode = () => {
-    const updatedTheme = {
-      ...theme,
-      palette: {
-        ...theme.palette,
-        type: type === 'light' ? 'dark' : 'light',
-      },
-    };
-    setTheme(updatedTheme);
+function useDarkMode(toggled) {
+  const theme = themeObject;
+  const updatedTheme = {
+    ...theme,
+    palette: {
+      ...theme.palette,
+      type: toggled ? 'dark' : 'light',
+    },
   };
-  return [theme, toggleDarkMode];
-};
-
-function App() {
-  const [theme, toggleDarkMode] = useDarkMode();
+  return updatedTheme;
+}
+function App(props) {
+  const theme = useDarkMode(props.darkMode);
   const themeConfig = createMuiTheme(theme);
   const classes = useStyles({
     bgcolor: themeConfig.palette.background.default,
@@ -74,7 +67,6 @@ function App() {
   return (
     <ThemeProvider theme={themeConfig}>
       <div className={classes.App}>
-        <FormControlLabel control={<Switch onClick={toggleDarkMode} />} />
         <BrowserRouter>
           <Layout>
             <Route exact path="/" component={ItemPage} />
@@ -121,4 +113,8 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  darkMode: state.darkMode,
+});
+
+export default connect(mapStateToProps)(App);
