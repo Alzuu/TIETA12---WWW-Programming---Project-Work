@@ -1,4 +1,27 @@
-# Initial project plan document
+# Final project document
+
+## Instructions
+
+Before you start, make sure you have [Vagrant](https://www.vagrantup.com/) and [Git](https://git-scm.com/) installed. This project uses a different Vagrantfile than the one used earlier on the course, as it didn't have enough memory for the production build, so we changed the memory to 2 GiBs. Make sure that you don't have any other Vagrant machines running than this.
+
+1. Clone this repository: `git clone https://course-gitlab.tuni.fi/tieta12-2019-2020/i-want-all-the-3-points.git`
+2. Go to repository folder and start virtual machine: `vagrant up`
+3. Log into the virtual machine: `vagrant ssh`
+4. Go to project folder: `cd /vagrant_data`
+5. Start the application: `npm start` to start in production mode, `npm run dev` to start in development mode
+6. Open your browser and head to [localhost](http://localhost:3000).
+
+There are three users made for testing purposes:
+
+| Username   | Password   | Role       |
+| ---------- | ---------- | ---------- |
+| admin      | admin      | admin      |
+| shopkeeper | shopkeeper | shopkeeper |
+| customer   | customer   | customer   |
+
+Log into each one of these and try out the functionalities. Admin can do pretty much anything but buy items or have credit cards and bank accounts of their own. If an admin wants to buy or sell items, they have to make a customer account.
+
+Before you can sell or buy items, you have to add a credit card and a bank account to your account.
 
 ## Course project group information
 
@@ -50,22 +73,6 @@ Group members:
 ![Pages and navigation - Anonymous](/plan/pages_and_navigation/anonymous.jpg)
 ![Pages and navigation - Anonymous](/plan/pages_and_navigation/customer.jpg)
 ![Pages and navigation - Anonymous](/plan/pages_and_navigation/shopkeeper.jpg)
-
-- Homepage
-- User login
-- User registration
-- User information
-- User bankaccount
-- User creditcard
-- User unregister
-- Item selling - user and shopkeeper
-- Item listing - for customer
-- Item listing - per shopkeeper
-- Item listing - all
-- Item listing - for shopkeepers
-- Item page
-- Shopping card
-- Payment page
 
 ## Modules your group created in your Node project
 
@@ -202,6 +209,8 @@ Here are all API routes. Payload still to be designed.
 
 Our frontend is a React single-page-application that uses Redux to handle state. We use redux-localstorage to keep state from changing from page refreshes. Home page lists all shopkeepers' items on sale. Other things you can do is register a new account and login. When logged in, as a customer, you can also add items for sale and buy items from shopkeepers. You can also list own items and edit and/or delete them. Shopkeepers can in addition to that also buy items from customers and list them on their own page. Admins also see a listing of all items, credit cards and bank accounts that they can modify and/or delete. There is also a page to edit user information, in which you can change user information and add, edit or delete credit cards and bank accounts.
 
+For user interface, we use [Material-UI](https://material-ui.com/). As a bonus, we also implemented dark mode toggling.
+
 ## Testing
 
 We're going to test at least the some of the API with Mocha/chaihttp.
@@ -216,9 +225,9 @@ Division of work with deadlines:
 
 Allan
 
-- [ ] Bankaccount & creditcard testing 22.3
-- [ ] Code cleanup 22.3
-- [ ] BankAccount bug fixes & admin view 22.3
+- [x] Bankaccount & creditcard testing 22.3
+- [x] Code cleanup 22.3
+- [x] BankAccount bug fixes & admin view 22.3
 - [x] BankAccount React 22.3
 - [x] Pages and navigation (pictures) 3.3
 - [x] BankAccount API
@@ -234,8 +243,8 @@ Peter
 Kari
 
 - [ ] Documentation 22.3
-- [ ] Code cleanup and bug fixes 22.3
-- [ ] Setup script 22.3
+- [x] Code cleanup and bug fixes 22.3
+- [x] Setup script 22.3
 - [x] Project template 3.3
 - [x] Express application
 - [x] API Routes
