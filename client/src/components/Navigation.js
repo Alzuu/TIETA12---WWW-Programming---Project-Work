@@ -20,12 +20,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListIcon from '@material-ui/icons/List';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { toggleDarkMode } from '../actions/darkMode';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 
 function Navigation(props) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
   const userIsAdmin = () => props.user.role === 1;
   const userIsShopkeeper = () => props.user.role === 2;
   function handleMenu(e) {
@@ -33,6 +34,10 @@ function Navigation(props) {
   }
   function handleClose() {
     setAnchorEl(null);
+  }
+  function handleDarkMode() {
+    props.toggleDarkMode(!darkMode);
+    setDarkMode(!darkMode);
   }
   return (
     <AppBar position="sticky" className="navigationbar">
@@ -147,17 +152,9 @@ function Navigation(props) {
                   <Typography>Logout</Typography>
                 </IconButton>
               </Link>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={props.darkMode}
-                    onChange={(e) => {
-                      props.toggleDarkMode(e.target.checked);
-                    }}
-                  />
-                }
-                label="Dark mode"
-              />
+              <IconButton onClick={handleDarkMode}>
+                {props.darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
             </Box>
           ) : (
             <Box>
@@ -173,17 +170,9 @@ function Navigation(props) {
                   <Typography>Register</Typography>
                 </IconButton>
               </Link>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={props.darkMode}
-                    onChange={(e) => {
-                      props.toggleDarkMode(e.target.checked);
-                    }}
-                  />
-                }
-                label="Dark mode"
-              />
+              <IconButton onClick={handleDarkMode}>
+                {props.darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
             </Box>
           )}
         </Box>
