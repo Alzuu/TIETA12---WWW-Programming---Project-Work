@@ -23,9 +23,9 @@ const UserPage = (props) => {
       }, []);
 
     const getRoleSelectionOptions = [
-        { value: 0, label: 'Admin' },
-        { value: 1, label: 'Shopkeeper' },
-        { value: 2, label: 'Customer' },
+        { value: 1, label: 'Admin' },
+        { value: 2, label: 'Shopkeeper' },
+        { value: 3, label: 'Customer' },
     ];
 
     const getDefaultSelectRole = (
@@ -97,9 +97,9 @@ const UserPage = (props) => {
   if (props.user) {
     return (
       <>
-        {(userRoleAsNumber === 0) && <UserPageForAdmin />}
-        {(userRoleAsNumber === 1) && <UserPageForShopkeeper />}
-        {(userRoleAsNumber === 2) && <UserPageForCustomer />}
+        {(userRoleAsNumber === 1) && <UserPageForAdmin />}
+        {(userRoleAsNumber === 2) && <UserPageForShopkeeper />}
+        {(userRoleAsNumber === 3) && <UserPageForCustomer />}
       </>
     )  
   } else {
