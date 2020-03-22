@@ -76,18 +76,30 @@ function BuyItemPage(props) {
                 </Link>
 
                 {props.item.ownerId !== props.userId ? (
-                  <Link
-                    component={RouterLink}
-                    to={'/items/' + props.item._id + '/buy/confirm'}
-                  >
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<EuroSymbolIcon />}
+                  props.creditCardId ? (
+                    <Link
+                      component={RouterLink}
+                      to={'/items/' + props.item._id + '/buy/confirm'}
                     >
-                      Buy item
-                    </Button>
-                  </Link>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<EuroSymbolIcon />}
+                      >
+                        Buy item
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link component={RouterLink} to={'/users/' + props.userId}>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        startIcon={<EditIcon />}
+                      >
+                        Add credit card to buy items
+                      </Button>
+                    </Link>
+                  )
                 ) : (
                   <Link
                     component={RouterLink}
@@ -132,6 +144,7 @@ const mapStateToProps = (state) => ({
   item: state.itemsReducer.item,
   token: state.user.token,
   userId: state.user.id,
+  creditCardId: state.user.creditCardId,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

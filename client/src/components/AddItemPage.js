@@ -103,81 +103,96 @@ function AddItemPage(props) {
     if (redirect && itemAdded) {
       return <Redirect to={redirect} />;
     } else {
-      return (
-        <Box className="addItemBox">
-          <Typography variant="h2">Add new item</Typography>
-          <form onSubmit={handleClick} className="addItemBox">
-            <TextField
-              label="Item name"
-              type="text"
-              name="name"
-              value={name}
-              minLength="1"
-              required
-              onChange={handleNameChange}
-            />
-            <TextField
-              label="Item price"
-              type="number"
-              name="price"
-              value={price}
-              min="0.01"
-              step="0.01"
-              required
-              onChange={handlePriceChange}
-            />
-            <FormControlLabel
-              label="On sale"
-              control={
-                <Checkbox
-                  name="onsale"
-                  checked={onSale}
-                  onChange={handleOnSaleChange}
-                  color="primary"
-                />
-              }
-            />
-            <FormLabel>Add optional picture</FormLabel>
-            <FormControlLabel
-              label={file ? file.name : null}
-              control={
-                <Button
-                  variant="outlined"
-                  color={file ? 'secondary' : 'primary'}
-                  startIcon={file ? <DeleteIcon /> : <ImageIcon />}
-                  style={{ margin: 5 }}
-                  onClick={handleAddPictureClick}
-                >
-                  {file ? 'Delete picture' : 'Add picture'}
-                </Button>
-              }
-            />
+      if (
+        props.bankAccountId &&
+        props.bankAccountId !== '' &&
+        props.bankAccountId !== 'undefined'
+      ) {
+        return (
+          <Box className="addItemBox">
+            <Typography variant="h2">Add new item</Typography>
+            <form onSubmit={handleClick} className="addItemBox">
+              <TextField
+                label="Item name"
+                type="text"
+                name="name"
+                value={name}
+                minLength="1"
+                required
+                onChange={handleNameChange}
+              />
+              <TextField
+                label="Item price"
+                type="number"
+                name="price"
+                value={price}
+                min="0.01"
+                step="0.01"
+                required
+                onChange={handlePriceChange}
+              />
+              <FormControlLabel
+                label="On sale"
+                control={
+                  <Checkbox
+                    name="onsale"
+                    checked={onSale}
+                    onChange={handleOnSaleChange}
+                    color="primary"
+                  />
+                }
+              />
+              <FormLabel>Add optional picture</FormLabel>
+              <FormControlLabel
+                label={file ? file.name : null}
+                control={
+                  <Button
+                    variant="outlined"
+                    color={file ? 'secondary' : 'primary'}
+                    startIcon={file ? <DeleteIcon /> : <ImageIcon />}
+                    style={{ margin: 5 }}
+                    onClick={handleAddPictureClick}
+                  >
+                    {file ? 'Delete picture' : 'Add picture'}
+                  </Button>
+                }
+              />
 
-            <input
-              style={{ display: 'none' }}
-              type="file"
-              ref={fileRef}
-              name="picture"
-              accept="image/png, image/jpeg"
-              onChange={handleFileChange}
-            />
+              <input
+                style={{ display: 'none' }}
+                type="file"
+                ref={fileRef}
+                name="picture"
+                accept="image/png, image/jpeg"
+                onChange={handleFileChange}
+              />
 
-            {validateFileSize(fileSize) ? (
-              ''
-            ) : (
-              <Alert severity="error">File size too big! (max 5MB)</Alert>
-            )}
-            <Button
-              variant="outlined"
-              color="primary"
-              type="submit"
-              startIcon={<AddIcon />}
-            >
-              Add item
-            </Button>
-          </form>
-        </Box>
-      );
+              {validateFileSize(fileSize) ? (
+                ''
+              ) : (
+                <Alert severity="error">File size too big! (max 5MB)</Alert>
+              )}
+              <Button
+                variant="outlined"
+                color="primary"
+                type="submit"
+                startIcon={<AddIcon />}
+              >
+                Add item
+              </Button>
+            </form>
+          </Box>
+        );
+      } else {
+        return (
+          <Box className="addItemBox">
+            <Alert severity="warning" className="warningBox">
+              <AlertTitle>Warning</AlertTitle>
+              Please add bank account to sell items.
+            </Alert>
+          </Box>
+        );
+      }
     }
   } else {
     return (
@@ -196,6 +211,7 @@ const mapStateToProps = (state) => ({
   token: state.user.token,
   userId: state.user.id,
   userRole: state.user.role,
+  bankAccountId: state.user.bankAccountId,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

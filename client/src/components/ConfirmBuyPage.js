@@ -57,41 +57,55 @@ function ConfirmBuyPage(props) {
     }
     if (props.item.auth !== false) {
       if (props.item.ownerId !== props.userId) {
-        return (
-          <Box className="addItemBox">
-            <Card className="itemCard">
-              <CardActionArea>
-                <CardHeader title={`Confirm purchase of ${props.item.name}?`} />
+        if (props.creditCardId) {
+          return (
+            <Box className="addItemBox">
+              <Card className="itemCard">
+                <CardActionArea>
+                  <CardHeader
+                    title={`Confirm purchase of ${props.item.name}?`}
+                  />
 
-                <CardContent>
-                  <Typography variant="body">
-                    If you confirm purchase, your credit card will be
-                    automatically charged and the item will be delivered to you.
-                  </Typography>
-                </CardContent>
+                  <CardContent>
+                    <Typography variant="body">
+                      If you confirm purchase, your credit card will be
+                      automatically charged and the item will be delivered to
+                      you.
+                    </Typography>
+                  </CardContent>
 
-                <CardActions className="buttons">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handlePurchase}
-                    startIcon={<CheckIcon />}
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleCancel}
-                    startIcon={<CloseIcon />}
-                  >
-                    Cancel
-                  </Button>
-                </CardActions>
-              </CardActionArea>
-            </Card>
-          </Box>
-        );
+                  <CardActions className="buttons">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={handlePurchase}
+                      startIcon={<CheckIcon />}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleCancel}
+                      startIcon={<CloseIcon />}
+                    >
+                      Cancel
+                    </Button>
+                  </CardActions>
+                </CardActionArea>
+              </Card>
+            </Box>
+          );
+        } else {
+          return (
+            <Box className="addItemBox">
+              <Alert severity="warning" className="warningBox">
+                <AlertTitle>Warning</AlertTitle>
+                Please add credit card to buy items.
+              </Alert>
+            </Box>
+          );
+        }
       } else {
         return (
           <Box className="addItemBox">
@@ -127,6 +141,7 @@ const mapStateToProps = (state) => ({
   item: state.itemsReducer.item,
   token: state.user.token,
   userId: state.user.id,
+  creditCardId: state.user.creditCardId,
 });
 const mapDispatchToProps = (dispatch) => {
   return {
