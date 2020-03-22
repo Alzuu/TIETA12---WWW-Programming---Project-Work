@@ -5,26 +5,34 @@ import {Link} from 'react-router-dom'
 import { userModify } from '../../actions/usersActions';
 
 const UserList = (props) => {
-    //const [selectedRole, setSelectedRole] = useState('');
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        //setSelectedRole();
-      }, []);
+        console.log("UserList.js useEffect o/");
+        getUsers();
+    }, []);
 
-/*    const setNewValuesToUser = (user) => {
-    const modifiedUser = {
-      ...user,
-      id: props.user.id,
-      token: props.user.token,
-      role: selectedRole.value,
-    }
-    props.modify(modifiedUser);
-    setSelectedRole(selectedRole);
-    }*/
-    console.log("UserList.js props.user: o/");
+    const getUsers = () => (
+        fetch('/api/users',  { headers: { token: props.user.token } })
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json);
+                setUsers(json);
+            })
+    );
+
+    console.log("UserList.js o/");
+
     return (
         <>
             <h1>User List</h1>
+            {users.map((user) => 
+                (
+                    <div>
+                        {user.name}
+                    </div>
+                )
+            )}
         </>
     );
 }
