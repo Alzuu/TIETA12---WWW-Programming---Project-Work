@@ -15,8 +15,12 @@ import FormGroup from '@material-ui/core/FormGroup';
 import UpdateIcon from '@material-ui/icons/Update';
 
 const EditableUserPageForAdmin = (props) => {
+  const [userCreditCardId, setUserCreditCardId] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [editableUser, setEditableUser] = useState(undefined);
+  const [password, setPassword] = useState('');
+  const [userBankAccountId, setUserBankAccountId] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
 
     useEffect(() => {
@@ -35,31 +39,6 @@ const EditableUserPageForAdmin = (props) => {
             :
             '');
 
-  const getInitialValuesForForm = () => {
-    console.log("getInitialValuesForForm o/");
-    console.log(editableUser);
-    if (editableUser) {
-      return ({
-        name: editableUser.name,
-        role: editableUser.role,
-      });
-    } else {
-      return ({
-        name: '',
-        password: '',
-        role: '',
-      });
-    }
-  }
-
-  const getValidationSchema = () => (
-    Yup.object().shape({
-      name: Yup.string()
-        .min(3, 'Title must be at least 3 characters long.')
-        .required('Title is required.'),
-    })
-  );
-  
   const getUser = () => {
     console.log("admin editable getUser o/");
     fetch(`/api/users/${props.match.params.id}`,  { headers: { token: props.adminUser.token } })
@@ -67,29 +46,35 @@ const EditableUserPageForAdmin = (props) => {
     .then((json) => {
       console.log(json);
         console.log(json);
+        setUserBankAccountId(json.bankAccountId);
+        setUserCreditCardId(json.creditCardId);
         setEditableUser(json);
         setUserName(json.name);
+        setUserRole(json.role);
         setSelectedRole(getDefaultSelectRole);
         // setUsers(json);
     })
   }
 
-  function handleUserNameChange(e) {
-    setUserName(e.target.value);
-  }
-
+  const handleUserBankAccountIdChange = (e) => { setUserBankAccountId(e.target.value) }
+  const handleUserCreditCardIdChange = (e) => { setUserCreditCardId(e.target.value) }
+  const handleUserNameChange = (e) => { setUserName(e.target.value) }
+  const handleUserRoleChange = (e) => { setUserRole(e.target.value) }
+  
   const deleteUser = () => {
     console.log("EditableUserPageForAdmin.js deleteUser o/");
     props.delete(editableUser);
   }
 
   const handleUserEditSubmit = (user) => {
-    console.log("handleUserEditjhgSubmit o/");
     console.log(user);
     const modifiedUser = {
+      bankAccountId: userBankAccountId,
+      creditCardId: userCreditCardId,
       id: editableUser._id,
       token: props.adminUser.token,
       name: userName,
+      role: userRole,
     }
     fetch(`/api/users/${editableUser._id}`, {
       method: 'PUT',
@@ -130,46 +115,64 @@ const EditableUserPageForAdmin = (props) => {
     />
   );
 
-  const renderTextInputField = (fieldName, fieldLabel) => (
-    <Field
+  const renderTextField = (fieldName, fieldLabel, handlerFunction, maxLength, minLength, val) => (
+    <TextField
+      label={fieldLabel}
       type="text"
       name={fieldName}
-      label={fieldLabel}
-      component={TextInput}
+      minLength={minLength}
+      maxLength={maxLength}
+      required
+      value={val}
+      onChange={handlerFunction}
+      on
     />
   );
-
-  console.log("AdminUserPage.js editableUser: o/");
-  console.log(editableUser);
 
   if (editableUser) {
     return (
       <>
-                  <form className="creditCardBox">
-                <TextField
-                  label="name"
-                  type="text"
-                  name="name"
-                  minLength="1"
-                  maxLength="20"
-                  required
-                  value={userName}
-                  onChange={handleUserNameChange}
-                  on
-                />
-                <FormGroup row={true}>
-                <Button
-                  type="button"
-                  color="primary"
-                  variant="outlined"
-                  onClick={handleUserEditSubmit}
-                  startIcon={<UpdateIcon />}
-                >
-                  Update
-                </Button>
-              </FormGroup>
-  
-                </form>
+        <form className="creditCardBox">
+          {renderTextField('userBankAccountId', 'Bank Account ID',
+                           handleUserBankAccountIdChange, 1, 8,
+                           userBankAccountId)}
+          {renderTextField('userCreditCardId', 'Credit Card ID',
+                           handleUserCreditCardIdChange, 1, 8,
+                           userCreditCardId)}
+          <TextField
+            label="name"
+            type="text"
+            name="name"
+            minLength="1"
+            maxLength="20"
+            required
+            value={userName}
+            onChange={handleUserNameChange}
+            on
+          />
+          <TextField
+            label="role"
+            type="text"
+            name="role"
+            minLength="1"
+            maxLength="1"
+            required
+            value={userRole}
+            onChange={handleUserRoleChange}
+            on
+          />
+          <FormGroup row={true}>
+            <Button
+              type="button"
+              color="primary"
+              variant="outlined"
+              onClick={handleUserEditSubmit}
+              startIcon={<UpdateIcon />}
+            >
+              Update
+            </Button>
+          </FormGroup>
+        </form>
       </>
     )
   
