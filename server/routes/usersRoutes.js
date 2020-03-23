@@ -1,8 +1,25 @@
 const express = require('express');
 const router = express.Router();
+
+const getRole = require('../authentication/getRole');
 const verifyToken = require('../authentication/verifyToken');
 
 const userController = require('../controllers/userController');
+
+router.post('/login', (req, res, next) => {
+    next();
+}, userController.login);
+
+router.post('/logout', (req, res, next) => {
+    next();
+}, userController.logout);
+
+router.post('/', (req, res, next) => {
+    next();
+}, userController.create);
+
+router.use((req, res, next) => verifyToken(req, res, next));
+router.use((req, res, next) => getRole(req, res, next));
 
 router.get('/test', function(req, res, next) {
     next();
@@ -13,10 +30,6 @@ router.get('/test', function(req, res, next) {
 router.get('/', (req, res, next) => {
     next();
 }, userController.list);
-
-router.post('/', (req, res, next) => {
-    next();
-}, userController.create);
 
 router.get('/:id', (req, res, next) => {
     next();
@@ -33,14 +46,6 @@ router.delete('/', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
     next();
 }, userController.deleteOne);
-
-router.post('/login', (req, res, next) => {
-    next();
-}, userController.login);
-
-router.post('/logout', (req, res, next) => {
-    next();
-}, userController.logout);
 
 router.get('/:id/items', verifyToken, userController.listItems);
 

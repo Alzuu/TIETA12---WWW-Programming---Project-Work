@@ -36,6 +36,8 @@ function userToLinks(user, currentURL) {
 getCurrentUrl = (req) =>
   `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
+userIsAdmin = (req) => (req.userRole === UserRole.ADMIN);
+
 usersToLinks = (users, currentURL) => {
   const result = [];
   users.forEach((user) => {
@@ -47,6 +49,10 @@ usersToLinks = (users, currentURL) => {
 };
 
 exports.list = (req, res, next) => {
+  if (!userIsAdmin(req)) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  
   User.find(function(err, foundUsers) {
     if (err) {
       res.sendStatus(404);
@@ -54,7 +60,7 @@ exports.list = (req, res, next) => {
     }
     res.status(200);
     res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
-  });
+  });  
 };
 
 exports.one = (req, res, next) => {
@@ -69,21 +75,50 @@ exports.one = (req, res, next) => {
 };
 
 exports.modify = (req, res, next) => {
-  console.log('modify user o/');
-
-  const newName = xssFilters.inHTMLData(req.body.name);
-  const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
-
-  if (req.body.password) {
-    console.log("change user password o/");
-    var password = xssFilters.inHTMLData(req.body.password);
-
-    bcrypt.hash(password, saltRounds, function(err, hash) {  
+  if ((req.userId === req.params.id) || (userIsAdmin(req))) {
+    const newName = xssFilters.inHTMLData(req.body.name);
+    const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
+  
+    if (req.body.password) {
+      console.log("change user password o/");
+      var password = xssFilters.inHTMLData(req.body.password);
+  
+      bcrypt.hash(password, saltRounds, function(err, hash) {  
+        User.findByIdAndUpdate(
+          req.params.id,
+          {
+            name: newName,
+            password: hash,
+            role: newRole,
+            creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
+            bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
+          },
+          { omitUndefined: true, new: true },
+          (err, user) => {
+            if (err) {
+              res.sendStatus(400);
+              return console.error(err);
+            }
+      
+            res.status(200).send({
+              auth: true,
+              token: req.headers['token'],
+              id: user._id,
+              name: newName,
+              role: newRole,
+              creditCardId: user.creditCardId,
+              bankAccountId: user.bankAccountId,
+            });
+          }
+        );
+      });
+    } else {
+      console.log("change user, but dont change password o/");
+  
       User.findByIdAndUpdate(
         req.params.id,
         {
           name: newName,
-          password: hash,
           role: newRole,
           creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
           bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
@@ -106,71 +141,10 @@ exports.modify = (req, res, next) => {
           });
         }
       );
-    });
+    }  
   } else {
-    console.log("change user, but dont change password o/");
-
-    User.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: newName,
-        role: newRole,
-        creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
-        bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
-      },
-      { omitUndefined: true, new: true },
-      (err, user) => {
-        if (err) {
-          res.sendStatus(400);
-          return console.error(err);
-        }
-  
-        res.status(200).send({
-          auth: true,
-          token: req.headers['token'],
-          id: user._id,
-          name: newName,
-          role: newRole,
-          creditCardId: user.creditCardId,
-          bankAccountId: user.bankAccountId,
-        });
-      }
-    );
+    return res.status(401).json({ message: 'Unauthorized' }); 
   }
-  /*
-  console.log('modify user o/');
-  console.log(req.body);
-  console.log(req.params.id);
-  const newName = xssFilters.inHTMLData(req.body.name);
-  const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
-
-  User.findByIdAndUpdate(
-    req.params.id,
-    {
-      name: newName,
-      role: newRole,
-      creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
-      bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
-    },
-    { omitUndefined: true, new: true },
-    (err, user) => {
-      if (err) {
-        res.sendStatus(400);
-        return console.error(err);
-      }
-
-      res.status(200).send({
-        auth: true,
-        token: req.headers['token'],
-        id: user._id,
-        name: newName,
-        role: newRole,
-        creditCardId: user.creditCardId,
-        bankAccountId: user.bankAccountId,
-      });
-    }
-  );
-  */
 };
 
 exports.create = (req, res, next) => {
@@ -198,51 +172,33 @@ exports.create = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-  User.deleteMany((err, users) => {
-    if (err) {
-      res.sendStatus(404);
-      return console.error(err);
-    }
-    if (!users) {
-      res.sendStatus(404);
-    } else {
-      res.status(204);
-      res.json();
-    }
-  });
+  if (userIsAdmin(req)) {
+    User.deleteMany((err, users) => {
+      if (err) {
+        res.sendStatus(404);
+        return console.error(err);
+      }
+      if (!users) {
+        res.sendStatus(404);
+      } else {
+        res.status(204);
+        res.json();
+      }
+    });
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' }); 
+  }
 };
 
 exports.deleteOne = (req, res, next) => {
-  console.log("delOne o/");
-  console.log(req.params);
-  
-  User.findByIdAndRemove(req.params.id, (err, todo) => {
-    // As always, handle any potential errors:
+  User.findByIdAndRemove(req.params.id, (err, user) => {
     if (err) return res.status(500).send(err);
-    // We'll create a simple object to send back with a message and the id of the document that was removed
-    // You can really do this however you want, though.
     const response = {
-        message: "Todo successfully deleted",
-        id: todo._id
+        message: "User successfully deleted",
+        id: user._id
     };
     return res.status(200).send(response);
   });
-  /*
-  User.findByIdAndDelete(req.params.id, function(err, user) {
-    if (err) {
-      console.log("user delete error 1");
-      res.sendStatus(404);
-      return console.error(err);
-    }
-    if (!user) {
-      console.log("user delete error 2");
-      res.sendStatus(404);
-    } else {
-      console.log("user delete OK");
-      return res.status(204).json({ auth: false, token: null });
-    }
-  });
-  */
 };
 
 exports.login = (req, res, next) => {

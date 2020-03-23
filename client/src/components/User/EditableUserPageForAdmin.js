@@ -85,7 +85,7 @@ const EditableUserPageForAdmin = (props) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        token: user.token,
+        token: props.adminUser.token,
       },
       body: JSON.stringify(modifiedUser),
     })
