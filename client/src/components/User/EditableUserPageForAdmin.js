@@ -31,11 +31,8 @@ const EditableUserPageForAdmin = (props) => {
       { value: 3, label: 'Customer' },
   ];
 
-  const getDefaultSelectRole = (
-      editableUser ?
-          getRoleSelectionOptions.filter(option => option.value === parseInt(editableUser.role, 10))[0]
-          :
-          '');
+  const getDefaultSelectRole = (role) => (
+          getRoleSelectionOptions.filter(option => option.value === parseInt(role, 10))[0]);
 
   const getUser = () => {
     fetch(`/api/users/${props.match.params.id}`,  { headers: { token: props.adminUser.token } })
@@ -46,7 +43,7 @@ const EditableUserPageForAdmin = (props) => {
           setUserCreditCardId(json.creditCardId);
           setEditableUser(json);
           setUserName(json.name);
-          setUserRole(json.role);
+          setUserRole(getDefaultSelectRole(json.role));
       })
   }
 
@@ -80,8 +77,9 @@ const EditableUserPageForAdmin = (props) => {
       token: props.adminUser.token,
       name: userName,
       password: userPassword,
-      role: userRole,
+      role: userRole.value,
     }
+
     fetch(`/api/users/${editableUser._id}`, {
       method: 'PUT',
       headers: {
@@ -160,9 +158,7 @@ const EditableUserPageForAdmin = (props) => {
                 onChange={handleUserPasswordChange}
                 on
               />
-              {renderTextField('role', 'Role',
-                              handleUserRoleChange, 1, 1,
-                              userRole)}
+              {renderRoleSelection()}
               <FormGroup row={true}>
                 <Button
                   type="button"

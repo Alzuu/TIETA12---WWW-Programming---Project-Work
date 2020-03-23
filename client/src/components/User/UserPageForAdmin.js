@@ -77,98 +77,63 @@ const UserPageForAdmin = (props) => {
     setUserEditWasSuccessful(true);
   };
 
-  return props.isLoading ? (
-    <CircularProgress color="secondary" />
-  ) : (
-    <Box className="addItemBox">
-      <Typography variant="h2">Edit user</Typography>
-      {userEditWasSuccessful && (
-        <>
-          User edited succesfully
-          <br />
-        </>
-      )}
-      <form className="addItemBox">
-        <TextField
-          label="Name"
-          type="text"
-          name="name"
-          minLength={1}
-          maxLength={10}
-          required
-          value={userName}
-          onChange={handleUserNameChange}
-          on
-        />
-        <TextField
-          label="Password"
-          type="password"
-          placeholder="*********"
-          name="password"
-          minLength={1}
-          maxLength={10}
-          required
-          value={userPassword}
-          onChange={handleUserPasswordChange}
-          on
-        />
-        {renderRoleSelection()}
-        <FormGroup row={true}>
-          <Button
-            type="button"
-            color="primary"
-            variant="outlined"
-            onClick={setNewValuesToUser}
-            startIcon={<UpdateIcon />}
-          >
-            Modify
-          </Button>
-          <br />
-          <Button
-            type="button"
-            color="primary"
-            variant="outlined"
-            onClick={deleteUser}
-          >
-            Delete
-          </Button>
-        </FormGroup>
-      </form>
-    </Box>
-  );
-  /*
-      <>
-        <Box className="addItemBox">
+  return (
+    props.isLoading
+      ?
+      <CircularProgress color="secondary" />
+      :
+      <Box className="addItemBox">
             <Typography variant="h2">Edit user</Typography>
+            {userEditWasSuccessful && <>User edited succesfully<br /></>}
             <form className="addItemBox">
-              {renderTextInputField('name', 'Name')}
-              {renderPasswordInputField('password', 'Password')}
-              {renderRoleSelection()}
-              <br />
-              <Button
-                type="button"
-                color="primary"
-                variant="outlined"
-                type="submit"
-                className="submitButton"
-              >
-                Save
-              </Button>
-            </Form>
-          )}
-        />
-        <br />
-        <Button
-          type="button"
-          color="primary"
-          variant="outlined"
-          onClick={deleteUser}
-        >
-          Delete user
-        </Button>
-      </>
-      */
-};
+                <TextField
+                    label='Name'
+                    type='text'
+                    name='name'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userName}
+                    onChange={handleUserNameChange}
+                    on
+                />
+                <TextField
+                    label='Password'
+                    type='password'
+                    placeholder='*********'
+                    name='password'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userPassword}
+                    onChange={handleUserPasswordChange}
+                    on
+                />
+                {renderRoleSelection()}
+                <FormGroup row={true}>
+                    <Button
+                    type="button"
+                    color="primary"
+                    variant="outlined"
+                    onClick={setNewValuesToUser}
+                    startIcon={<UpdateIcon />}
+                    >
+                        Modify
+                    </Button>
+                    <br/>
+                    <Button
+                  type="button"
+                  color="primary"
+                  variant="outlined"
+                  onClick={deleteUser}
+                >
+                  Delete
+                </Button>
+                </FormGroup>
+            </form>
+        </Box>
+  );
+}
 
 const mapStateToProps = (state) => {
   return {
