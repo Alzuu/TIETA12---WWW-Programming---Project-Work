@@ -6,7 +6,8 @@ const config = require('../config.js');
 const Item = require('../models/Item');
 const UserRole = require('../models/UserRole');
 const { exportItemsToLinks } = require('./itemController');
-var User = require('../models/User');
+const User = require('../models/User');
+
 const saltRounds = 12;
 
 function userToLinks(user, currentURL) {
@@ -33,12 +34,12 @@ function userToLinks(user, currentURL) {
   return result;
 }
 
-getCurrentUrl = (req) =>
+const getCurrentUrl = (req) =>
   `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
-userIsAdmin = (req) => (req.userRole === UserRole.ADMIN);
+const userIsAdmin = (req) => req.userRole === UserRole.ADMIN;
 
-usersToLinks = (users, currentURL) => {
+const usersToLinks = (users, currentURL) => {
   const result = [];
   users.forEach((user) => {
     const userJson = JSON.parse(JSON.stringify(user));
@@ -52,7 +53,7 @@ exports.list = (req, res, next) => {
   if (!userIsAdmin(req)) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
-  
+
   User.find(function(err, foundUsers) {
     if (err) {
       res.sendStatus(404);
@@ -60,30 +61,34 @@ exports.list = (req, res, next) => {
     }
     res.status(200);
     res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
-  });  
-};
-
-exports.one = (req, res, next) => {
-  User.findById(req.params.id, (err, foundUser) => {
-    if (err) {
-      res.sendStatus(404);
-      return console.error(err);
-    }
-    res.status(200);
-    res.json(foundUser);
   });
 };
 
+exports.one = (req, res, next) => {
+  if (req.userId === req.params.id || userIsAdmin(req)) {
+    User.findById(req.params.id, (err, foundUser) => {
+      if (err) {
+        res.sendStatus(404);
+        return console.error(err);
+      }
+      res.status(200);
+      res.json(foundUser);
+    });
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+};
+
 exports.modify = (req, res, next) => {
-  if ((req.userId === req.params.id) || (userIsAdmin(req))) {
+  if (req.userId === req.params.id || userIsAdmin(req)) {
     const newName = xssFilters.inHTMLData(req.body.name);
     const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
-  
+
     if (req.body.password) {
-      console.log("change user password o/");
+      console.log('change user password o/');
       var password = xssFilters.inHTMLData(req.body.password);
-  
-      bcrypt.hash(password, saltRounds, function(err, hash) {  
+
+      bcrypt.hash(password, saltRounds, function(err, hash) {
         User.findByIdAndUpdate(
           req.params.id,
           {
@@ -99,7 +104,7 @@ exports.modify = (req, res, next) => {
               res.sendStatus(400);
               return console.error(err);
             }
-      
+
             res.status(200).send({
               auth: true,
               token: req.headers['token'],
@@ -113,8 +118,8 @@ exports.modify = (req, res, next) => {
         );
       });
     } else {
-      console.log("change user, but dont change password o/");
-  
+      console.log('change user, but dont change password o/');
+
       User.findByIdAndUpdate(
         req.params.id,
         {
@@ -129,7 +134,7 @@ exports.modify = (req, res, next) => {
             res.sendStatus(400);
             return console.error(err);
           }
-    
+
           res.status(200).send({
             auth: true,
             token: req.headers['token'],
@@ -141,9 +146,9 @@ exports.modify = (req, res, next) => {
           });
         }
       );
-    }  
+    }
   } else {
-    return res.status(401).json({ message: 'Unauthorized' }); 
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
@@ -186,19 +191,23 @@ exports.delete = (req, res, next) => {
       }
     });
   } else {
-    return res.status(401).json({ message: 'Unauthorized' }); 
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
 exports.deleteOne = (req, res, next) => {
-  User.findByIdAndRemove(req.params.id, (err, user) => {
-    if (err) return res.status(500).send(err);
-    const response = {
-        message: "User successfully deleted",
-        id: user._id
-    };
-    return res.status(200).send(response);
-  });
+  if (req.userId === req.params.id || userIsAdmin(req)) {
+    User.findByIdAndRemove(req.params.id, (err, user) => {
+      if (err) return res.status(500).send(err);
+      const response = {
+        message: 'User successfully deleted',
+        id: user._id,
+      };
+      return res.status(200).send(response);
+    });
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 };
 
 exports.login = (req, res, next) => {
