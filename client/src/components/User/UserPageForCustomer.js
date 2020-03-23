@@ -1,111 +1,112 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik'
-import * as Yup from 'yup';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Select from 'react-select';
+import * as Yup from 'yup';
+import { userDelete, userModify } from '../../actions/usersActions';
+
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import UpdateIcon from '@material-ui/icons/Update';
+
 import CreditCard from '../CreditCard';
 import BankAccount from '../BankAccount';
-import { userDelete, userModify } from '../../actions/usersActions';
-import TextInput from './TextInputFormik';
- 
-const UserPageForCustomer = (props) => {
-  const getInitialValuesForForm = () => (
-    props.user ? 
-      {
-        name: props.user.name,
-      }
-      :
-      {
-        name: '',
-      }
-  );
 
-  const getValidationSchema = () => (
-    Yup.object().shape({
-      name: Yup.string()
-        .min(3, 'Title must be at least 3 characters long.')
-        .required('Title is required.'),
-    })
-  );
+const UserPageForCustomer = (props) => {
+  const [userRole, setUserRole] = useState('');
+  const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
+  const [userPassword, setUserPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userWasDeleted, setUserWasDeleted] = useState(false);
+
+  useEffect(() => {
+    if (props.user) {
+      setUserName(props.user.name);
+    }
+  }, []);
+
+  const handleUserNameChange = (e) => { setUserName(e.target.value) }
+  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
 
   const deleteUser = () => {
-    console.log("UserPageForAdmin.js deleteUser o/");
     props.delete(props.user);
+    setUserWasDeleted(true);
   }
 
-  const setNewValuesToUser = (user) => {
+  const setNewValuesToUser = () => {
     const modifiedUser = {
-      ...user,
       id: props.user.id,
+      name: userName,
+      password: userPassword,
       token: props.user.token,
       role: props.user.role,
     }
     props.modify(modifiedUser);
+    setUserRole(userRole);
+    setUserEditWasSuccessful(true);
   }
-
-  const renderPasswordInputField = (fieldName, fieldLabel) => (
-    <Field
-      type="password"
-      name={fieldName}
-      placeholder={"********"}
-      label={fieldLabel}
-      component={TextInput}
-    />
-  );
-
-  const renderTextInputField = (fieldName, fieldLabel) => (
-    <Field
-      type="text"
-      name={fieldName}
-      label={fieldLabel}
-      component={TextInput}
-    />
-  );
 
   return (
     props.isLoading
       ?
       <CircularProgress color="secondary" />
       :
-      <>
-        <Formik
-          validationSchema={getValidationSchema}
-          initialValues={getInitialValuesForForm()}
-          onSubmit={(values, actions) => {
-              actions.setSubmitting(false);
-              setNewValuesToUser(values);
-          }}
-          render={({ values, errors, isSubmitting }) => (
-            <Form>
-              {renderTextInputField('name', 'Name')}
-              {renderPasswordInputField('password', 'Password')}
-              <br />
-              <Button
-                type="submit"
-                color="primary"
-                variant="outlined"              
-              >
-                Save
-              </Button>
-            </Form>
-          )}
-        />
-        <br />
-        <Button
-          type="button"
-          color="primary"
-          variant="outlined"  
-          onClick={deleteUser}
-        >
-          Delete user
-        </Button>
-        
-        <CreditCard id={props.user.creditCardId} />
-        <BankAccount id={props.user.bankAccountId} />
-      </>
-  )
+      <Box className="addItemBox">
+            <Typography variant="h2">Edit user</Typography>
+            {userEditWasSuccessful && <>User edited succesfully<br /></>}
+            <form className="addItemBox">
+                <TextField
+                    label='Name'
+                    type='text'
+                    name='name'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userName}
+                    onChange={handleUserNameChange}
+                    on
+                />
+                <TextField
+                    label='Password'
+                    type='password'
+                    placeholder='*********'
+                    name='password'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userPassword}
+                    onChange={handleUserPasswordChange}
+                    on
+                />
+                <FormGroup row={true}>
+                    <Button
+                    type="button"
+                    color="primary"
+                    variant="outlined"
+                    onClick={setNewValuesToUser}
+                    startIcon={<UpdateIcon />}
+                    >
+                        Modify
+                    </Button>
+<br/>
+                    <Button
+                  type="button"
+                  color="primary"
+                  variant="outlined"
+                  onClick={deleteUser}
+                >
+                  Delete
+                </Button>
+                </FormGroup>
+                <CreditCard id={props.user.creditCardId} />
+                <BankAccount id={props.user.bankAccountId} />
+            </form>
+        </Box>
+  );
 }
 
 const mapStateToProps = (state) => {
