@@ -116,7 +116,7 @@ const UserPageForAdmin = (props) => {
                     >
                         Modify
                     </Button>
-<br/>
+                    <br/>
                     <Button
                   type="button"
                   color="primary"
@@ -128,38 +128,6 @@ const UserPageForAdmin = (props) => {
                 </FormGroup>
             </form>
         </Box>
-      /*
-      <>
-        <Box className="addItemBox">
-            <Typography variant="h2">Edit user</Typography>
-            <form className="addItemBox">
-              {renderTextInputField('name', 'Name')}
-              {renderPasswordInputField('password', 'Password')}
-              {renderRoleSelection()}
-              <br />
-              <Button
-                type="button"
-                color="primary"
-                variant="outlined"
-                type="submit"
-                className="submitButton"
-              >
-                Save
-              </Button>
-            </Form>
-          )}
-        />
-        <br />
-        <Button
-          type="button"
-          color="primary"
-          variant="outlined"
-          onClick={deleteUser}
-        >
-          Delete user
-        </Button>
-      </>
-      */
   );
 }
 
