@@ -81,13 +81,14 @@ const UserPageForShopkeeper = (props) => {
               {renderTextInputField('name', 'Name')}
               {renderPasswordInputField('password', 'Password')}
               <br />
-              <button
+              <Button
                 type="submit"
-                className="submitButton"
+                color="primary"
+                variant="outlined"
                 disabled={isSubmitting || !isEmpty(errors)}
               >
                 Save
-              </button>
+              </Button>
             </Form>
           )}
         />

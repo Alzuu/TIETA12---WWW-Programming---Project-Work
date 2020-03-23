@@ -82,18 +82,21 @@ const UserPageForCustomer = (props) => {
               {renderTextInputField('name', 'Name')}
               {renderPasswordInputField('password', 'Password')}
               <br />
-              <button
+              <Button
                 type="submit"
-                className="submitButton"
+                color="primary"
+                variant="outlined"              
               >
                 Save
-              </button>
+              </Button>
             </Form>
           )}
         />
         <br />
         <Button
           type="button"
+          color="primary"
+          variant="outlined"  
           onClick={deleteUser}
         >
           Delete user
