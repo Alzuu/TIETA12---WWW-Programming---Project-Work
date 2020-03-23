@@ -11,15 +11,16 @@ import UpdateIcon from '@material-ui/icons/Update';
 import { Redirect } from 'react-router-dom';
 
 const EditableUserPageForAdmin = (props) => {
-  const [userCreditCardId, setUserCreditCardId] = useState('');
   const [editableUser, setEditableUser] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [userPassword, setUserPassword] = useState('');
   const [userBankAccountId, setUserBankAccountId] = useState('');
+  const [userCreditCardId, setUserCreditCardId] = useState('');
+  const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
+  const [userPassword, setUserPassword] = useState('');
   const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
   const [userWasDeleted, setUserWasDeleted] = useState(false);
-
+  
   useEffect(() => {
       getUser();
     }, []);
@@ -93,6 +94,7 @@ const EditableUserPageForAdmin = (props) => {
       .then((res) => res.json())
       .then((user) => {
         setIsLoading(false);
+        setUserEditWasSuccessful(true);
       });  
   }
 
@@ -133,6 +135,7 @@ const EditableUserPageForAdmin = (props) => {
         <CircularProgress color="secondary" />
         :
         <>
+          {userEditWasSuccessful && <>User edited succesfully<br /></>}
           <Box className="addItemBox">
           <Typography variant="h2">Edit user</Typography>
             <form className="addItemBox">
