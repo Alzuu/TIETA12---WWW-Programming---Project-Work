@@ -1,20 +1,31 @@
 import React, { Component, useState } from 'react';
+
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import FormGroup from '@material-ui/core/FormGroup';
 import { Link } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import UpdateIcon from '@material-ui/icons/Update';
 import { userAdd } from '../actions/usersActions';
 
 const RegistrationPage = (props) => {
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
-  const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [registrationHasBeenAttempted, setRegistrationHasBeenAttempted] = useState(false);
   const loginText = ' log in';
+  
+  const handleUserNameChange = (e) => { setUserName(e.target.value) }
+  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
+  const handleUserRoleChange = (e) => { setUserRole(e.target.value) }
 
   const register = () => {
     props.register({
-      name,
-      password,
-      role,
+      name: userName,
+      password: userPassword,
+      role: userRole,
     });
 
     setRegistrationHasBeenAttempted(true); 
@@ -29,28 +40,57 @@ const RegistrationPage = (props) => {
     );
   }
 
+
   return (
-    <div className="container">
-      <h1>Registration Page</h1>
-      <div>
-        <input
-          type="text"
-          placeholder="Name"
-          onChange={(event) => setName(event.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(event) => setPassword(event.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Role"
-          onChange={(event) => setRole(event.target.value)}
-        />
-        <button onClick={register}>Register</button>
-      </div>
-    </div>
+    <Box className="addItemBox">
+        <Typography variant="h2">Register</Typography>
+        <form className="addItemBox">
+            <TextField
+                label='Name'
+                type='text'
+                name='name'
+                minLength={1}
+                maxLength={10}
+                required
+                value={userName}
+                onChange={handleUserNameChange}
+                on
+            />
+            <TextField
+                label='Password'
+                type='password'
+                name='password'
+                minLength={1}
+                maxLength={10}
+                required
+                value={userPassword}
+                onChange={handleUserPasswordChange}
+                on
+            />
+            <TextField
+                label='Role'
+                type='text'
+                name='role'
+                minLength={1}
+                maxLength={1}
+                required
+                value={userRole}
+                onChange={handleUserRoleChange}
+                on
+            />
+            <FormGroup row={true}>
+                <Button
+                type="button"
+                color="primary"
+                variant="outlined"
+                onClick={register}
+                startIcon={<UpdateIcon />}
+                >
+                    Register
+                </Button>
+            </FormGroup>
+        </form>
+    </Box>
   );
 };
 
