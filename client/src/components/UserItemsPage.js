@@ -35,7 +35,9 @@ function UserItemsPage(props) {
       return (
         <div>
           <Typography variant="h2">
-            User {props.match.params.id} items
+            {props.userId === props.match.params.id
+              ? 'Own items'
+              : `User ${props.match.params.id} items`}
           </Typography>
           <ItemList
             items={props.items}

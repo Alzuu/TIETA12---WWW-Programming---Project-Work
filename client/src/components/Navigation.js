@@ -49,7 +49,7 @@ function Navigation(props) {
           minWidth="100%"
         >
           <Box display="flex" flexDirection="row">
-            <Link to="/">
+            <Link to="/" style={{ textDecoration: 'none' }}>
               <IconButton>
                 <StorefrontIcon />
                 <Typography>Items for sale</Typography>
@@ -57,13 +57,16 @@ function Navigation(props) {
             </Link>
             {props.user ? (
               <Box>
-                <Link to="/items/add">
+                <Link to="/items/add" style={{ textDecoration: 'none' }}>
                   <IconButton>
                     <AddIcon />
                     <Typography>Add item</Typography>
                   </IconButton>
                 </Link>
-                <Link to={`/users/${props.user.id}/items`}>
+                <Link
+                  to={`/users/${props.user.id}/items`}
+                  style={{ textDecoration: 'none' }}
+                >
                   <IconButton>
                     <HomeIcon />
                     <Typography>Own items</Typography>
@@ -74,7 +77,7 @@ function Navigation(props) {
               ''
             )}
             {userIsAdmin() || userIsShopkeeper() ? (
-              <Link to="/items/customers">
+              <Link to="/items/customers" style={{ textDecoration: 'none' }}>
                 <IconButton>
                   <EmojiPeopleIcon />
                   <Typography>Customer items</Typography>
@@ -104,7 +107,7 @@ function Navigation(props) {
                   onClose={handleClose}
                 >
                   <MenuItem>
-                    <Link to="/users">
+                    <Link to="/users" style={{ textDecoration: 'none' }}>
                       <IconButton onClick={handleClose}>
                         <ListIcon />
                         <Typography>Users</Typography>
@@ -112,7 +115,7 @@ function Navigation(props) {
                     </Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link to="/items">
+                    <Link to="/items" style={{ textDecoration: 'none' }}>
                       <IconButton onClick={handleClose}>
                         <ListIcon />
                         <Typography>All items</Typography>
@@ -120,7 +123,7 @@ function Navigation(props) {
                     </Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link to="/creditcards">
+                    <Link to="/creditcards" style={{ textDecoration: 'none' }}>
                       <IconButton onClick={handleClose}>
                         <CreditCardIcon />
                         <Typography>All credit cards</Typography>
@@ -128,7 +131,7 @@ function Navigation(props) {
                     </Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link to="/bankaccounts">
+                    <Link to="/bankaccounts" style={{ textDecoration: 'none' }}>
                       <IconButton onClick={handleClose}>
                         <AccountBalanceIcon />
                         <Typography>All bank accounts</Typography>
@@ -148,13 +151,16 @@ function Navigation(props) {
               alignItems="flex-end"
               justifyContent="flex-end"
             >
-              <Link to={`/users/${props.user.id}`}>
+              <Link
+                to={`/users/${props.user.id}`}
+                style={{ textDecoration: 'none' }}
+              >
                 <IconButton>
                   <AccountCircleIcon />
                   <Typography>Edit profile</Typography>
                 </IconButton>
               </Link>
-              <Link to="/logout">
+              <Link to="/logout" style={{ textDecoration: 'none' }}>
                 <IconButton>
                   <ExitToAppIcon />
                   <Typography>Logout</Typography>
@@ -166,13 +172,13 @@ function Navigation(props) {
             </Box>
           ) : (
             <Box>
-              <Link to="/login">
+              <Link to="/login" style={{ textDecoration: 'none' }}>
                 <IconButton>
                   <LockOpenIcon />
                   <Typography>Login</Typography>
                 </IconButton>
               </Link>
-              <Link to="/register">
+              <Link to="/register" style={{ textDecoration: 'none' }}>
                 <IconButton>
                   <PersonAddIcon />
                   <Typography>Register</Typography>

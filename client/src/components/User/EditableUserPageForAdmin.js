@@ -109,7 +109,7 @@ const EditableUserPageForAdmin = (props) => {
 
   const renderRoleSelection = () => {
     return (
-      <div className="userRoleSelection">
+      <div className="userRoleSelection" style={{ width: '150px' }}>
         <Select
           className="userRoleSelection"
           value={userRole}
