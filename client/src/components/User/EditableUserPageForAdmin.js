@@ -1,21 +1,26 @@
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormGroup from '@material-ui/core/FormGroup';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import UpdateIcon from '@material-ui/icons/Update';
+import { Redirect } from 'react-router-dom';
 
 const EditableUserPageForAdmin = (props) => {
-  const [userCreditCardId, setUserCreditCardId] = useState('');
   const [editableUser, setEditableUser] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [userPassword, setUserPassword] = useState('');
   const [userBankAccountId, setUserBankAccountId] = useState('');
+  const [userCreditCardId, setUserCreditCardId] = useState('');
+  const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
+  const [userPassword, setUserPassword] = useState('');
   const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
-
+  const [userWasDeleted, setUserWasDeleted] = useState(false);
+  
   useEffect(() => {
       getUser();
     }, []);
@@ -62,6 +67,7 @@ const EditableUserPageForAdmin = (props) => {
     .then((res) => res.json())
       .then((json) => {
         setIsLoading(false);
+        setUserWasDeleted(true);
       });
   }
 
@@ -88,6 +94,7 @@ const EditableUserPageForAdmin = (props) => {
       .then((res) => res.json())
       .then((user) => {
         setIsLoading(false);
+        setUserEditWasSuccessful(true);
       });  
   }
 
@@ -118,6 +125,9 @@ const EditableUserPageForAdmin = (props) => {
     />
   );
 
+  if (userWasDeleted) {
+    return <Redirect to={'/users'} />;
+  }
   if (editableUser) {
     return (
       isLoading
@@ -125,52 +135,56 @@ const EditableUserPageForAdmin = (props) => {
         <CircularProgress color="secondary" />
         :
         <>
-          <form>
-            {renderTextField('userBankAccountId', 'Bank Account ID',
-                            handleUserBankAccountIdChange, 1, 8,
-                            userBankAccountId)}
-            {renderTextField('userCreditCardId', 'Credit Card ID',
-                            handleUserCreditCardIdChange, 1, 8,
-                            userCreditCardId)}
-            {renderTextField('name', 'Name',
-                            handleUserNameChange, 1, 20,
-                            userName)}
-            <TextField
-              label='Password'
-              type='password'
-              placeholder="***"
-              name='password'
-              minLength={1}
-              maxLength={10}
-              required
-              value={userPassword}
-              onChange={handleUserPasswordChange}
-              on
-            />
-            {renderTextField('role', 'Role',
-                            handleUserRoleChange, 1, 1,
-                            userRole)}
-            <FormGroup row={true}>
-              <Button
-                type="button"
-                color="primary"
-                variant="outlined"
-                onClick={handleUserEditSubmit}
-                startIcon={<UpdateIcon />}
-              >
-                Update
-              </Button>
-              <br />
-              <Button
-                type="button"
-                color="primary"
-                variant="outlined"
-                onClick={deleteUser}
-              >
-                Delete
-              </Button>
-            </FormGroup>
-          </form>
+          {userEditWasSuccessful && <>User edited succesfully<br /></>}
+          <Box className="addItemBox">
+          <Typography variant="h2">Edit user</Typography>
+            <form className="addItemBox">
+              {renderTextField('userBankAccountId', 'Bank Account ID',
+                              handleUserBankAccountIdChange, 1, 8,
+                              userBankAccountId)}
+              {renderTextField('userCreditCardId', 'Credit Card ID',
+                              handleUserCreditCardIdChange, 1, 8,
+                              userCreditCardId)}
+              {renderTextField('name', 'Name',
+                              handleUserNameChange, 1, 20,
+                              userName)}
+              <TextField
+                label='Password'
+                type='password'
+                placeholder="***"
+                name='password'
+                minLength={1}
+                maxLength={10}
+                required
+                value={userPassword}
+                onChange={handleUserPasswordChange}
+                on
+              />
+              {renderTextField('role', 'Role',
+                              handleUserRoleChange, 1, 1,
+                              userRole)}
+              <FormGroup row={true}>
+                <Button
+                  type="button"
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleUserEditSubmit}
+                  startIcon={<UpdateIcon />}
+                >
+                  Update
+                </Button>
+                <br />
+                <Button
+                  type="button"
+                  color="primary"
+                  variant="outlined"
+                  onClick={deleteUser}
+                >
+                  Delete
+                </Button>
+              </FormGroup>
+            </form>
+          </Box>
         </>
     )
   

@@ -156,6 +156,7 @@ export function userAdd(user) {
       })
         .then((response) => {
           console.log(response);
+          dispatch(userFetchHasErrored(false));
         })
         .catch((error) => {
           console.log(error);

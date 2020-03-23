@@ -1,119 +1,138 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from 'react-select';
 import * as Yup from 'yup';
 import { userDelete, userModify } from '../../actions/usersActions';
-import TextInput from './TextInputFormik';
+
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import UpdateIcon from '@material-ui/icons/Update';
 
 const UserPageForAdmin = (props) => {
-    const [selectedRole, setSelectedRole] = useState('');
+  const [userRole, setUserRole] = useState('');
+  const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
+  const [userPassword, setUserPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userWasDeleted, setUserWasDeleted] = useState(false);
 
-    useEffect(() => {
-        setSelectedRole(getDefaultSelectRole);
-      }, []);
+  useEffect(() => {
+    if (props.user) {
+      setUserName(props.user.name);
+    }
+    setUserRole(getDefaultSelectRole);
+  }, []);
 
-    const getRoleSelectionOptions = [
-        { value: 1, label: 'Admin' },
-        { value: 2, label: 'Shopkeeper' },
-        { value: 3, label: 'Customer' },
-    ];
+  const getRoleSelectionOptions = [
+      { value: 1, label: 'Admin' },
+      { value: 2, label: 'Shopkeeper' },
+      { value: 3, label: 'Customer' },
+  ];
 
-    const getDefaultSelectRole = (
-        props.user ?
-            getRoleSelectionOptions.filter(option => option.value === parseInt(props.user.role, 10))[0]
-            :
-            '');
+  const getDefaultSelectRole = (
+      props.user ?
+          getRoleSelectionOptions.filter(option => option.value === parseInt(props.user.role, 10))[0]
+          :
+          '');
 
-  const getInitialValuesForForm = () => (
-    props.user ? 
-      {
-        name: props.user.name,
-        role: props.user.role,
-      }
-      :
-      {
-        name: '',
-        password: '',
-        role: '',
-      }
-  );
+  const handleUserNameChange = (e) => { setUserName(e.target.value) }
+  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
 
   const renderRoleSelection = () => {
     return (
       <div className='userRoleSelection'>
         <Select
-            className='userRoleSelection'
-            value={selectedRole}
-            onChange={role => setSelectedRole(role)}
-            options={getRoleSelectionOptions}
+          className='userRoleSelection'
+          value={userRole}
+          onChange={role => setUserRole(role)}
+          options={getRoleSelectionOptions}
         />
       </div>
     );
   }
 
-  const getValidationSchema = () => (
-    Yup.object().shape({
-      name: Yup.string()
-        .min(3, 'Title must be at least 3 characters long.')
-        .required('Title is required.'),
-    })
-  )
-
   const deleteUser = () => {
     props.delete(props.user);
+    setUserWasDeleted(true);
   }
 
-  const setNewValuesToUser = (user) => {
-    console.log("setNewValuesToUser user:");
-    console.log(user);
+  const setNewValuesToUser = () => {
     const modifiedUser = {
-      ...user,
       id: props.user.id,
+      name: userName,
+      password: userPassword,
       token: props.user.token,
-      role: selectedRole.value,
+      role: userRole.value,
     }
     props.modify(modifiedUser);
-    setSelectedRole(selectedRole);
+    setUserRole(userRole);
+    setUserEditWasSuccessful(true);
   }
-
-  const renderPasswordInputField = (fieldName, fieldLabel) => (
-    <Field
-      type="password"
-      name={fieldName}
-      placeholder={"********"}
-      label={fieldLabel}
-      component={TextInput}
-    />
-  );
-
-  const renderTextInputField = (fieldName, fieldLabel) => (
-    <Field
-      type="text"
-      name={fieldName}
-      label={fieldLabel}
-      component={TextInput}
-    />
-  );
 
   return (
     props.isLoading
       ?
       <CircularProgress color="secondary" />
       :
+      <Box className="addItemBox">
+            <Typography variant="h2">Edit user</Typography>
+            {userEditWasSuccessful && <>User edited succesfully<br /></>}
+            <form className="addItemBox">
+                <TextField
+                    label='Name'
+                    type='text'
+                    name='name'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userName}
+                    onChange={handleUserNameChange}
+                    on
+                />
+                <TextField
+                    label='Password'
+                    type='password'
+                    placeholder='*********'
+                    name='password'
+                    minLength={1}
+                    maxLength={10}
+                    required
+                    value={userPassword}
+                    onChange={handleUserPasswordChange}
+                    on
+                />
+                {renderRoleSelection()}
+                <FormGroup row={true}>
+                    <Button
+                    type="button"
+                    color="primary"
+                    variant="outlined"
+                    onClick={setNewValuesToUser}
+                    startIcon={<UpdateIcon />}
+                    >
+                        Modify
+                    </Button>
+<br/>
+                    <Button
+                  type="button"
+                  color="primary"
+                  variant="outlined"
+                  onClick={deleteUser}
+                >
+                  Delete
+                </Button>
+                </FormGroup>
+            </form>
+        </Box>
+      /*
       <>
-        <Formik
-          validationSchema={getValidationSchema}
-          initialValues={getInitialValuesForForm()}
-          onSubmit={(values, actions) => {
-              actions.setSubmitting(false);
-              setNewValuesToUser(values);
-          }}
-          render={({ values, isSubmitting }) => (
-            <Form>
+        <Box className="addItemBox">
+            <Typography variant="h2">Edit user</Typography>
+            <form className="addItemBox">
               {renderTextInputField('name', 'Name')}
               {renderPasswordInputField('password', 'Password')}
               {renderRoleSelection()}
@@ -140,6 +159,7 @@ const UserPageForAdmin = (props) => {
           Delete user
         </Button>
       </>
+      */
   );
 }
 
@@ -160,74 +180,3 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin)
-/*
-import React, { Component } from 'react'
-import { Formik, Field } from 'formik';
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
-import * as Yup from 'yup';
-
-export default function UserPageForAdmin() {
-
-  const SignupSchema = Yup.object().shape({
-    address: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    password: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Required")
-  });
-
-  const customInputForm = ({field, form: {touched, errors}, ...props}) => (
-    <div>
-        <Input
-            invalid={!!(touched[field.name] && errors[field.name])}
-            {...field}
-            {...props} />
-        {touched[field.name] && errors[field.name] && <FormFeedback>{errors[field.name]}</FormFeedback>}
-    </div>
-  );
-
-  return (
-    <div className="container">
-      <Formik
-        initialValues={{
-          email: '',
-          address: '',
-          password: ''
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, actions) => {
-          // this could also easily use props or other
-          // local state to alter the behavior if needed
-          // this.props.sendValuesToServer(values)
-
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            actions.setSubmitting(false)
-          }, 1000)
-        }}>
-        <Form>
-            <FormGroup>
-              <Label for="exampleEmail">Email</Label>
-              <Field name="email" type={'email'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="address">Address</Label>
-              <Field name="address" type={'text'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="examplePassword">Password</Label>
-              <Field name="password" type={'password'} component={customInputForm}/>
-            </FormGroup>
-            <Button>Submit</Button>
-        </Form>
-      </Formik>    
-    </div>
-  )
-}
-*/
