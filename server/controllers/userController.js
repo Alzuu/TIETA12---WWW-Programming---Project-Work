@@ -36,6 +36,8 @@ function userToLinks(user, currentURL) {
 getCurrentUrl = (req) =>
   `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
+userIsAdmin = (req) => (req.userRole === UserRole.ADMIN);
+
 usersToLinks = (users, currentURL) => {
   const result = [];
   users.forEach((user) => {
@@ -47,6 +49,10 @@ usersToLinks = (users, currentURL) => {
 };
 
 exports.list = (req, res, next) => {
+  if (!userIsAdmin(req)) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  
   User.find(function(err, foundUsers) {
     if (err) {
       res.sendStatus(404);
@@ -54,7 +60,7 @@ exports.list = (req, res, next) => {
     }
     res.status(200);
     res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
-  });
+  });  
 };
 
 exports.one = (req, res, next) => {
