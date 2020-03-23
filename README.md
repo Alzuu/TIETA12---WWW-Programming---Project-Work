@@ -2,7 +2,7 @@
 
 ## Instructions
 
-Before you start, make sure you have [Vagrant](https://www.vagrantup.com/) and [Git](https://git-scm.com/) installed. This project uses a different Vagrantfile than the one used earlier on the course, as it didn't have enough memory for the production build, so we changed the memory to 2 GiBs. Make sure that you don't have any other Vagrant machines running than this.
+Before you start, make sure you have [Vagrant](https://www.vagrantup.com/) and [Git](https://git-scm.com/) installed. This project uses a different Vagrantfile than the one used earlier on the course, as it didn't have enough memory for the production build, so we changed the memory to 2 GiBs. Make sure that you don't have any other Vagrant machines running than this. The dev-mode should work fine in courses Vagrantfile though.
 
 1. Clone this repository: `git clone https://course-gitlab.tuni.fi/tieta12-2019-2020/i-want-all-the-3-points.git`
 2. Go to repository folder and start virtual machine: `vagrant up`
