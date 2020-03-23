@@ -1,15 +1,14 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik'
-import isEmpty from 'lodash/isEmpty'
+import { Formik, Form, Field } from 'formik';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from 'react-select';
 import * as Yup from 'yup';
-import { Link, Redirect } from 'react-router-dom'
 import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
-import UserRole from './UserRole';
- 
+
 const UserPageForAdmin = (props) => {
     const [selectedRole, setSelectedRole] = useState('');
 
@@ -18,9 +17,9 @@ const UserPageForAdmin = (props) => {
       }, []);
 
     const getRoleSelectionOptions = [
-        { value: 0, label: 'Admin' },
-        { value: 1, label: 'Shopkeeper' },
-        { value: 2, label: 'Customer' },
+        { value: 1, label: 'Admin' },
+        { value: 2, label: 'Shopkeeper' },
+        { value: 3, label: 'Customer' },
     ];
 
     const getDefaultSelectRole = (
@@ -43,30 +42,6 @@ const UserPageForAdmin = (props) => {
       }
   );
 
-  const getValidationSchema = () => (
-    Yup.object().shape({
-      name: Yup.string()
-        .min(3, 'Title must be at least 3 characters long.')
-        .required('Title is required.'),
-    })
-  )
-
-  const deleteUser = () => {
-    console.log("UserPageForAdmin.js deleteUser o/");
-    props.delete(props.user);
-  }
-
-  const setNewValuesToUser = (user) => {
-    const modifiedUser = {
-      ...user,
-      id: props.user.id,
-      token: props.user.token,
-      role: selectedRole.value,
-    }
-    props.modify(modifiedUser);
-    setSelectedRole(selectedRole);
-  }
-
   const renderRoleSelection = () => {
     return (
       <div className='userRoleSelection'>
@@ -78,6 +53,31 @@ const UserPageForAdmin = (props) => {
         />
       </div>
     );
+  }
+
+  const getValidationSchema = () => (
+    Yup.object().shape({
+      name: Yup.string()
+        .min(3, 'Title must be at least 3 characters long.')
+        .required('Title is required.'),
+    })
+  )
+
+  const deleteUser = () => {
+    props.delete(props.user);
+  }
+
+  const setNewValuesToUser = (user) => {
+    console.log("setNewValuesToUser user:");
+    console.log(user);
+    const modifiedUser = {
+      ...user,
+      id: props.user.id,
+      token: props.user.token,
+      role: selectedRole.value,
+    }
+    props.modify(modifiedUser);
+    setSelectedRole(selectedRole);
   }
 
   const renderPasswordInputField = (fieldName, fieldLabel) => (
@@ -100,37 +100,47 @@ const UserPageForAdmin = (props) => {
   );
 
   return (
-    <>
-      <Formik
-        validationSchema={getValidationSchema}
-        initialValues={getInitialValuesForForm()}
-        onSubmit={(values, actions) => {
-            actions.setSubmitting(false);
-            setNewValuesToUser(values);
-        }}
-        render={({ values, isSubmitting }) => (
-          <Form>
-            {renderTextInputField('name', 'Name')}
-            {renderPasswordInputField('password', 'Password')}
-            {renderRoleSelection()}
-            <br />
-            <button
-              type="submit"
-              className="submitButton"
-            >
-              Save
-            </button>
-          </Form>
-        )}
-      />
-      <button
-        type="button"
-        onClick={deleteUser}
-      >
-        Delete user
-      </button>
-    </>
-  )
+    props.isLoading
+      ?
+      <CircularProgress color="secondary" />
+      :
+      <>
+        <Formik
+          validationSchema={getValidationSchema}
+          initialValues={getInitialValuesForForm()}
+          onSubmit={(values, actions) => {
+              actions.setSubmitting(false);
+              setNewValuesToUser(values);
+          }}
+          render={({ values, isSubmitting }) => (
+            <Form>
+              {renderTextInputField('name', 'Name')}
+              {renderPasswordInputField('password', 'Password')}
+              {renderRoleSelection()}
+              <br />
+              <Button
+                type="button"
+                color="primary"
+                variant="outlined"
+                type="submit"
+                className="submitButton"
+              >
+                Save
+              </Button>
+            </Form>
+          )}
+        />
+        <br />
+        <Button
+          type="button"
+          color="primary"
+          variant="outlined"
+          onClick={deleteUser}
+        >
+          Delete user
+        </Button>
+      </>
+  );
 }
 
 const mapStateToProps = (state) => {

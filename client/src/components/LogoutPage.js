@@ -9,7 +9,7 @@ const LogoutPage = (props) => {
 
     return (
         <div className="container">
-            <h1>Logout Page</h1>
+            <h1>You have succesfully logged out</h1>
         </div>
     );
 }

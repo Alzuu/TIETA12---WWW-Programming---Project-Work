@@ -1,13 +1,13 @@
 import React, { Component, useEffect, useState } from 'react'
 
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field } from 'formik';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import isEmpty from 'lodash/isEmpty'
 import * as Yup from 'yup';
-import {Link} from 'react-router-dom'
 import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
-import UserRole from './UserRole';
  
 const UserPageForShopkeeper = (props) => {
   const getInitialValuesForForm = () => (
@@ -64,36 +64,44 @@ const UserPageForShopkeeper = (props) => {
   );
 
   return (
-    <>
-      <Formik
-        validationSchema={getValidationSchema}
-        initialValues={getInitialValuesForForm()}
-        onSubmit={(values, actions) => {
-            actions.setSubmitting(false);
-            setNewValuesToUser(values);
-        }}
-        render={({ values, errors, isSubmitting }) => (
-          <Form>
-            {renderTextInputField('name', 'Name')}
-            {renderPasswordInputField('password', 'Password')}
-            <br />
-            <button
-              type="submit"
-              className="submitButton"
-              disabled={isSubmitting || !isEmpty(errors)}
-            >
-              Save
-            </button>
-          </Form>
-        )}
-      />
-      <button
-        type="button"
-        onClick={deleteUser}
-      >
-        Delete user
-      </button>
-    </>
+    props.isLoading
+      ?
+      <CircularProgress color="secondary" />
+      :
+      <>
+        <Formik
+          validationSchema={getValidationSchema}
+          initialValues={getInitialValuesForForm()}
+          onSubmit={(values, actions) => {
+              actions.setSubmitting(false);
+              setNewValuesToUser(values);
+          }}
+          render={({ values, errors, isSubmitting }) => (
+            <Form>
+              {renderTextInputField('name', 'Name')}
+              {renderPasswordInputField('password', 'Password')}
+              <br />
+              <Button
+                type="submit"
+                color="primary"
+                variant="outlined"
+                disabled={isSubmitting || !isEmpty(errors)}
+              >
+                Save
+              </Button>
+            </Form>
+          )}
+        />
+        <br />
+        <Button
+          type="button"
+          color="primary"
+          variant="outlined"
+          onClick={deleteUser}
+        >
+          Delete user
+        </Button>
+      </>
   )
 }
 
@@ -114,74 +122,3 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPageForShopkeeper)
-/*
-import React, { Component } from 'react'
-import { Formik, Field } from 'formik';
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
-import * as Yup from 'yup';
-
-export default function UserPageForShopkeeper() {
-
-  const SignupSchema = Yup.object().shape({
-    address: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    password: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Required")
-  });
-
-  const customInputForm = ({field, form: {touched, errors}, ...props}) => (
-    <div>
-        <Input
-            invalid={!!(touched[field.name] && errors[field.name])}
-            {...field}
-            {...props} />
-        {touched[field.name] && errors[field.name] && <FormFeedback>{errors[field.name]}</FormFeedback>}
-    </div>
-  );
-
-  return (
-    <div className="container">
-      <Formik
-        initialValues={{
-          email: '',
-          address: '',
-          password: ''
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, actions) => {
-          // this could also easily use props or other
-          // local state to alter the behavior if needed
-          // this.props.sendValuesToServer(values)
-
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            actions.setSubmitting(false)
-          }, 1000)
-        }}>
-        <Form>
-            <FormGroup>
-              <Label for="exampleEmail">Email</Label>
-              <Field name="email" type={'email'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="address">Address</Label>
-              <Field name="address" type={'text'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="examplePassword">Password</Label>
-              <Field name="password" type={'password'} component={customInputForm}/>
-            </FormGroup>
-            <Button>Submit</Button>
-        </Form>
-      </Formik>    
-    </div>
-  )
-}
-*/

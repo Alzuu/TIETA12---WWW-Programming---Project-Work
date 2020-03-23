@@ -23,6 +23,8 @@ import BankAccountAdmin from './components/BankAccountAdmin';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import UserList from './components/User/UserList';
+import EditableUserPageForAdmin from './components/User/EditableUserPageForAdmin';
 
 const useStyles = makeStyles({
   App: (props) => ({
@@ -73,6 +75,8 @@ function App(props) {
             <Route path="/login" component={LoginPage} />
             <Route path="/logout" component={LogoutPage} />
             <Route path="/register" component={RegistrationPage} />
+            <Route exact path="/users/adminEdit/:id" component={EditableUserPageForAdmin} />
+            <Route exact path="/users" component={UserList} />
             <Route exact path="/users/:id" component={UserPage} />
             <Route exact path="/users/:id/items" component={UserItemsPage} />
             <Route exact path="/items" component={AllItemsPage} />

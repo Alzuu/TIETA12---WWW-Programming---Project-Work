@@ -104,6 +104,14 @@ function Navigation(props) {
                   onClose={handleClose}
                 >
                   <MenuItem>
+                    <Link to="/users">
+                      <IconButton onClick={handleClose}>
+                        <ListIcon />
+                        <Typography>Users</Typography>
+                      </IconButton>
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
                     <Link to="/items">
                       <IconButton onClick={handleClose}>
                         <ListIcon />
