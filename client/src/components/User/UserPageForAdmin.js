@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react';
 
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -28,37 +28,41 @@ const UserPageForAdmin = (props) => {
   }, []);
 
   const getRoleSelectionOptions = [
-      { value: 1, label: 'Admin' },
-      { value: 2, label: 'Shopkeeper' },
-      { value: 3, label: 'Customer' },
+    { value: 1, label: 'Admin' },
+    { value: 2, label: 'Shopkeeper' },
+    { value: 3, label: 'Customer' },
   ];
 
-  const getDefaultSelectRole = (
-      props.user ?
-          getRoleSelectionOptions.filter(option => option.value === parseInt(props.user.role, 10))[0]
-          :
-          '');
+  const getDefaultSelectRole = props.user
+    ? getRoleSelectionOptions.filter(
+        (option) => option.value === parseInt(props.user.role, 10)
+      )[0]
+    : '';
 
-  const handleUserNameChange = (e) => { setUserName(e.target.value) }
-  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
+  const handleUserNameChange = (e) => {
+    setUserName(e.target.value);
+  };
+  const handleUserPasswordChange = (e) => {
+    setUserPassword(e.target.value);
+  };
 
   const renderRoleSelection = () => {
     return (
-      <div className='userRoleSelection'>
+      <div className="userRoleSelection" style={{ width: '150px' }}>
         <Select
-          className='userRoleSelection'
+          className="userRoleSelection"
           value={userRole}
-          onChange={role => setUserRole(role)}
+          onChange={(role) => setUserRole(role)}
           options={getRoleSelectionOptions}
         />
       </div>
     );
-  }
+  };
 
   const deleteUser = () => {
     props.delete(props.user);
     setUserWasDeleted(true);
-  }
+  };
 
   const setNewValuesToUser = () => {
     const modifiedUser = {
@@ -67,11 +71,11 @@ const UserPageForAdmin = (props) => {
       password: userPassword,
       token: props.user.token,
       role: userRole.value,
-    }
+    };
     props.modify(modifiedUser);
     setUserRole(userRole);
     setUserEditWasSuccessful(true);
-  }
+  };
 
   return (
     props.isLoading
@@ -133,9 +137,9 @@ const UserPageForAdmin = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-      user: state.user,
-      loginHasErrored: state.userLoginHasErrored,
-      isLoading: state.userIsLoading
+    user: state.user,
+    loginHasErrored: state.userLoginHasErrored,
+    isLoading: state.userIsLoading,
   };
 };
 
@@ -146,5 +150,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPageForAdmin);

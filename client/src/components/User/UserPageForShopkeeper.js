@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react';
 
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -12,7 +12,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import UpdateIcon from '@material-ui/icons/Update';
-
+import CreditCard from '../CreditCard';
+import BankAccount from '../BankAccount';
 const UserPageForShopkeeper = (props) => {
   const [userRole, setUserRole] = useState('');
   const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
@@ -26,13 +27,17 @@ const UserPageForShopkeeper = (props) => {
     }
   }, []);
 
-  const handleUserNameChange = (e) => { setUserName(e.target.value) }
-  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
+  const handleUserNameChange = (e) => {
+    setUserName(e.target.value);
+  };
+  const handleUserPasswordChange = (e) => {
+    setUserPassword(e.target.value);
+  };
 
   const deleteUser = () => {
     props.delete(props.user);
     setUserWasDeleted(true);
-  }
+  };
 
   const setNewValuesToUser = () => {
     const modifiedUser = {
@@ -41,74 +46,79 @@ const UserPageForShopkeeper = (props) => {
       password: userPassword,
       token: props.user.token,
       role: props.user.role,
-    }
+    };
     props.modify(modifiedUser);
     setUserRole(userRole);
     setUserEditWasSuccessful(true);
-  }
+  };
 
-  return (
-    props.isLoading
-      ?
-      <CircularProgress color="secondary" />
-      :
-      <Box className="addItemBox">
-            <Typography variant="h2">Edit user</Typography>
-            {userEditWasSuccessful && <>User edited succesfully<br /></>}
-            <form className="addItemBox">
-                <TextField
-                    label='Name'
-                    type='text'
-                    name='name'
-                    minLength={1}
-                    maxLength={10}
-                    required
-                    value={userName}
-                    onChange={handleUserNameChange}
-                    on
-                />
-                <TextField
-                    label='Password'
-                    type='password'
-                    placeholder='*********'
-                    name='password'
-                    minLength={1}
-                    maxLength={10}
-                    required
-                    value={userPassword}
-                    onChange={handleUserPasswordChange}
-                    on
-                />
-                <FormGroup row={true}>
-                    <Button
-                    type="button"
-                    color="primary"
-                    variant="outlined"
-                    onClick={setNewValuesToUser}
-                    startIcon={<UpdateIcon />}
-                    >
-                        Modify
-                    </Button>
-<br/>
-                    <Button
-                  type="button"
-                  color="primary"
-                  variant="outlined"
-                  onClick={deleteUser}
-                >
-                  Delete
-                </Button>
-                </FormGroup>
-            </form>
-        </Box>
+  return props.isLoading ? (
+    <CircularProgress color="secondary" />
+  ) : (
+    <Box className="addItemBox">
+      <Typography variant="h2">Edit user</Typography>
+      {userEditWasSuccessful && (
+        <>
+          User edited succesfully
+          <br />
+        </>
+      )}
+      <form className="addItemBox">
+        <TextField
+          label="Name"
+          type="text"
+          name="name"
+          minLength={1}
+          maxLength={10}
+          required
+          value={userName}
+          onChange={handleUserNameChange}
+          on
+        />
+        <TextField
+          label="Password"
+          type="password"
+          placeholder="*********"
+          name="password"
+          minLength={1}
+          maxLength={10}
+          required
+          value={userPassword}
+          onChange={handleUserPasswordChange}
+          on
+        />
+        <FormGroup row={true}>
+          <Button
+            type="button"
+            color="primary"
+            variant="outlined"
+            onClick={setNewValuesToUser}
+            startIcon={<UpdateIcon />}
+          >
+            Modify
+          </Button>
+          <br />
+          <Button
+            type="button"
+            color="primary"
+            variant="outlined"
+            onClick={deleteUser}
+          >
+            Delete
+          </Button>
+        </FormGroup>
+        <CreditCard id={props.user.creditCardId} />
+        <BankAccount id={props.user.bankAccountId} />
+      </form>
+    </Box>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
-      user: state.user,
-      loginHasErrored: state.userLoginHasErrored,
-      isLoading: state.userIsLoading
+    user: state.user,
+    loginHasErrored: state.userLoginHasErrored,
+    isLoading: state.userIsLoading,
   };
 };
 
@@ -119,5 +129,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserPageForShopkeeper)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserPageForShopkeeper);
