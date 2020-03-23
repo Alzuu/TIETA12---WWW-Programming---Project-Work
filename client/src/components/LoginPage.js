@@ -32,7 +32,7 @@ const LoginPage = (props) => {
 
     return (
         <Box className="addItemBox">
-            <Typography variant="h2">Edit user</Typography>
+            <Typography variant="h2">Login</Typography>
             <form className="addItemBox">
                 <TextField
                     label='Name'
