@@ -5,8 +5,8 @@ import { Formik, Form, Field } from 'formik'
 import isEmpty from 'lodash/isEmpty'
 import Select from 'react-select';
 import * as Yup from 'yup';
-import {Link} from 'react-router-dom'
-import { userModify } from '../../actions/usersActions';
+import { Link, Redirect } from 'react-router-dom'
+import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
@@ -50,6 +50,11 @@ const UserPageForAdmin = (props) => {
         .required('Title is required.'),
     })
   )
+
+  const deleteUser = () => {
+    console.log("UserPageForAdmin.js deleteUser o/");
+    props.delete(props.user);
+  }
 
   const setNewValuesToUser = (user) => {
     const modifiedUser = {
@@ -118,6 +123,12 @@ const UserPageForAdmin = (props) => {
           </Form>
         )}
       />
+      <button
+        type="button"
+        onClick={deleteUser}
+      >
+        Delete user
+      </button>
     </>
   )
 }
@@ -132,6 +143,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    delete: (user) => dispatch(userDelete(user)),
     modify: (user) => dispatch(userModify(user)),
   };
 };

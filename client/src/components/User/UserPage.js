@@ -88,18 +88,31 @@ const UserPage = (props) => {
     />
   );
 
-  const userRoleAsNumber = parseInt(props.user.role, 10);
+  const userRoleAsNumber = props.user ? parseInt(props.user.role, 10) : '';
 
-  console.log("UserPage.js o/");
+  console.log("UserPage.js props.user: o/");
+  console.log(props.user);
   console.log(userRoleAsNumber);
 
-  return (
+  if (props.user) {
+    return (
+      <>
+        {(userRoleAsNumber === 0) && <UserPageForAdmin />}
+        {(userRoleAsNumber === 1) && <UserPageForShopkeeper />}
+        {(userRoleAsNumber === 2) && <UserPageForCustomer />}
+      </>
+    )  
+  } else {
+    return (
     <>
-      {(userRoleAsNumber === 0) && <UserPageForAdmin />}
-      {(userRoleAsNumber === 1) && <UserPageForShopkeeper />}
-      {(userRoleAsNumber === 2) && <UserPageForCustomer />}
+      <h1>User deleted succesfully</h1>
+      <br />
+      <Link to={'/'}>Home</Link>
+      <br />
+      <Link to={'/register'}>Register</Link>
     </>
-  )
+    );
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -118,74 +131,3 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage)
-/*
-import React, { Component } from 'react'
-import { Formik, Field } from 'formik';
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
-import * as Yup from 'yup';
-
-export default function UserPage() {
-
-  const SignupSchema = Yup.object().shape({
-    address: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    password: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Required")
-  });
-
-  const customInputForm = ({field, form: {touched, errors}, ...props}) => (
-    <div>
-        <Input
-            invalid={!!(touched[field.name] && errors[field.name])}
-            {...field}
-            {...props} />
-        {touched[field.name] && errors[field.name] && <FormFeedback>{errors[field.name]}</FormFeedback>}
-    </div>
-  );
-
-  return (
-    <div className="container">
-      <Formik
-        initialValues={{
-          email: '',
-          address: '',
-          password: ''
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, actions) => {
-          // this could also easily use props or other
-          // local state to alter the behavior if needed
-          // this.props.sendValuesToServer(values)
-
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            actions.setSubmitting(false)
-          }, 1000)
-        }}>
-        <Form>
-            <FormGroup>
-              <Label for="exampleEmail">Email</Label>
-              <Field name="email" type={'email'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="address">Address</Label>
-              <Field name="address" type={'text'} component={customInputForm}/>
-            </FormGroup>
-            <FormGroup>
-              <Label for="examplePassword">Password</Label>
-              <Field name="password" type={'password'} component={customInputForm}/>
-            </FormGroup>
-            <Button>Submit</Button>
-        </Form>
-      </Formik>    
-    </div>
-  )
-}
-*/

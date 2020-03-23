@@ -5,7 +5,7 @@ import { Formik, Form, Field } from 'formik'
 import isEmpty from 'lodash/isEmpty'
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
-import { userModify } from '../../actions/usersActions';
+import { userDelete, userModify } from '../../actions/usersActions';
 import TextInput from './TextInputFormik';
 import UserRole from './UserRole';
  
@@ -27,7 +27,12 @@ const UserPageForShopkeeper = (props) => {
         .min(3, 'Title must be at least 3 characters long.')
         .required('Title is required.'),
     })
-  )
+  );
+
+  const deleteUser = () => {
+    console.log("UserPageForAdmin.js deleteUser o/");
+    props.delete(props.user);
+  }
 
   const setNewValuesToUser = (user) => {
     const modifiedUser = {
@@ -82,6 +87,12 @@ const UserPageForShopkeeper = (props) => {
           </Form>
         )}
       />
+      <button
+        type="button"
+        onClick={deleteUser}
+      >
+        Delete user
+      </button>
     </>
   )
 }
@@ -96,6 +107,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    delete: (user) => dispatch(userDelete(user)),
     modify: (user) => dispatch(userModify(user)),
   };
 };
