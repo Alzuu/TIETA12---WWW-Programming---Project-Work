@@ -8,8 +8,10 @@ Before you start, make sure you have [Vagrant](https://www.vagrantup.com/) and [
 2. Go to repository folder and start virtual machine: `vagrant up`
 3. Log into the virtual machine: `vagrant ssh`
 4. Go to project folder: `cd /vagrant_data`
-5. Start the application: `npm start` to start in production mode, `npm run dev` to start in development mode
-6. Open your browser and head to [localhost](http://localhost:3000).
+5. Install dependencies: `npm install`
+6. Start the application: `npm start` to start in production mode, `npm run dev` to start in development mode
+7. Open your browser and head to [localhost in port 3000](http://localhost:3000).
+8. For extra fun times, you can also check our linting or tests: `npm run lint` and `npm run test`
 
 There are three users made for testing purposes:
 
@@ -277,11 +279,11 @@ Here are all API routes. Payload still to be designed.
 
 Our frontend is a React single-page-application that uses Redux to handle state. We use redux-localstorage to keep state from changing from page refreshes. Home page lists all shopkeepers' items on sale. Other things you can do is register a new account and login. When logged in, as a customer, you can also add items for sale and buy items from shopkeepers. You can also list own items and edit and/or delete them. Shopkeepers can in addition to that also buy items from customers and list them on their own page. Admins also see a listing of all items, credit cards and bank accounts that they can modify and/or delete. There is also a page to edit user information, in which you can change user information and add, edit or delete credit cards and bank accounts.
 
-For user interface, we use [Material-UI](https://material-ui.com/). As a bonus, we also implemented dark mode toggling.
+For user interface, we use [Material-UI](https://material-ui.com/). As a bonus, we also implemented item picture uploading and dark mode toggling.
 
 ## Testing
 
-We're going to test at least the some of the API with Mocha/chaihttp.
+We tested the API nearly in full: items, bank accounts and credit cards. We use mocha and chaihttp to do the testing.
 
 ## Project timetable and division of work
 
@@ -304,9 +306,9 @@ Allan
 
 Peter
 
-- [ ] Code cleanup 22.3
-- [ ] Users API 22.3
-- [ ] Users React 22.3
+- [x] Code cleanup 22.3
+- [x] Users API 22.3
+- [x] Users React 22.3
 - [ ] Users testing 22.3
 
 Kari
