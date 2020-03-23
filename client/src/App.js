@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import { Route, BrowserRouter } from 'react-router-dom';
@@ -75,7 +75,11 @@ function App(props) {
             <Route path="/login" component={LoginPage} />
             <Route path="/logout" component={LogoutPage} />
             <Route path="/register" component={RegistrationPage} />
-            <Route exact path="/users/adminEdit/:id" component={EditableUserPageForAdmin} />
+            <Route
+              exact
+              path="/users/adminEdit/:id"
+              component={EditableUserPageForAdmin}
+            />
             <Route exact path="/users" component={UserList} />
             <Route exact path="/users/:id" component={UserPage} />
             <Route exact path="/users/:id/items" component={UserItemsPage} />

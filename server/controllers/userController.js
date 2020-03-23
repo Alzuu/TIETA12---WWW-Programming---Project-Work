@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const xssFilters = require('xss-filters');
-
 const config = require('../config.js');
 const Item = require('../models/Item');
 const UserRole = require('../models/UserRole');
@@ -35,7 +34,7 @@ function userToLinks(user, currentURL) {
 }
 
 const getCurrentUrl = (req) =>
-  `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  `${req.protocol}://${req.get('host')}${req.originalUrl}`; // eslint-disable-line
 
 const userIsAdmin = (req) => req.userRole === UserRole.ADMIN;
 
@@ -49,22 +48,23 @@ const usersToLinks = (users, currentURL) => {
   return result;
 };
 
-exports.list = (req, res, next) => {
+exports.list = (req, res) => {
   if (!userIsAdmin(req)) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  User.find(function(err, foundUsers) {
+  User.find((err, foundUsers) => {
     if (err) {
       res.sendStatus(404);
       return console.error(err);
+    } else {
+      res.status(200);
+      return res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
     }
-    res.status(200);
-    res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
   });
 };
 
-exports.one = (req, res, next) => {
+exports.one = (req, res) => {
   if (req.userId === req.params.id || userIsAdmin(req)) {
     User.findById(req.params.id, (err, foundUser) => {
       if (err) {
@@ -79,16 +79,16 @@ exports.one = (req, res, next) => {
   }
 };
 
-exports.modify = (req, res, next) => {
+exports.modify = (req, res) => {
   if (req.userId === req.params.id || userIsAdmin(req)) {
     const newName = xssFilters.inHTMLData(req.body.name);
-    const newRole = parseInt(xssFilters.inHTMLData(req.body.role));
+    const newRole = parseInt(xssFilters.inHTMLData(req.body.role), 10);
 
     if (req.body.password) {
       console.log('change user password o/');
-      var password = xssFilters.inHTMLData(req.body.password);
+      const password = xssFilters.inHTMLData(req.body.password);
 
-      bcrypt.hash(password, saltRounds, function(err, hash) {
+      bcrypt.hash(password, saltRounds, (err, hash) => {
         User.findByIdAndUpdate(
           req.params.id,
           {
@@ -99,15 +99,15 @@ exports.modify = (req, res, next) => {
             bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
           },
           { omitUndefined: true, new: true },
-          (err, user) => {
+          (error, user) => {
             if (err) {
               res.sendStatus(400);
-              return console.error(err);
+              return console.error(error);
             }
 
             res.status(200).send({
               auth: true,
-              token: req.headers['token'],
+              token: req.headers.token,
               id: user._id,
               name: newName,
               role: newRole,
@@ -137,7 +137,7 @@ exports.modify = (req, res, next) => {
 
           res.status(200).send({
             auth: true,
-            token: req.headers['token'],
+            token: req.headers.token,
             id: user._id,
             name: newName,
             role: newRole,
@@ -152,23 +152,23 @@ exports.modify = (req, res, next) => {
   }
 };
 
-exports.create = (req, res, next) => {
+exports.create = (req, res) => {
   console.log('create user o/');
-  var password = xssFilters.inHTMLData(req.body.password);
+  const password = xssFilters.inHTMLData(req.body.password);
 
-  bcrypt.hash(password, saltRounds, function(err, hash) {
-    var newUser = new User({
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    const newUser = new User({
       name: xssFilters.inHTMLData(req.body.name),
-      role: parseInt(xssFilters.inHTMLData(req.body.role)),
+      role: parseInt(xssFilters.inHTMLData(req.body.role), 10),
       password: hash,
       creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
       bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
     });
 
-    newUser.save(function(err) {
+    newUser.save((error) => {
       if (err) {
         res.sendStatus(400);
-        return console.error(err);
+        return console.error(error);
       }
       res.status(201);
       res.json(newUser);
@@ -176,7 +176,7 @@ exports.create = (req, res, next) => {
   });
 };
 
-exports.delete = (req, res, next) => {
+exports.delete = (req, res) => {
   if (userIsAdmin(req)) {
     User.deleteMany((err, users) => {
       if (err) {
@@ -195,7 +195,7 @@ exports.delete = (req, res, next) => {
   }
 };
 
-exports.deleteOne = (req, res, next) => {
+exports.deleteOne = (req, res) => {
   if (req.userId === req.params.id || userIsAdmin(req)) {
     User.findByIdAndRemove(req.params.id, (err, user) => {
       if (err) return res.status(500).send(err);
@@ -210,17 +210,20 @@ exports.deleteOne = (req, res, next) => {
   }
 };
 
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
   console.log('login user o/');
-  User.findOne({ name: req.body.name }, function(err, user) {
+  User.findOne({ name: req.body.name }, (err, user) => {
     if (err) return res.status(500).send({ auth: false, token: null });
     if (!user) return res.status(404).send({ auth: false, token: null });
 
-    var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-    if (!passwordIsValid)
+    const passwordIsValid = bcrypt.compareSync(
+      req.body.password,
+      user.password
+    );
+    if (!passwordIsValid) {
       return res.status(401).send({ auth: false, token: null });
-
-    var token = jwt.sign({ id: user._id }, config.secret, {
+    }
+    const token = jwt.sign({ id: user._id }, config.secret, {
       expiresIn: 86400, // expires in 24 hours
     });
 
@@ -237,7 +240,7 @@ exports.login = (req, res, next) => {
   });
 };
 
-exports.logout = (req, res, next) => {
+exports.logout = (req, res) => {
   res.status(200).send({ auth: false, token: null });
 };
 
@@ -251,9 +254,9 @@ exports.listItems = (req, res) => {
     }
     const isOwner =
       req.userId === req.params.id || req.userRole === UserRole.ADMIN;
-    Item.find({ ownerId: req.params.id }, (err, items) => {
+    Item.find({ ownerId: req.params.id }, (error, items) => {
       if (err) {
-        return res.status(400).json({ message: err });
+        return res.status(400).json({ message: error });
       }
       if (!items || items.length === 0) {
         return res.status(404).json({ message: 'No items found!' });

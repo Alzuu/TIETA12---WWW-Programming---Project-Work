@@ -1,52 +1,20 @@
 const express = require('express');
-const router = express.Router();
-
 const getRole = require('../authentication/getRole');
 const verifyToken = require('../authentication/verifyToken');
-
 const userController = require('../controllers/userController');
 
-router.post('/login', (req, res, next) => {
-    next();
-}, userController.login);
+const router = express.Router();
 
-router.post('/logout', (req, res, next) => {
-    next();
-}, userController.logout);
-
-router.post('/', (req, res, next) => {
-    next();
-}, userController.create);
-
+router.post('/login', userController.login);
+router.post('/logout', userController.logout);
+router.post('/', userController.create);
 router.use((req, res, next) => verifyToken(req, res, next));
 router.use((req, res, next) => getRole(req, res, next));
-
-router.get('/test', function(req, res, next) {
-    next();
-}, verifyToken, () => {
-    console.log('users token test 4 8 15 16 23 42');
-});
-
-router.get('/', (req, res, next) => {
-    next();
-}, userController.list);
-
-router.get('/:id', (req, res, next) => {
-    next();
-}, userController.one);
-
-router.put('/:id', (req, res, next) => {
-    next();
-}, userController.modify);
-
-router.delete('/', (req, res, next) => {
-    next();
-}, userController.delete);
-
-router.delete('/:id', (req, res, next) => {
-    next();
-}, userController.deleteOne);
-
+router.get('/', userController.list);
+router.get('/:id', userController.one);
+router.put('/:id', userController.modify);
+router.delete('/', userController.delete);
+router.delete('/:id', userController.deleteOne);
 router.get('/:id/items', verifyToken, userController.listItems);
 
 module.exports = router;

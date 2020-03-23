@@ -1,5 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -22,7 +21,7 @@ const UserList = (props) => {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getUsers = () =>
     fetch('/api/users', { headers: { token: props.user.token } })
@@ -80,6 +79,11 @@ const UserList = (props) => {
                     </TableCell>
                   </TableRow>
                 ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 113 * emptyRows }}>
+                  <TableCell colSpan={5} />
+                </TableRow>
+              )}
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -101,10 +105,6 @@ const UserList = (props) => {
   }
   return <></>;
 };
-/*
-<Link to={}>edit {user.name}</Link>
-                    <br />
-*/
 
 const mapStateToProps = (state) => {
   return {

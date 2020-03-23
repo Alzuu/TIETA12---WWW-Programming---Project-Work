@@ -5,8 +5,6 @@ import { bankAccountsReducer } from './bankAccounts';
 import { creditCardsReducer } from './creditCards';
 import { darkMode } from './darkMode';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 export default combineReducers({
   user,
   userLoginHasErrored,

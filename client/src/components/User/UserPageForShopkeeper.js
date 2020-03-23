@@ -1,11 +1,7 @@
-import React, { Component, useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Select from 'react-select';
-import * as Yup from 'yup';
 import { userDelete, userModify } from '../../actions/usersActions';
-
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -14,18 +10,18 @@ import Typography from '@material-ui/core/Typography';
 import UpdateIcon from '@material-ui/icons/Update';
 import CreditCard from '../CreditCard';
 import BankAccount from '../BankAccount';
+
 const UserPageForShopkeeper = (props) => {
   const [userRole, setUserRole] = useState('');
   const [userEditWasSuccessful, setUserEditWasSuccessful] = useState(false);
   const [userPassword, setUserPassword] = useState('');
   const [userName, setUserName] = useState('');
-  const [userWasDeleted, setUserWasDeleted] = useState(false);
 
   useEffect(() => {
     if (props.user) {
       setUserName(props.user.name);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleUserNameChange = (e) => {
     setUserName(e.target.value);
@@ -36,7 +32,6 @@ const UserPageForShopkeeper = (props) => {
 
   const deleteUser = () => {
     props.delete(props.user);
-    setUserWasDeleted(true);
   };
 
   const setNewValuesToUser = () => {

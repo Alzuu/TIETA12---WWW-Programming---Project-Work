@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import Box from '@material-ui/core/Box';
@@ -20,39 +20,50 @@ const EditableUserPageForAdmin = (props) => {
   const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
   const [userWasDeleted, setUserWasDeleted] = useState(false);
-  
+
   useEffect(() => {
-      getUser();
-    }, []);
+    getUser();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getRoleSelectionOptions = [
-      { value: 1, label: 'Admin' },
-      { value: 2, label: 'Shopkeeper' },
-      { value: 3, label: 'Customer' },
+    { value: 1, label: 'Admin' },
+    { value: 2, label: 'Shopkeeper' },
+    { value: 3, label: 'Customer' },
   ];
 
-  const getDefaultSelectRole = (role) => (
-          getRoleSelectionOptions.filter(option => option.value === parseInt(role, 10))[0]);
+  const getDefaultSelectRole = (role) =>
+    getRoleSelectionOptions.filter(
+      (option) => option.value === parseInt(role, 10)
+    )[0];
 
   const getUser = () => {
-    fetch(`/api/users/${props.match.params.id}`,  { headers: { token: props.adminUser.token } })
+    fetch(`/api/users/${props.match.params.id}`, {
+      headers: { token: props.adminUser.token },
+    })
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-          setUserBankAccountId(json.bankAccountId);
-          setUserCreditCardId(json.creditCardId);
-          setEditableUser(json);
-          setUserName(json.name);
-          setUserRole(getDefaultSelectRole(json.role));
-      })
-  }
+        setUserBankAccountId(json.bankAccountId);
+        setUserCreditCardId(json.creditCardId);
+        setEditableUser(json);
+        setUserName(json.name);
+        setUserRole(getDefaultSelectRole(json.role));
+      });
+  };
 
-  const handleUserBankAccountIdChange = (e) => { setUserBankAccountId(e.target.value) }
-  const handleUserCreditCardIdChange = (e) => { setUserCreditCardId(e.target.value) }
-  const handleUserNameChange = (e) => { setUserName(e.target.value) }
-  const handleUserPasswordChange = (e) => { setUserPassword(e.target.value) }
-  const handleUserRoleChange = (e) => { setUserRole(e.target.value) }
-  
+  const handleUserBankAccountIdChange = (e) => {
+    setUserBankAccountId(e.target.value);
+  };
+  const handleUserCreditCardIdChange = (e) => {
+    setUserCreditCardId(e.target.value);
+  };
+  const handleUserNameChange = (e) => {
+    setUserName(e.target.value);
+  };
+  const handleUserPasswordChange = (e) => {
+    setUserPassword(e.target.value);
+  };
+
   const deleteUser = () => {
     setIsLoading(true);
     fetch(`/api/users/${editableUser._id}`, {
@@ -61,12 +72,12 @@ const EditableUserPageForAdmin = (props) => {
         token: props.adminUser.token,
       },
     })
-    .then((res) => res.json())
+      .then((res) => res.json())
       .then((json) => {
         setIsLoading(false);
         setUserWasDeleted(true);
       });
-  }
+  };
 
   const handleUserEditSubmit = (user) => {
     setIsLoading(true);
@@ -78,7 +89,7 @@ const EditableUserPageForAdmin = (props) => {
       name: userName,
       password: userPassword,
       role: userRole.value,
-    }
+    };
 
     fetch(`/api/users/${editableUser._id}`, {
       method: 'PUT',
@@ -93,23 +104,30 @@ const EditableUserPageForAdmin = (props) => {
       .then((user) => {
         setIsLoading(false);
         setUserEditWasSuccessful(true);
-      });  
-  }
+      });
+  };
 
   const renderRoleSelection = () => {
     return (
-      <div className='userRoleSelection'>
+      <div className="userRoleSelection">
         <Select
-            className='userRoleSelection'
-            value={userRole}
-            onChange={role => setUserRole(role)}
-            options={getRoleSelectionOptions}
+          className="userRoleSelection"
+          value={userRole}
+          onChange={(role) => setUserRole(role)}
+          options={getRoleSelectionOptions}
         />
       </div>
     );
-  }
+  };
 
-  const renderTextField = (fieldName, fieldLabel, handlerFunction, maxLength, minLength, val) => (
+  const renderTextField = (
+    fieldName,
+    fieldLabel,
+    handlerFunction,
+    maxLength,
+    minLength,
+    val
+  ) => (
     <TextField
       label={fieldLabel}
       type="text"
@@ -127,72 +145,89 @@ const EditableUserPageForAdmin = (props) => {
     return <Redirect to={'/users'} />;
   }
   if (editableUser) {
-    return (
-      isLoading
-        ?
-        <CircularProgress color="secondary" />
-        :
-        <>
-          {userEditWasSuccessful && <>User edited succesfully<br /></>}
-          <Box className="addItemBox">
+    return isLoading ? (
+      <CircularProgress color="secondary" />
+    ) : (
+      <>
+        {userEditWasSuccessful && (
+          <>
+            User edited succesfully
+            <br />
+          </>
+        )}
+        <Box className="addItemBox">
           <Typography variant="h2">Edit user</Typography>
-            <form className="addItemBox">
-              {renderTextField('userBankAccountId', 'Bank Account ID',
-                              handleUserBankAccountIdChange, 1, 8,
-                              userBankAccountId)}
-              {renderTextField('userCreditCardId', 'Credit Card ID',
-                              handleUserCreditCardIdChange, 1, 8,
-                              userCreditCardId)}
-              {renderTextField('name', 'Name',
-                              handleUserNameChange, 1, 20,
-                              userName)}
-              <TextField
-                label='Password'
-                type='password'
-                placeholder="***"
-                name='password'
-                minLength={1}
-                maxLength={10}
-                required
-                value={userPassword}
-                onChange={handleUserPasswordChange}
-                on
-              />
-              {renderRoleSelection()}
-              <FormGroup row={true}>
-                <Button
-                  type="button"
-                  color="primary"
-                  variant="outlined"
-                  onClick={handleUserEditSubmit}
-                  startIcon={<UpdateIcon />}
-                >
-                  Update
-                </Button>
-                <br />
-                <Button
-                  type="button"
-                  color="primary"
-                  variant="outlined"
-                  onClick={deleteUser}
-                >
-                  Delete
-                </Button>
-              </FormGroup>
-            </form>
-          </Box>
-        </>
-    )
-  
+          <form className="addItemBox">
+            {renderTextField(
+              'userBankAccountId',
+              'Bank Account ID',
+              handleUserBankAccountIdChange,
+              1,
+              8,
+              userBankAccountId
+            )}
+            {renderTextField(
+              'userCreditCardId',
+              'Credit Card ID',
+              handleUserCreditCardIdChange,
+              1,
+              8,
+              userCreditCardId
+            )}
+            {renderTextField(
+              'name',
+              'Name',
+              handleUserNameChange,
+              1,
+              20,
+              userName
+            )}
+            <TextField
+              label="Password"
+              type="password"
+              placeholder="***"
+              name="password"
+              minLength={1}
+              maxLength={10}
+              required
+              value={userPassword}
+              onChange={handleUserPasswordChange}
+              on
+            />
+            {renderRoleSelection()}
+            <FormGroup row={true}>
+              <Button
+                type="button"
+                color="primary"
+                variant="outlined"
+                onClick={handleUserEditSubmit}
+                startIcon={<UpdateIcon />}
+              >
+                Update
+              </Button>
+              <br />
+              <Button
+                type="button"
+                color="primary"
+                variant="outlined"
+                onClick={deleteUser}
+              >
+                Delete
+              </Button>
+            </FormGroup>
+          </form>
+        </Box>
+      </>
+    );
   }
 
   return <></>;
-}
+};
 
 const mapStateToProps = (state) => {
   return {
-      adminUser: state.user,
+    adminUser: state.user,
   };
 };
 
-export default connect(mapStateToProps)(EditableUserPageForAdmin)
+export default connect(mapStateToProps)(EditableUserPageForAdmin);
