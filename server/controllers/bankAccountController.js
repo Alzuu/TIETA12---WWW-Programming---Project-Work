@@ -149,7 +149,6 @@ module.exports = {
               { bankAccountId: newAccount._id }
             );
             await res.status(200).json(newAccount);
-            console.log('New bank account added.');
           } catch (err) {
             res.json({ message: err });
             console.log('Caught an error: ', err);
@@ -187,7 +186,6 @@ module.exports = {
                 { bankAccountId: 'undefined' }
               );
               res.status(200).json(deletedAccount);
-              console.log('Successfully removed bank account.');
             } catch (err) {
               res.status(400).json({ message: err });
               console.log('Caught an error: ', err);

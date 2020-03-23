@@ -148,7 +148,6 @@ module.exports = {
               { creditCardId: newCard._id }
             );
             await res.status(200).json(newCard);
-            console.log('New credit card added.');
           } catch (err) {
             res.json({ message: err });
             console.log('Caught an error: ', err);
@@ -184,7 +183,6 @@ module.exports = {
                 { bankAccountId: 'undefined' }
               );
               res.status(200).json(deletedCard);
-              console.log('Successfully removed credit card.');
             } catch (err) {
               res.status(400).json({ message: err });
               console.log('Caught an error: ', err);

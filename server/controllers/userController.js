@@ -55,8 +55,7 @@ exports.list = (req, res) => {
 
   User.find((err, foundUsers) => {
     if (err) {
-      res.sendStatus(404);
-      return console.error(err);
+      return res.sendStatus(404);
     } else {
       res.status(200);
       return res.json(usersToLinks(foundUsers, getCurrentUrl(req)));
@@ -68,8 +67,7 @@ exports.one = (req, res) => {
   if (req.userId === req.params.id || userIsAdmin(req)) {
     User.findById(req.params.id, (err, foundUser) => {
       if (err) {
-        res.sendStatus(404);
-        return console.error(err);
+        return res.sendStatus(404);
       }
       res.status(200);
       res.json(foundUser);
@@ -83,11 +81,8 @@ exports.modify = (req, res) => {
   if (req.userId === req.params.id || userIsAdmin(req)) {
     const newName = xssFilters.inHTMLData(req.body.name);
     const newRole = parseInt(xssFilters.inHTMLData(req.body.role), 10);
-
     if (req.body.password) {
-      console.log('change user password o/');
       const password = xssFilters.inHTMLData(req.body.password);
-
       bcrypt.hash(password, saltRounds, (err, hash) => {
         User.findByIdAndUpdate(
           req.params.id,
@@ -101,10 +96,8 @@ exports.modify = (req, res) => {
           { omitUndefined: true, new: true },
           (error, user) => {
             if (err) {
-              res.sendStatus(400);
-              return console.error(error);
+              return res.sendStatus(400);
             }
-
             res.status(200).send({
               auth: true,
               token: req.headers.token,
@@ -118,8 +111,6 @@ exports.modify = (req, res) => {
         );
       });
     } else {
-      console.log('change user, but dont change password o/');
-
       User.findByIdAndUpdate(
         req.params.id,
         {
@@ -131,8 +122,7 @@ exports.modify = (req, res) => {
         { omitUndefined: true, new: true },
         (err, user) => {
           if (err) {
-            res.sendStatus(400);
-            return console.error(err);
+            return res.sendStatus(400);
           }
 
           res.status(200).send({
@@ -153,9 +143,7 @@ exports.modify = (req, res) => {
 };
 
 exports.create = (req, res) => {
-  console.log('create user o/');
   const password = xssFilters.inHTMLData(req.body.password);
-
   bcrypt.hash(password, saltRounds, (err, hash) => {
     const newUser = new User({
       name: xssFilters.inHTMLData(req.body.name),
@@ -164,11 +152,9 @@ exports.create = (req, res) => {
       creditCardId: xssFilters.inHTMLData(req.body.creditCardId),
       bankAccountId: xssFilters.inHTMLData(req.body.bankAccountId),
     });
-
     newUser.save((error) => {
-      if (err) {
-        res.sendStatus(400);
-        return console.error(error);
+      if (error) {
+        return res.sendStatus(400);
       }
       res.status(201);
       res.json(newUser);
@@ -180,8 +166,7 @@ exports.delete = (req, res) => {
   if (userIsAdmin(req)) {
     User.deleteMany((err, users) => {
       if (err) {
-        res.sendStatus(404);
-        return console.error(err);
+        return res.sendStatus(404);
       }
       if (!users) {
         res.sendStatus(404);
@@ -211,7 +196,6 @@ exports.deleteOne = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  console.log('login user o/');
   User.findOne({ name: req.body.name }, (err, user) => {
     if (err) return res.status(500).send({ auth: false, token: null });
     if (!user) return res.status(404).send({ auth: false, token: null });
@@ -233,7 +217,6 @@ exports.login = (req, res) => {
       id: user._id,
       name: user.name,
       role: user.role,
-
       creditCardId: user.creditCardId,
       bankAccountId: user.bankAccountId,
     });

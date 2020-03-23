@@ -169,20 +169,14 @@ User.find({}, (err, res) => {
     console.log('Setup failed!');
   } else if (!res.length) {
     // If no users are found, begin setup
-    console.log('First run! Adding initial data to database.');
     // Add admin
 
-    addNewUser('admin', 'admin', UserRole.ADMIN).then((user) => {
-      console.log(`User added: ${user.name}`);
-    });
+    addNewUser('admin', 'admin', UserRole.ADMIN).then(() => {});
     addFullUser('shopkeeper', 'shopkeeper', UserRole.SHOPKEEPER)
       .then((user) => {
-        console.log(`User added: ${user.name}`);
         // Add item for user
         addItem(user._id, false)
-          .then((usr) => {
-            console.log(`Item added to user: ${usr.name}`);
-          })
+          .then(() => {})
           .catch((error) => {
             console.log(error);
           });
@@ -192,12 +186,9 @@ User.find({}, (err, res) => {
       });
     addFullUser('customer', 'customer', UserRole.CUSTOMER)
       .then((user) => {
-        console.log(`User added: ${user.name}`);
         // Add item for user
         addItem(user._id, true)
-          .then((usr) => {
-            console.log(`Item added to user: ${usr.name}`);
-          })
+          .then(() => {})
           .catch((error) => {
             console.log(error);
           });
@@ -205,7 +196,5 @@ User.find({}, (err, res) => {
       .catch((error) => {
         console.log(error);
       });
-  } else {
-    console.log('Users found in database, not running setup.');
   }
 });
